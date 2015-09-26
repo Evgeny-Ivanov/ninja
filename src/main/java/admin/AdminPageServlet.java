@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -30,7 +31,10 @@ public class AdminPageServlet extends HttpServlet {
 
         String timeString = request.getParameter("shutdown");
         if (timeString != null) {
-            int timeMS = Integer.valueOf(timeString);
+            Integer timeMS = Integer.valueOf(timeString);
+            if (timeMS == null) {
+                return;
+            }
             System.out.print("Server will be down after: "+ timeMS + " ms");
             TimeHelper.sleep(timeMS);
             System.out.print("\nShutdown");
@@ -41,11 +45,11 @@ public class AdminPageServlet extends HttpServlet {
         pageVariables.put("countUser",accountService.countUsers());
         pageVariables.put("countSession",accountService.countSessions());
 
-        response.getWriter().println(PageGenerator.getPage("admin/admin.tml", pageVariables));
-
+        try (PrintWriter pw = response.getWriter()) {
+            if (pw != null) {
+                pw.println(PageGenerator.getPage("admin/admin.tml", pageVariables));
+            }
+        }
     }
-
-
-
 }
 
