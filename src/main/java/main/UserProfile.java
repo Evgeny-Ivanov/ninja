@@ -7,21 +7,21 @@ import org.jetbrains.annotations.NotNull;
  */
 public class UserProfile {
     @NotNull
-    private String login;
+    private String name;
     @NotNull
     private String password;
     @NotNull
     private String email;
 
-    public UserProfile(@NotNull String login, @NotNull String password, @NotNull String email) {
-        this.login = login;
+    public UserProfile(@NotNull String name, @NotNull String password, @NotNull String email) {
+        this.name = name;
         this.password = password;
         this.email = email;
     }
 
     @NotNull
-    public String getLogin() {
-        return login;
+    public String getName() {
+        return name;
     }
 
     @NotNull

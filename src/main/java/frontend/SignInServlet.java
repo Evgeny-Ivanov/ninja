@@ -9,6 +9,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.HashMap;
@@ -65,10 +66,13 @@ public class SignInServlet extends HttpServlet {
             pageVariables.put("signInStatus", "Input error");
         } else {
             UserProfile profile = accountService.getUser(email);
+            HttpSession hs = request.getSession();
 
-            if (profile != null && profile.getPassword().equals(password)) {
-                accountService.addSessions(request.getSession().getId(), profile);
+            if (profile != null && hs != null && profile.getPassword().equals(password)) {
+                accountService.addSessions(hs.getId(), profile);
                 pageVariables.put("signInStatus", "Success login");
+                hs.setAttribute("name", profile.getName());
+                pageVariables.put("name", hs.getAttribute("name"));
             } else {
                 pageVariables.put("signInStatus", "Password error or user not found");
             }

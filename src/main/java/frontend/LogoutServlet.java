@@ -1,6 +1,7 @@
 package frontend;
 
 import main.AccountService;
+import main.UserProfile;
 import org.jetbrains.annotations.NotNull;
 import templater.PageGenerator;
 
@@ -8,6 +9,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.HashMap;
@@ -32,12 +34,14 @@ public class LogoutServlet extends HttpServlet {
 
         try (PrintWriter pw = response.getWriter()) {
             if (pw != null) {
-                if (accountService.deleteSessions(request.getSession().getId()) == null) {
+                HttpSession hs = request.getSession();
+                if (accountService.deleteSessions(hs.getId()) == null) {
                     pageVariables.put("logoutStatus", "User already logout");
                     pw.println(PageGenerator.getPage("logoutstatus.html", pageVariables));
                 } else {
                     pageVariables.put("logoutStatus", "User logout success");
                     pw.println(PageGenerator.getPage("logoutstatus.html", pageVariables));
+                    hs.setAttribute("name", "Incognitto");
                 }
             }
         }
