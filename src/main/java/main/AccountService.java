@@ -32,7 +32,7 @@ public class AccountService {
     }
 
     @Nullable
-    public UserProfile getSessions(String sessionId) {
+    public UserProfile getSessions(@Nullable String sessionId) {
         return sessions.get(sessionId);
     }
 
@@ -42,7 +42,7 @@ public class AccountService {
     public int countSessions(){return sessions.size();}
 
     @Nullable
-    public UserProfile deleteSessions(String sessionId) {
+    public UserProfile deleteSessions(@Nullable String sessionId) {
         return sessions.remove(sessionId);
     }
 

@@ -32,9 +32,14 @@ public class SignInServlet extends HttpServlet {
         response.setCharacterEncoding("utf-8");
         Map<String, Object> pageVariables = new HashMap<>();
 
+        HttpSession hs = request.getSession();
+        if (hs == null || hs.getId() == null) {
+            return;
+        }
+
         try (PrintWriter pw = response.getWriter()) {
             if (pw != null) {
-                if (accountService.getSessions(request.getSession().getId()) != null) {
+                if (accountService.getSessions(hs.getId()) != null) {
                     pageVariables.put("signInStatus", "User already login");
                     pw.println(PageGenerator.getPage("signinstatus.html", pageVariables));;
                 } else {
@@ -62,13 +67,16 @@ public class SignInServlet extends HttpServlet {
 //            }
 //        }
 
+        HttpSession hs = request.getSession();
+        if (hs == null || hs.getId() == null) {
+            return;
+        }
+
         if (password == null || email == null) {
             pageVariables.put("signInStatus", "Input error");
         } else {
             UserProfile profile = accountService.getUser(email);
-            HttpSession hs = request.getSession();
-
-            if (profile != null && hs != null && profile.getPassword().equals(password)) {
+            if (profile != null && profile.getPassword().equals(password)) {
                 accountService.addSessions(hs.getId(), profile);
                 pageVariables.put("signInStatus", "Success login");
                 hs.setAttribute("name", profile.getName());

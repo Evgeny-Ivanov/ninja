@@ -1,7 +1,6 @@
 package frontend;
 
 import main.AccountService;
-import main.UserProfile;
 import org.jetbrains.annotations.NotNull;
 import templater.PageGenerator;
 
@@ -32,16 +31,22 @@ public class LogoutServlet extends HttpServlet {
         response.setCharacterEncoding("utf-8");
         Map<String, Object> pageVariables = new HashMap<>();
 
+        HttpSession hs = request.getSession();
+        if (hs == null || hs.getId() == null) {
+            return;
+        }
+
+        hs.setAttribute("name", "Incognitto");
+
         try (PrintWriter pw = response.getWriter()) {
             if (pw != null) {
-                HttpSession hs = request.getSession();
+                
                 if (accountService.deleteSessions(hs.getId()) == null) {
                     pageVariables.put("logoutStatus", "User already logout");
                     pw.println(PageGenerator.getPage("logoutstatus.html", pageVariables));
                 } else {
                     pageVariables.put("logoutStatus", "User logout success");
                     pw.println(PageGenerator.getPage("logoutstatus.html", pageVariables));
-                    hs.setAttribute("name", "Incognitto");
                 }
             }
         }

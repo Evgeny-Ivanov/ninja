@@ -22,9 +22,11 @@ public class MainPageServlet extends HttpServlet {
                       @NotNull HttpServletResponse response) throws ServletException, IOException {
         response.setCharacterEncoding("utf-8");
         Map<String, Object> pageVariables = new HashMap<>();
-        HttpSession hs = request.getSession();
 
-        if (hs.getAttribute("name") == null) {
+        HttpSession hs = request.getSession();
+        if (hs == null || hs.getId() == null) {
+            return;
+        } else if (hs.getAttribute("name") == null) {
             hs.setAttribute("name", "Incognitto");
         }
 

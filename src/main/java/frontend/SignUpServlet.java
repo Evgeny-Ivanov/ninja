@@ -9,6 +9,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.HashMap;
@@ -33,6 +34,7 @@ public class SignUpServlet extends HttpServlet {
         String password = request.getParameter("password");
 
         Map<String, Object> pageVariables = new HashMap<>();
+
         if (name == null || password == null || email == null) {
             pageVariables.put("signUpStatus", "Input error");
         } else if (accountService.addUser(email, new UserProfile(name, password, email))) {
@@ -56,9 +58,14 @@ public class SignUpServlet extends HttpServlet {
         response.setCharacterEncoding("utf-8");
         Map<String, Object> pageVariables = new HashMap<>();
 
+        HttpSession hs = request.getSession();
+        if (hs == null || hs.getId() == null) {
+            return;
+        }
+
         try (PrintWriter pw = response.getWriter()) {
             if (pw != null) {
-                if (accountService.getSessions(request.getSession().getId()) != null) {
+                if (accountService.getSessions(hs.getId()) != null) {
                     pageVariables.put("signUpStatus", "User already login");
                     pw.println(PageGenerator.getPage("signupstatus.html", pageVariables));;
                 } else {
