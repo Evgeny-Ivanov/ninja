@@ -56,6 +56,13 @@
             <artifactId>jetty-rewrite</artifactId>
             <version>9.3.0.M0</version>
         </dependency>
+
+        <dependency>
+            <groupId>com.intellij</groupId>
+            <artifactId>annotations</artifactId>
+            <version>5.1</version>
+        </dependency>
+
     </dependencies>
 
 </project>

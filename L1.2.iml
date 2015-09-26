@@ -21,5 +21,6 @@
     <orderEntry type="library" name="Maven: org.eclipse.jetty:jetty-security:9.3.0.M0" level="project" />
     <orderEntry type="library" name="Maven: org.eclipse.jetty:jetty-rewrite:9.3.0.M0" level="project" />
     <orderEntry type="library" name="Maven: org.eclipse.jetty:jetty-client:9.3.0.M0" level="project" />
+    <orderEntry type="library" name="Maven: com.intellij:annotations:5.1" level="project" />
   </component>
 </module>

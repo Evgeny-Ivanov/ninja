@@ -35,4 +35,8 @@ public class AccountService {
     public UserProfile getSessions(String sessionId) {
         return sessions.get(sessionId);
     }
+
+    public int countUsers(){return users.size();}
+
+    public int countSessions(){return sessions.size();}
 }
