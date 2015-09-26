@@ -8,6 +8,7 @@ import org.eclipse.jetty.server.handler.HandlerList;
 import org.eclipse.jetty.server.handler.ResourceHandler;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
+import org.jetbrains.annotations.NotNull;
 
 import javax.servlet.Servlet;
 
@@ -15,14 +16,19 @@ import javax.servlet.Servlet;
  * @author v.chibrikov
  */
 public class Main {
-    public static void main(String[] args) throws Exception {
-        int port = 8080;
-        if (args.length == 1) {
-            String portString = args[0];
-            port = Integer.valueOf(portString);
+    static final int DEFAULT_PORT = 8080;
+
+    public static void main(@NotNull String[] args) throws Exception {
+        int port = DEFAULT_PORT;
+
+        if (args.length == 1 && args[0] != null) {
+            Integer newport = Integer.valueOf(args[0]);
+            if (newport != null) {
+                port = newport;
+            }
         }
 
-        System.out.append("Starting at port: ").append(String.valueOf(port)).append('\n');
+        System.out.println("Starting at port: " + String.valueOf(port));
 
         AccountService accountService = new AccountService();
 

@@ -1,7 +1,7 @@
 {
-status: 200,
-body: {
-email: "${email}",
-password: "${password}"
-}
+    status: 200,
+    body: {
+        email: "${email}",
+        password: "${password}"
+    }
 }
