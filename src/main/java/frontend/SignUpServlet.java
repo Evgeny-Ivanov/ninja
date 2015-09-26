@@ -26,15 +26,16 @@ public class SignUpServlet extends HttpServlet {
     }
 
     @Override
-    public void doGet(@NotNull HttpServletRequest request,
+    public void doPost(@NotNull HttpServletRequest request,
                       @NotNull HttpServletResponse response) throws ServletException, IOException {
         String name = request.getParameter("name");
+        String email = request.getParameter("email");
         String password = request.getParameter("password");
 
         Map<String, Object> pageVariables = new HashMap<>();
-        if (name == null || password == null) {
+        if (name == null || password == null || email == null) {
             pageVariables.put("signUpStatus", "Input error");
-        } else if (accountService.addUser(name, new UserProfile(name, password, name + "@mail.ru"))) {
+        } else if (accountService.addUser(email, new UserProfile(name, password, email))) {
             pageVariables.put("signUpStatus", "New user created");
         } else {
             pageVariables.put("signUpStatus", "User with name: " + name + " already exists");
@@ -46,6 +47,25 @@ public class SignUpServlet extends HttpServlet {
             }
         }
 
+        response.setStatus(HttpServletResponse.SC_OK);
+    }
+
+    @Override
+    public void doGet(@NotNull HttpServletRequest request,
+                      @NotNull HttpServletResponse response) throws ServletException, IOException {
+        response.setCharacterEncoding("utf-8");
+        Map<String, Object> pageVariables = new HashMap<>();
+
+        try (PrintWriter pw = response.getWriter()) {
+            if (pw != null) {
+                if (accountService.getSessions(request.getSession().getId()) != null) {
+                    pageVariables.put("signUpStatus", "User already login");
+                    pw.println(PageGenerator.getPage("signupstatus.html", pageVariables));;
+                } else {
+                    pw.println(PageGenerator.getPage("signup.html", pageVariables));
+                }
+            }
+        }
         response.setStatus(HttpServletResponse.SC_OK);
     }
 
