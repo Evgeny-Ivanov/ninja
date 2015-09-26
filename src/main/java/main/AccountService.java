@@ -15,10 +15,10 @@ public class AccountService {
     @NotNull
     private Map<String, UserProfile> sessions = new HashMap<>();
 
-    public boolean addUser(@NotNull String userName, @NotNull UserProfile userProfile) {
-        if (users.containsKey(userName))
+    public boolean addUser(@NotNull String userEmail, @NotNull UserProfile userProfile) {
+        if (users.containsKey(userEmail))
             return false;
-        users.put(userName, userProfile);
+        users.put(userEmail, userProfile);
         return true;
     }
 
@@ -27,8 +27,8 @@ public class AccountService {
     }
 
     @Nullable
-    public UserProfile getUser(@Nullable String userName) {
-        return users.get(userName);
+    public UserProfile getUser(@Nullable String userEmail) {
+        return users.get(userEmail);
     }
 
     @Nullable
@@ -36,7 +36,15 @@ public class AccountService {
         return sessions.get(sessionId);
     }
 
+
     public int countUsers(){return users.size();}
 
     public int countSessions(){return sessions.size();}
+
+    @Nullable
+    public UserProfile deleteSessions(String sessionId) {
+        return sessions.remove(sessionId);
+    }
+
+
 }

@@ -28,26 +28,21 @@ public class SignInServlet extends HttpServlet {
     @Override
     public void doGet(@NotNull HttpServletRequest request,
                       @NotNull HttpServletResponse response) throws ServletException, IOException {
-        String name = request.getParameter("name");
-        String password = request.getParameter("password");
-
-        response.setStatus(HttpServletResponse.SC_OK);
-
+        response.setCharacterEncoding("utf-8");
         Map<String, Object> pageVariables = new HashMap<>();
-
-        UserProfile profile = accountService.getUser(name);
-        if (profile != null && profile.getPassword().equals(password)) {
-            pageVariables.put("loginStatus", "Login passed");
-        } else {
-            pageVariables.put("loginStatus", "Wrong login/password");
-        }
 
         try (PrintWriter pw = response.getWriter()) {
             if (pw != null) {
-                pw.println(PageGenerator.getPage("authstatus.html", pageVariables));
+                if (accountService.getSessions(request.getSession().getId()) != null) {
+                    pageVariables.put("signInStatus", "User already login");
+                    pw.println(PageGenerator.getPage("signinstatus.html", pageVariables));;
+                } else {
+                    pw.println(PageGenerator.getPage("signin.html", pageVariables));
+                }
             }
         }
 
+        response.setStatus(HttpServletResponse.SC_OK);
     }
 
     @Override
@@ -56,16 +51,35 @@ public class SignInServlet extends HttpServlet {
         String email = request.getParameter("email");
         String password = request.getParameter("password");
 
-        response.setStatus(HttpServletResponse.SC_OK);
-
         Map<String, Object> pageVariables = new HashMap<>();
-        pageVariables.put("email", email == null ? "" : email);
-        pageVariables.put("password", password == null ? "" : password);
+//        pageVariables.put("email", email == null ? "" : email);
+//        pageVariables.put("password", password == null ? "" : password);
+//
+//        try (PrintWriter pw = response.getWriter()) {
+//            if (pw != null) {
+//                pw.println(PageGenerator.getPage("authresponse.txt", pageVariables));
+//            }
+//        }
+
+        if (password == null || email == null) {
+            pageVariables.put("signInStatus", "Input error");
+        } else {
+            UserProfile profile = accountService.getUser(email);
+
+            if (profile != null && profile.getPassword().equals(password)) {
+                accountService.addSessions(request.getSession().getId(), profile);
+                pageVariables.put("signInStatus", "Success login");
+            } else {
+                pageVariables.put("signInStatus", "Password error or user not found");
+            }
+        }
 
         try (PrintWriter pw = response.getWriter()) {
             if (pw != null) {
-                pw.println(PageGenerator.getPage("authresponse.txt", pageVariables));
+                pw.println(PageGenerator.getPage("signinstatus.html", pageVariables));
             }
         }
+
+        response.setStatus(HttpServletResponse.SC_OK);
     }
 }
