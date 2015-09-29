@@ -14,19 +14,18 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class AdminPageServlet extends HttpServlet {
-    public static final String ADMIN_PAGE_URL = "/admin";
+
     @NotNull
     private AccountService accountService;
 
-    public AdminPageServlet(@NotNull AccountService aS){
-        accountService = aS;
+    public AdminPageServlet(@NotNull AccountService accountService){
+        this.accountService = accountService;
     }
 
     @Override
     public void doGet(@NotNull HttpServletRequest request,
                       @NotNull HttpServletResponse response) throws ServletException, IOException {
         response.setContentType("text/html;charset=utf-8");
-        response.setStatus(HttpServletResponse.SC_OK);
         Map<String, Object> pageVariables = new HashMap<>();
 
         String timeString = request.getParameter("shutdown");
@@ -50,6 +49,7 @@ public class AdminPageServlet extends HttpServlet {
                 pw.println(PageGenerator.getPage("admin/admin.tml", pageVariables));
             }
         }
+        response.setStatus(HttpServletResponse.SC_OK);
     }
 }
 

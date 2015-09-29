@@ -19,19 +19,21 @@ public class PageGenerator {
     @NotNull
     private static final String HTML_DIR = "server_tml";
     @NotNull
-    private static final Configuration CFG = new Configuration();
+    private static final Configuration CONFIGURATION = new Configuration();
 
     @Nullable
     public static String getPage(String filename, Map<String, Object> data) {
         Writer stream = new StringWriter();
         try {
-            Template template = CFG.getTemplate(HTML_DIR + File.separator + filename);
+            Template template = CONFIGURATION.getTemplate(HTML_DIR + File.separator + filename);
             if (template != null) {
                 template.process(data, stream);
             }
         } catch (IOException | TemplateException e) {
             e.printStackTrace();
         }
+
+        //noinspection ObjectToString
         return stream.toString();
     }
 }

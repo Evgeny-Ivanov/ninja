@@ -20,9 +20,15 @@ import javax.servlet.Servlet;
  * @author v.chibrikov
  */
 public class Main {
+    public static final String ADMIN_PAGE_URL = "/admin";
+    public static final String SIGNIN_PAGE_URL = "/api/v1/auth/signin";
+    public static final String SIGNUP_PAGE_URL = "/api/v1/auth/signup";
+    public static final String LOGOUT_PAGE_URL = "/api/v1/auth/logout";
+    public static final String MAINPAGE_PAGE_URL = "/mainpage";
+
     static final int DEFAULT_PORT = 8080;
 
-    public static void main(@NotNull String[] args) throws Exception {
+    public static void main(@NotNull String[] args) {
         int port = DEFAULT_PORT;
 
         if (args.length == 1 && args[0] != null) {
@@ -44,11 +50,11 @@ public class Main {
 
 
         ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
-        context.addServlet(new ServletHolder(signIn), "/api/v1/auth/signin");
-        context.addServlet(new ServletHolder(signUp), "/api/v1/auth/signup");
-        context.addServlet(new ServletHolder(admin), AdminPageServlet.ADMIN_PAGE_URL);
-        context.addServlet(new ServletHolder(logout), "/api/v1/auth/logout");
-        context.addServlet(new ServletHolder(mainPage), "/mainpage");
+        context.addServlet(new ServletHolder(signIn), SIGNIN_PAGE_URL);
+        context.addServlet(new ServletHolder(signUp), SIGNUP_PAGE_URL);
+        context.addServlet(new ServletHolder(admin), ADMIN_PAGE_URL);
+        context.addServlet(new ServletHolder(logout), LOGOUT_PAGE_URL);
+        context.addServlet(new ServletHolder(mainPage), MAINPAGE_PAGE_URL);
 
         ResourceHandler resource_handler = new ResourceHandler();
         resource_handler.setDirectoriesListed(true);
@@ -60,7 +66,15 @@ public class Main {
         Server server = new Server(port);
         server.setHandler(handlers);
 
-        server.start();
-        server.join();
+        try {
+            server.start();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        try {
+            server.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 }

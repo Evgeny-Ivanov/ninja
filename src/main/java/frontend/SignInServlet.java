@@ -58,14 +58,6 @@ public class SignInServlet extends HttpServlet {
         String password = request.getParameter("password");
 
         Map<String, Object> pageVariables = new HashMap<>();
-//        pageVariables.put("email", email == null ? "" : email);
-//        pageVariables.put("password", password == null ? "" : password);
-//
-//        try (PrintWriter pw = response.getWriter()) {
-//            if (pw != null) {
-//                pw.println(PageGenerator.getPage("authresponse.txt", pageVariables));
-//            }
-//        }
 
         HttpSession hs = request.getSession();
         if (hs == null || hs.getId() == null) {
