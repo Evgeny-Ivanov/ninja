@@ -67,7 +67,7 @@ public class SignUpServlet extends HttpServlet {
             if (pw != null) {
                 if (accountService.getSessions(hs.getId()) != null) {
                     pageVariables.put("signUpStatus", "User already login");
-                    pw.println(PageGenerator.getPage("signupstatus.html", pageVariables));;
+                    pw.println(PageGenerator.getPage("signupstatus.html", pageVariables));
                 } else {
                     pw.println(PageGenerator.getPage("signup.html", pageVariables));
                 }
