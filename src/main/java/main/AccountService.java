@@ -52,4 +52,7 @@ public class AccountService {
     }
 
 
+    public void deleteAllSessions() {
+        sessions.clear();
+    }
 }

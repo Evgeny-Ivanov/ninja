@@ -4,13 +4,10 @@ import main.AccountService;
 import main.UserProfile;
 import org.jetbrains.annotations.NotNull;
 import org.junit.Assert;
-import org.junit.BeforeClass;
+import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Mock;
 import org.mockito.Mockito;
 
-import javax.servlet.Servlet;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -37,6 +34,17 @@ public class SignUpServletTest  extends Mockito {
 
     @NotNull
     private final SignUpServlet servlet = new SignUpServlet(accountService);
+
+    @NotNull
+    private final UserProfile testUser = new UserProfile("testLogin", "testPassword", "test@mail.ru");
+
+    @NotNull
+    private final String testSessionId = "sissionId-1";
+
+    @Before
+    public void setUp() throws Exception {
+        accountService.deleteAllSessions();
+    }
 
     private void testSignUpMethodPost(String name, String email, String password, String responseMessage) throws Exception {
         StringWriter sw = new StringWriter();
@@ -65,16 +73,14 @@ public class SignUpServletTest  extends Mockito {
         Assert.assertTrue(sw.toString().contains(responseMessage));
     }
 
-    private void testSignUpMethodGet(Boolean bool, String strSessionId, String responseMessage) throws Exception {
+    private void testSignUpMethodGet(String strSessionId, String responseMessage, Boolean isResponseMessage) throws Exception {
         StringWriter sw = new StringWriter();
         PrintWriter pw = new PrintWriter(sw);
 
         //noinspection ConstantConditions
         when(response.getWriter()).thenReturn(pw);
-
         //noinspection ConstantConditions
         when(request.getSession()).thenReturn(mock(HttpSession.class));
-
         //noinspection ConstantConditions
         when(request.getSession().getId()).thenReturn(strSessionId);
 
@@ -84,26 +90,45 @@ public class SignUpServletTest  extends Mockito {
         verify(request.getSession(), atLeastOnce()).getId();
 
         //noinspection ConstantConditions
-        assertEquals(bool, sw.toString().contains(responseMessage));
+        assertEquals(isResponseMessage, sw.toString().contains(responseMessage));
+    }
 
+    @Test
+    public void testDoPost() throws Exception {
+        testSignUpMethodPost(testUser.getName(), testUser.getEmail(), testUser.getPassword(), "New user created");
+    }
+
+    @Test
+    public void testDoPostReplayEmail() throws Exception {
+        accountService.addUser(testUser.getEmail(), testUser);
+        testSignUpMethodPost("testName2", testUser.getEmail(), "testPassword2", "already exists");
     }
 
 
     @Test
-    public void testDoPost() throws Exception {
-        testSignUpMethodPost("testName1", "testEmail1", "testPassword1", "New user created");
-        testSignUpMethodPost("testName2", "testEmail1", "testPassword2", "already exists");
+    public void testDoPostNullName() throws Exception {
         testSignUpMethodPost(null, "testEmail1", "testPassword2", "Input error");
+    }
+
+    @Test
+    public void testDoPostNullEmail() throws Exception {
         testSignUpMethodPost("testName1", null, "testPassword1", "Input error");
+    }
+
+    @Test
+    public void testDoPostNullPassword() throws Exception {
         testSignUpMethodPost("testName1", "testEmail1", null, "Input error");
     }
 
     @Test
     public void testDoGet() throws Exception {
-        String strSessionId = "sessionId-1";
-        testSignUpMethodGet(false, strSessionId, "User already login");
-        accountService.addSessions(strSessionId, new UserProfile("testname", "testemail", "testpassword"));
-        testSignUpMethodGet(true, strSessionId, "User already login");
+        testSignUpMethodGet(testSessionId, "User already login", false);
+    }
+
+    @Test
+    public void testDoGetReplayLogin() throws Exception {
+        accountService.addSessions(testSessionId, testUser);
+        testSignUpMethodGet(testSessionId, "User already login", true);
     }
 
 }

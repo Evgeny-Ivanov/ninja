@@ -71,10 +71,13 @@ public class Main {
         } catch (Exception e) {
             e.printStackTrace();
         }
+
         try {
             server.join();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+
+        System.exit(0);
     }
 }
