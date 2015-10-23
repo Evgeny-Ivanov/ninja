@@ -18,6 +18,7 @@ public class AccountService {
     public boolean addUser(@NotNull String userEmail, @NotNull UserProfile userProfile) {
         if (users.containsKey(userEmail))
             return false;
+
         users.put(userEmail, userProfile);
         return true;
     }
@@ -37,9 +38,13 @@ public class AccountService {
     }
 
 
-    public int countUsers(){return users.size();}
+    public int countUsers() {
+        return users.size();
+    }
 
-    public int countSessions(){return sessions.size();}
+    public int countSessions() {
+        return sessions.size();
+    }
 
     @Nullable
     public UserProfile deleteSessions(@Nullable String sessionId) {
