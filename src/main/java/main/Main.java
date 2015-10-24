@@ -26,7 +26,7 @@ public class Main {
     public static final String LOGOUT_PAGE_URL = "/api/v1/auth/logout";
     public static final String MAINPAGE_PAGE_URL = "/mainpage";
 
-    static final int DEFAULT_PORT = 8080;
+    public static final int DEFAULT_PORT = 8080;
 
     public static void main(@NotNull String[] args) {
         int port = DEFAULT_PORT;
@@ -42,12 +42,13 @@ public class Main {
 
         AccountService accountService = new AccountService();
 
+        Server server = new Server(port);
+
         Servlet signIn = new SignInServlet(accountService);
         Servlet signUp = new SignUpServlet(accountService);
-        Servlet admin = new AdminPageServlet(accountService);
         Servlet logout = new LogoutServlet(accountService);
+        Servlet admin = new AdminPageServlet(accountService,server);
         Servlet mainPage = new MainPageServlet();
-
 
         ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
         context.addServlet(new ServletHolder(signIn), SIGNIN_PAGE_URL);
@@ -63,7 +64,6 @@ public class Main {
         HandlerList handlers = new HandlerList();
         handlers.setHandlers(new Handler[]{resource_handler, context});
 
-        Server server = new Server(port);
         server.setHandler(handlers);
 
         try {
