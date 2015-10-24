@@ -38,6 +38,12 @@ public class ChatWebSocket {
         setSession(session);
     }
 
+    @OnWebSocketClose
+    public void onClose(int statusCode, String reason) {
+        users.remove(this);
+    }
+
+
     public Session getSession() {
         return session;
     }
@@ -46,9 +52,5 @@ public class ChatWebSocket {
         this.session = session;
     }
 
-    @OnWebSocketClose
-    public void onClose(int statusCode, String reason) {
-        users.remove(this);
-    }
 }
 

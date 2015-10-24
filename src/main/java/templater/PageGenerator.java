@@ -17,7 +17,7 @@ import java.util.Map;
  */
 public class PageGenerator {
     @NotNull
-    private static final String HTML_DIR = "server_tml";
+    private static final String HTML_DIR = "templates";
     @NotNull
     private static final Configuration CONFIGURATION = new Configuration();
 

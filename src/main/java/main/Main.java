@@ -26,6 +26,8 @@ public class Main {
     public static final String SIGNUP_PAGE_URL = "/api/v1/auth/signup";
     public static final String LOGOUT_PAGE_URL = "/api/v1/auth/logout";
     public static final String MAINPAGE_PAGE_URL = "/mainpage";
+    public static final String CHAT_SOCKET_URL = "/chat";
+
 
     static final int DEFAULT_PORT = 8080;
 
@@ -56,7 +58,7 @@ public class Main {
         context.addServlet(new ServletHolder(admin), ADMIN_PAGE_URL);
         context.addServlet(new ServletHolder(logout), LOGOUT_PAGE_URL);
         context.addServlet(new ServletHolder(mainPage), MAINPAGE_PAGE_URL);
-        context.addServlet(new ServletHolder(new WebSocketChatServlet()), "/chat");
+        context.addServlet(new ServletHolder(new WebSocketChatServlet()), CHAT_SOCKET_URL);
 
 
         ResourceHandler resource_handler = new ResourceHandler();
