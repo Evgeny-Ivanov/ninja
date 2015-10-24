@@ -15,6 +15,9 @@ import org.eclipse.jetty.servlet.ServletHolder;
 import org.jetbrains.annotations.NotNull;
 
 import javax.servlet.Servlet;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.util.Properties;
 
 /**
  * @author v.chibrikov
@@ -26,10 +29,21 @@ public class Main {
     public static final String LOGOUT_PAGE_URL = "/api/v1/auth/logout";
     public static final String MAINPAGE_PAGE_URL = "/mainpage";
 
-    public static final int DEFAULT_PORT = 8080;
+    public static final String PROPERTIES_FILE = "cfg/server.properties";
 
     public static void main(@NotNull String[] args) {
-        int port = DEFAULT_PORT;
+        int port;
+        String host;
+
+        try (final FileInputStream fis = new FileInputStream(PROPERTIES_FILE)) {
+            final Properties properties = new Properties();
+            properties.load(fis);
+
+            host = properties.getProperty("host");
+            port = new Integer(properties.getProperty("port"));//Илья , я незнаю что с этим делать
+        } catch (IOException e) {
+            return;
+        }
 
         if (args.length == 1 && args[0] != null) {
             Integer newport = Integer.valueOf(args[0]);
@@ -57,6 +71,8 @@ public class Main {
         context.addServlet(new ServletHolder(logout), LOGOUT_PAGE_URL);
         context.addServlet(new ServletHolder(mainPage), MAINPAGE_PAGE_URL);
 
+        context.setVirtualHosts(new String[]{host});
+
         ResourceHandler resource_handler = new ResourceHandler();
         resource_handler.setDirectoriesListed(true);
         resource_handler.setResourceBase("public_html");
@@ -78,4 +94,6 @@ public class Main {
             e.printStackTrace();
         }
     }
+
+
 }

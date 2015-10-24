@@ -20,8 +20,9 @@ import static org.junit.Assert.*;
  */
 public class AdminPageServletTest extends Mockito {
 
+    private static final int PORT = 8080;
     @NotNull
-    private final Server server = new Server(Main.DEFAULT_PORT);
+    private final Server server = new Server(PORT);
     @NotNull
     private final AccountService accountService = new AccountService();
     @NotNull
