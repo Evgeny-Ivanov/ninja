@@ -5,6 +5,7 @@ import org.eclipse.jetty.websocket.servlet.ServletUpgradeResponse;
 import org.eclipse.jetty.websocket.servlet.WebSocketCreator;
 
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -21,7 +22,7 @@ public class ChatWebSocketCreator implements WebSocketCreator {
     @Override
     public Object createWebSocket(ServletUpgradeRequest req, ServletUpgradeResponse resp) {
         ChatWebSocket socket = new ChatWebSocket(users);
-        System.out.println("ChatWebSocketCreator: createWebSocket");
+        System.out.println("\t ChatWebSocketCreator: createWebSocket");
         return socket;
     }
 }
