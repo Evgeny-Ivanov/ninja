@@ -70,7 +70,7 @@ public class SignUpServletTest  extends Mockito {
         verify(request, atLeastOnce()).getParameter("password");
 
         //noinspection ConstantConditions
-        Assert.assertTrue(sw.toString().contains(responseMessage));
+        assertTrue(sw.toString().contains(responseMessage));
     }
 
     private void testSignUpMethodGet(String strSessionId, String responseMessage, Boolean isResponseMessage) throws Exception {
