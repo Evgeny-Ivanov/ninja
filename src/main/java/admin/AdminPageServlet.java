@@ -1,6 +1,7 @@
 package admin;
 import helper.TimeHelper;
 import main.AccountService;
+import org.eclipse.jetty.server.Server;
 import org.jetbrains.annotations.NotNull;
 import templater.PageGenerator;
 
@@ -18,13 +19,17 @@ public class AdminPageServlet extends HttpServlet {
     @NotNull
     private AccountService accountService;
 
-    public AdminPageServlet(@NotNull AccountService accountService){
+    @NotNull
+    private  Server server;
+
+    public AdminPageServlet(@NotNull AccountService accountService, @NotNull Server server){
         this.accountService = accountService;
+        this.server = server;
     }
 
     @Override
     public void doGet(@NotNull HttpServletRequest request,
-                      @NotNull HttpServletResponse response) throws ServletException, IOException {
+                      @NotNull HttpServletResponse response) throws ServletException, IOException{
         response.setContentType("text/html;charset=utf-8");
         Map<String, Object> pageVariables = new HashMap<>();
 
@@ -37,7 +42,11 @@ public class AdminPageServlet extends HttpServlet {
             System.out.print("Server will be down after: "+ timeMS + " ms");
             TimeHelper.sleep(timeMS);
             System.out.print("\nShutdown");
-            System.exit(0);
+            try {
+                server.stop();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
 
         pageVariables.put("status", "run");

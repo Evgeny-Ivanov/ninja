@@ -16,6 +16,9 @@ import org.eclipse.jetty.servlet.ServletHolder;
 import org.jetbrains.annotations.NotNull;
 
 import javax.servlet.Servlet;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.util.Properties;
 
 /**
  * @author v.chibrikov
@@ -29,10 +32,21 @@ public class Main {
     public static final String CHAT_SOCKET_URL = "/chat";
 
 
-    static final int DEFAULT_PORT = 8080;
+    public static final String PROPERTIES_FILE = "cfg/server.properties";
 
     public static void main(@NotNull String[] args) {
-        int port = DEFAULT_PORT;
+        int port;
+        String host;
+
+        try (final FileInputStream fis = new FileInputStream(PROPERTIES_FILE)) {
+            final Properties properties = new Properties();
+            properties.load(fis);
+
+            host = properties.getProperty("host");
+            port = new Integer(properties.getProperty("port"));//Илья , я незнаю что с этим делать
+        } catch (IOException e) {
+            return;
+        }
 
         if (args.length == 1 && args[0] != null) {
             Integer newport = Integer.valueOf(args[0]);
@@ -45,12 +59,13 @@ public class Main {
 
         AccountService accountService = new AccountService();
 
+        Server server = new Server(port);
+
         Servlet signIn = new SignInServlet(accountService);
         Servlet signUp = new SignUpServlet(accountService);
-        Servlet admin = new AdminPageServlet(accountService);
         Servlet logout = new LogoutServlet(accountService);
+        Servlet admin = new AdminPageServlet(accountService,server);
         Servlet mainPage = new MainPageServlet();
-
 
         ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
         context.addServlet(new ServletHolder(signIn), SIGNIN_PAGE_URL);
@@ -61,6 +76,8 @@ public class Main {
         context.addServlet(new ServletHolder(new WebSocketChatServlet()), CHAT_SOCKET_URL);
 
 
+        context.setVirtualHosts(new String[]{host});
+
         ResourceHandler resource_handler = new ResourceHandler();
         resource_handler.setDirectoriesListed(true);
         resource_handler.setResourceBase("static");
@@ -68,7 +85,6 @@ public class Main {
         HandlerList handlers = new HandlerList();
         handlers.setHandlers(new Handler[]{resource_handler, context});
 
-        Server server = new Server(port);
         server.setHandler(handlers);
 
         try {
@@ -83,4 +99,6 @@ public class Main {
             e.printStackTrace();
         }
     }
+
+
 }
