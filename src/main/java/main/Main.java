@@ -13,6 +13,7 @@ import org.eclipse.jetty.server.handler.HandlerList;
 import org.eclipse.jetty.server.handler.ResourceHandler;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
+import org.eclipse.jetty.websocket.servlet.WebSocketServlet;
 import org.jetbrains.annotations.NotNull;
 
 import javax.servlet.Servlet;
@@ -35,7 +36,7 @@ public class Main {
     public static final String PROPERTIES_FILE = "cfg/server.properties";
 
     public static void main(@NotNull String[] args) {
-        int port;
+        String port;
         String host;
 
         try (final FileInputStream fis = new FileInputStream(PROPERTIES_FILE)) {
@@ -43,40 +44,33 @@ public class Main {
             properties.load(fis);
 
             host = properties.getProperty("host");
-            port = new Integer(properties.getProperty("port"));//Илья , я незнаю что с этим делать
+            port = properties.getProperty("port");
         } catch (IOException e) {
             return;
         }
 
-        if (args.length == 1 && args[0] != null) {
-            Integer newport = Integer.valueOf(args[0]);
-            if (newport != null) {
-                port = newport;
-            }
-        }
-
-        System.out.println("Starting at port: " + String.valueOf(port));
+        System.out.println("Starting at port: " + port);
 
         AccountService accountService = new AccountService();
 
-        Server server = new Server(port);
+        Server server = new Server(new Integer(port));
 
         Servlet signIn = new SignInServlet(accountService);
         Servlet signUp = new SignUpServlet(accountService);
         Servlet logout = new LogoutServlet(accountService);
-        Servlet admin = new AdminPageServlet(accountService,server);
+        Servlet admin = new AdminPageServlet(accountService, server);
         Servlet mainPage = new MainPageServlet();
+        WebSocketServlet chat = new WebSocketChatServlet();
 
         ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
+        context.setVirtualHosts(new String[]{host});
+
         context.addServlet(new ServletHolder(signIn), SIGNIN_PAGE_URL);
         context.addServlet(new ServletHolder(signUp), SIGNUP_PAGE_URL);
         context.addServlet(new ServletHolder(admin), ADMIN_PAGE_URL);
         context.addServlet(new ServletHolder(logout), LOGOUT_PAGE_URL);
         context.addServlet(new ServletHolder(mainPage), MAINPAGE_PAGE_URL);
-        context.addServlet(new ServletHolder(new WebSocketChatServlet()), CHAT_SOCKET_URL);
-
-
-        context.setVirtualHosts(new String[]{host});
+        context.addServlet(new ServletHolder(chat), CHAT_SOCKET_URL);
 
         ResourceHandler resource_handler = new ResourceHandler();
         resource_handler.setDirectoriesListed(true);
@@ -99,6 +93,4 @@ public class Main {
             e.printStackTrace();
         }
     }
-
-
 }
