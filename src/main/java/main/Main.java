@@ -60,7 +60,7 @@ public class Main {
         Servlet logout = new LogoutServlet(accountService);
         Servlet admin = new AdminPageServlet(accountService, server);
         Servlet mainPage = new MainPageServlet();
-        WebSocketServlet chat = new WebSocketChatServlet();
+        WebSocketServlet chat = new WebSocketChatServlet(host, port);
 
         ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
         context.setVirtualHosts(new String[]{host});

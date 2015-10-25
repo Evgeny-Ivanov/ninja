@@ -25,6 +25,13 @@ import java.util.Map;
 public class WebSocketChatServlet extends WebSocketServlet {
 
     private final static int LOGOUT_TIME = 10 * 60 * 1000;
+    private String host;
+    private String port;
+
+    public WebSocketChatServlet(String host, String port) {
+        this.host = host;
+        this.port = port;
+    }
 
     @Override
     public void configure(WebSocketServletFactory factory) {
@@ -36,10 +43,8 @@ public class WebSocketChatServlet extends WebSocketServlet {
     @Override
     public void doGet(@NotNull HttpServletRequest request,
                       @NotNull HttpServletResponse response) throws ServletException, IOException {
-        //super.doGet(request, response);
         response.setCharacterEncoding("utf-8");
-        Map<String, Object> pageVariables1 = new HashMap<>();
-        Map<String, Object> pageVariables2 = new HashMap<>();
+        Map<String, Object> pageVariables = new HashMap<>();
 
 
         HttpSession hs = request.getSession();
@@ -47,15 +52,17 @@ public class WebSocketChatServlet extends WebSocketServlet {
             return;
         }
 
-        if (hs.getAttribute("name") == null || hs.getAttribute("name").equals("Incognitto")) {
+        if (hs.getAttribute("name") == null /* || hs.getAttribute("name").equals("Incognitto") */) {
             return;
         }
 
         try (PrintWriter pw = response.getWriter()) {
             if (pw != null) {
-                pageVariables2.put("name", hs.getAttribute("name"));
-                pageVariables1.put("htmlCodeChat", new String(PageGenerator.getPage("chat.html", pageVariables2)).replace("\"", "'"));
-                pw.println(PageGenerator.getPage("chatIframe.html", pageVariables1));
+                pageVariables.put("name", hs.getAttribute("name"));
+                pageVariables.put("host", host);
+                pageVariables.put("port", port);
+                response.setContentType("text/html");
+                pw.println(PageGenerator.getPage("chat.html", pageVariables));
             }
         }
 

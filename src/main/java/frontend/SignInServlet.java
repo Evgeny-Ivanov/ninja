@@ -54,6 +54,8 @@ public class SignInServlet extends HttpServlet {
     @Override
     public void doPost(@NotNull HttpServletRequest request,
                        @NotNull HttpServletResponse response) throws ServletException, IOException {
+        response.setCharacterEncoding("utf-8");
+
         String email = request.getParameter("email");
         String password = request.getParameter("password");
 

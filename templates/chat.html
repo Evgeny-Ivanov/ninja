@@ -6,7 +6,7 @@
         var ws;
 
         init = function () {
-            ws = new WebSocket("ws://127.0.0.1:8080/chat");
+            ws = new WebSocket("ws://${host}:${port}/chat");
 
             ws.onopen = function (event) {
 
@@ -46,8 +46,8 @@
     </div>
 
     <form name="message" action="">
-        <input name="usermsg" type="text" id="message" size="30"/>
-        <input type="button" name="submitmsg" value="Send" onclick="sendMessage();"/>
+        <input name="usermsg" type="text" id="message" size="30" />
+        <input type="button" name="submitmsg" value="Send" onclick="sendMessage();" />
     </form>
 </div>
 </body>
