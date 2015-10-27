@@ -1,5 +1,7 @@
-package chat;
+package game;
 
+import base.AccountService;
+import base.GameServices;
 import base.UrlParameters;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -9,7 +11,6 @@ import org.jetbrains.annotations.NotNull;
 import utils.PageGenerator;
 
 import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -19,54 +20,64 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Created by ilya on 24.10.15.
+ * Created by ilya on 27.10.15.
  */
-public class WebSocketChatServlet extends WebSocketServlet {
+public class WebSocketGameServlet extends WebSocketServlet {
     @SuppressWarnings("ConstantConditions")
     @NotNull
-    static final Logger logger = LogManager.getLogger(WebSocketChatServlet.class);
-    private static final int LOGOUT_TIME = 60 * 1000;
+    static final Logger logger = LogManager.getLogger(WebSocketGameServlet.class);
+    private static final int IDLE_TIME = 60 * 1000;
+    @NotNull
+    private GameServices gameServices;
+    @NotNull
+    private UrlParameters gameUrlParameters;
     @NotNull
     private UrlParameters chatUrlParameters;
 
-    public WebSocketChatServlet(@NotNull UrlParameters chatUrlParameters) {
+    public WebSocketGameServlet(@NotNull GameServices gameServices,
+                                @NotNull UrlParameters gameUrlParameters,
+                                @NotNull UrlParameters chatUrlParameters) {
+        this.gameServices = gameServices;
+        this.gameUrlParameters = gameUrlParameters;
         this.chatUrlParameters = chatUrlParameters;
     }
 
     @Override
     public void configure(WebSocketServletFactory factory) {
-        factory.getPolicy().setIdleTimeout(LOGOUT_TIME);
-        factory.setCreator(new ChatWebSocketCreator());
-        logger.info("call WebSocketChatServlet.configure");
+        factory.getPolicy().setIdleTimeout(IDLE_TIME);
+        factory.setCreator(new GameWebSocketCreator(gameServices));
+        logger.info("call WebSocketGameServlet.configure");
+
     }
 
-    @Override
     public void doGet(@NotNull HttpServletRequest request,
                       @NotNull HttpServletResponse response) throws ServletException, IOException {
-        response.setContentType("text/html");
         response.setCharacterEncoding("utf-8");
+        response.setContentType("text/html;charset=utf-8");
 
         HttpSession hs = request.getSession();
         if (hs == null || hs.getId() == null) {
             return;
         }
-
         if (hs.getAttribute("name") == null || hs.getAttribute("name").equals("Incognitto")) {
             return;
         }
 
         Map<String, Object> pageVariables = new HashMap<>();
-
         pageVariables.put("name", hs.getAttribute("name"));
-        pageVariables.put("host", chatUrlParameters.getHost());
-        pageVariables.put("port", chatUrlParameters.getPort());
-        pageVariables.put("socket_url", chatUrlParameters.getSocketUrl());
+        pageVariables.put("host_game", gameUrlParameters.getHost());
+        pageVariables.put("port_game", gameUrlParameters.getPort());
+        pageVariables.put("socket_url_game", gameUrlParameters.getSocketUrl());
+        pageVariables.put("host_chat", chatUrlParameters.getHost());
+        pageVariables.put("port_chat", chatUrlParameters.getPort());
+        pageVariables.put("socket_url_chat", chatUrlParameters.getSocketUrl());
 
         try (PrintWriter pw = response.getWriter()) {
             if (pw != null) {
-                pw.println(PageGenerator.getPage("chat.html", pageVariables));
+                pw.println(PageGenerator.getPage("game.html", pageVariables));
             }
         }
+
 
         response.setStatus(HttpServletResponse.SC_OK);
     }

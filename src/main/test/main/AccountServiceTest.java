@@ -1,5 +1,7 @@
 package main;
 
+import base.AccountService;
+import base.UserProfile;
 import org.jetbrains.annotations.NotNull;
 import org.junit.Before;
 import org.junit.Test;

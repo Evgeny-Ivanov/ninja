@@ -1,9 +1,8 @@
 package frontend;
 
-import main.AccountService;
-import main.UserProfile;
+import base.AccountService;
+import base.UserProfile;
 import org.jetbrains.annotations.NotNull;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;

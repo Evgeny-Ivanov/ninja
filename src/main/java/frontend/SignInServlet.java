@@ -1,7 +1,7 @@
 package frontend;
 
-import main.AccountService;
-import main.UserProfile;
+import base.AccountService;
+import base.UserProfile;
 import org.jetbrains.annotations.NotNull;
 import utils.PageGenerator;
 

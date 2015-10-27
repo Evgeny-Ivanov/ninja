@@ -7,11 +7,11 @@
         var started = false;
         var finished = false;
 
-        var myName = "${myName}";
+        var myName = "${name}";
         var enemyName = "";
 
         init = function () {
-            ws = new WebSocket("ws://localhost:8080/gameplay");
+            ws = new WebSocket("ws://${host_game}:${port_game}${socket_url_game}");
 
             ws.onopen = function (event) {
 
@@ -22,6 +22,7 @@
                 if(data.status == "start"){
                     document.getElementById("wait").style.display = "none";
                     document.getElementById("gameplay").style.display = "block";
+                    document.getElementById("chat").style.display = "block";
                     document.getElementById("enemyName").innerHTML = data.enemyName;
                 }
 
@@ -29,13 +30,14 @@
                    document.getElementById("gameOver").style.display = "block";
                    document.getElementById("gameplay").style.display = "none";
 
+
                    if(data.win)
                         document.getElementById("win").innerHTML = "winner!";
                    else
                         document.getElementById("win").innerHTML = "loser!";
                 }
 
-                if(data.status == "increment" && data.name == "${myName}"){
+                if(data.status == "increment" && data.name == "${name}"){
                     document.getElementById("myScore").innerHTML = data.score;
                 }
 
@@ -58,31 +60,39 @@
     </script>
 </head>
 <body onload="init();">
-<div id="body">
-    <div id="hello">
-        <p>Hello, ${myName}!</p>
-    </div>
 
-    <div id="wait">
-        <p>Prepare yourself. Wait for enemy!</p>
-    </div>
-
-    <div id="gameplay" style="display: none">
-        <div id="score">
-            <p>${myName}: <span id="myScore">0</span></p>
-
-            <p><span id="enemyName"></span>: <span id="enemyScore">0</span></p>
+    <div id="body">
+        <div id="hello">
+            <p>Hello, ${name}!</p>
         </div>
+        <tr>
+            <td>
+            <div id="wait">
+                <p>Prepare yourself. Wait for enemy!</p>
+            </div>
 
-        <form name="gamePlay" action="">
-            <input type="button" name="submit" value="Press to win!" onclick="sendMessage();"/>
-        </form>
+            <div id="gameplay" style="display: none">
+                <div id="score">
+                    <p>${name}: <span id="myScore">0</span></p>
+
+                    <p><span id="enemyName"></span>: <span id="enemyScore">0</span></p>
+                </div>
+
+                <form name="gamePlay" action="">
+                    <input type="button" name="submit" value="Press to win!" onclick="sendMessage();"/>
+                </form>
+            </div>
+
+            <div id="gameOver" style="display: none">
+                <p>Game over! You are <span id="win"></span></p>
+            </div>
+    </td>
+    <td>
+        <iframe id="chat" style="display: none" src="${socket_url_chat}" width="400" height="400" align="right">"Это Женя виноват, что чат не работает</iframe>
+    </td>
+</tr>
+
     </div>
 
-    <div id="gameOver" style="display: none">
-        <p>Game over! You are <span id="win"></span></p>
-    </div>
-
-</div>
 </body>
 </html>

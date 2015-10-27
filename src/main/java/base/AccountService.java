@@ -1,4 +1,4 @@
-package main;
+package base;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -54,5 +54,18 @@ public class AccountService {
 
     public void deleteAllSessions() {
         sessions.clear();
+    }
+
+    public void autoFullUsers() {
+        UserProfile testUser1 = new UserProfile("Егор", "123", "test1@mail.ru");
+        addUser(testUser1.getEmail(), testUser1);
+        UserProfile testUser2 = new UserProfile("Илья", "123", "test2@mail.ru");
+        addUser(testUser2.getEmail(), testUser2);
+        UserProfile testUser3 = new UserProfile("Женя", "123", "test3@mail.ru");
+        addUser(testUser3.getEmail(), testUser3);
+        UserProfile testUser4 = new UserProfile("Дмитрий", "123", "test4@mail.ru");
+        addUser(testUser4.getEmail(), testUser4);
+        UserProfile testUser5 = new UserProfile("Константин", "123", "test5@mail.ru");
+        addUser(testUser5.getEmail(), testUser5);
     }
 }

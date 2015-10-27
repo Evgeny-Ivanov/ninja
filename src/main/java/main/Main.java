@@ -2,6 +2,11 @@ package main;
 
 
 import admin.AdminPageServlet;
+import base.AccountService;
+import base.GameServices;
+import base.UrlParameters;
+import base.UserProfile;
+import game.*;
 import chat.WebSocketChatServlet;
 import frontend.LogoutServlet;
 import frontend.MainPageServlet;
@@ -27,14 +32,18 @@ import java.util.Properties;
  * @author v.chibrikov
  */
 public class Main {
-    static final Logger logger = LogManager.getLogger(WebSocketChatServlet.class);
+    @SuppressWarnings("ConstantConditions")
+    @NotNull
+    static final Logger logger = LogManager.getLogger(Main.class);
 
     public static final String ADMIN_PAGE_URL = "/admin";
     public static final String SIGNIN_PAGE_URL = "/api/v1/auth/signin";
     public static final String SIGNUP_PAGE_URL = "/api/v1/auth/signup";
     public static final String LOGOUT_PAGE_URL = "/api/v1/auth/logout";
     public static final String MAINPAGE_PAGE_URL = "/mainpage";
-    public static final String CHAT_SOCKET_URL = "/chat";
+
+    public static final String CHAT_SOCKET_URL = "/chat1";
+    public static final String GAME_SOCKET_URL = "/gameplay1";
 
     public static final String PROPERTIES_FILE = "cfg/server.properties";
 
@@ -61,14 +70,19 @@ public class Main {
         logger.info("Host: {} Port: {}", host, port);
 
         Server server = new Server(new Integer(port));
+        UrlParameters chatUrlParameters = new UrlParameters(host, port, CHAT_SOCKET_URL);
+        UrlParameters gameUrlParameters = new UrlParameters(host, port, GAME_SOCKET_URL);
         AccountService accountService = new AccountService();
+        accountService.autoFullUsers();
+        GameServices gameServices = new GameServices(accountService);
 
         Servlet signIn = new SignInServlet(accountService);
         Servlet signUp = new SignUpServlet(accountService);
         Servlet logout = new LogoutServlet(accountService);
         Servlet admin = new AdminPageServlet(accountService, server);
         Servlet mainPage = new MainPageServlet();
-        WebSocketServlet chat1 = new WebSocketChatServlet(host, port, CHAT_SOCKET_URL);
+        WebSocketServlet chat1 = new WebSocketChatServlet(chatUrlParameters);
+        WebSocketServlet game1 = new WebSocketGameServlet(gameServices, gameUrlParameters, chatUrlParameters);
 
         ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
         context.setVirtualHosts(new String[]{host});
@@ -79,6 +93,7 @@ public class Main {
         context.addServlet(new ServletHolder(logout), LOGOUT_PAGE_URL);
         context.addServlet(new ServletHolder(mainPage), MAINPAGE_PAGE_URL);
         context.addServlet(new ServletHolder(chat1), CHAT_SOCKET_URL);
+        context.addServlet(new ServletHolder(game1), GAME_SOCKET_URL);
 
         ResourceHandler resource_handler = new ResourceHandler();
         resource_handler.setDirectoriesListed(true);
@@ -92,13 +107,10 @@ public class Main {
         try {
             server.start();
         } catch (Exception e) {
+            logger.error("Server isn't started");
             e.printStackTrace();
         }
 
-        try {
-            server.join();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        gameServices.getGameMechanics().run();
     }
 }

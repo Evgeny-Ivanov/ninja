@@ -21,7 +21,7 @@ public class MainPageServlet extends HttpServlet {
     public void doGet(@NotNull HttpServletRequest request,
                       @NotNull HttpServletResponse response) throws ServletException, IOException {
         response.setCharacterEncoding("utf-8");
-        Map<String, Object> pageVariables = new HashMap<>();
+        response.setContentType("text/html;charset=utf-8");
 
         HttpSession hs = request.getSession();
         if (hs == null || hs.getId() == null) {
@@ -30,9 +30,11 @@ public class MainPageServlet extends HttpServlet {
             hs.setAttribute("name", "Incognitto");
         }
 
+        Map<String, Object> pageVariables = new HashMap<>();
+        pageVariables.put("name", hs.getAttribute("name"));
+
         try (PrintWriter pw = response.getWriter()) {
             if (pw != null) {
-                pageVariables.put("name", hs.getAttribute("name"));
                 pw.println(PageGenerator.getPage("mainpage.html", pageVariables));
             }
         }
