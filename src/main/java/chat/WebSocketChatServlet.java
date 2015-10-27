@@ -1,20 +1,17 @@
 package chat;
 
-import main.AccountService;
 import org.eclipse.jetty.websocket.servlet.WebSocketServlet;
 import org.eclipse.jetty.websocket.servlet.WebSocketServletFactory;
 import org.jetbrains.annotations.NotNull;
-import templater.PageGenerator;
+import utils.PageGenerator;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -27,10 +24,12 @@ public class WebSocketChatServlet extends WebSocketServlet {
     private final static int LOGOUT_TIME = 10 * 60 * 1000;
     private String host;
     private String port;
+    private String numberGame;
 
-    public WebSocketChatServlet(String host, String port) {
+    public WebSocketChatServlet(String host, String port, String numberGame) {
         this.host = host;
         this.port = port;
+        this.numberGame = numberGame;
     }
 
     @Override
@@ -46,7 +45,6 @@ public class WebSocketChatServlet extends WebSocketServlet {
         response.setCharacterEncoding("utf-8");
         Map<String, Object> pageVariables = new HashMap<>();
 
-
         HttpSession hs = request.getSession();
         if (hs == null || hs.getId() == null) {
             return;
@@ -56,11 +54,13 @@ public class WebSocketChatServlet extends WebSocketServlet {
             return;
         }
 
+        pageVariables.put("name", hs.getAttribute("name"));
+        pageVariables.put("host", host);
+        pageVariables.put("port", port);
+        pageVariables.put("chat_number_game", numberGame);
+
         try (PrintWriter pw = response.getWriter()) {
             if (pw != null) {
-                pageVariables.put("name", hs.getAttribute("name"));
-                pageVariables.put("host", host);
-                pageVariables.put("port", port);
                 response.setContentType("text/html");
                 pw.println(PageGenerator.getPage("chat.html", pageVariables));
             }

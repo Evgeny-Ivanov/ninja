@@ -2,7 +2,7 @@ package frontend;
 
 import main.AccountService;
 import org.jetbrains.annotations.NotNull;
-import templater.PageGenerator;
+import utils.PageGenerator;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -43,10 +43,10 @@ public class LogoutServlet extends HttpServlet {
                 
                 if (accountService.deleteSessions(hs.getId()) == null) {
                     pageVariables.put("logoutStatus", "User already logout");
-                    pw.println(PageGenerator.getPage("logoutstatus.html", pageVariables));
+                    pw.println(PageGenerator.getPage("auth/logoutstatus.html", pageVariables));
                 } else {
                     pageVariables.put("logoutStatus", "User logout success");
-                    pw.println(PageGenerator.getPage("logoutstatus.html", pageVariables));
+                    pw.println(PageGenerator.getPage("auth/logoutstatus.html", pageVariables));
                 }
             }
         }

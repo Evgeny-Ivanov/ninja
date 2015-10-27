@@ -6,7 +6,7 @@
         var ws;
 
         init = function () {
-            ws = new WebSocket("ws://${host}:${port}/chat");
+            ws = new WebSocket("ws://${host}:${port}${chat_number_game}");
 
             ws.onopen = function (event) {
 

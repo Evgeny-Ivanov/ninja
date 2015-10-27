@@ -3,7 +3,7 @@ package frontend;
 import main.AccountService;
 import main.UserProfile;
 import org.jetbrains.annotations.NotNull;
-import templater.PageGenerator;
+import utils.PageGenerator;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -41,9 +41,9 @@ public class SignInServlet extends HttpServlet {
             if (pw != null) {
                 if (accountService.getSessions(hs.getId()) != null) {
                     pageVariables.put("signInStatus", "User already login");
-                    pw.println(PageGenerator.getPage("signinstatus.html", pageVariables));
+                    pw.println(PageGenerator.getPage("auth/signinstatus.html", pageVariables));
                 } else {
-                    pw.println(PageGenerator.getPage("signin.html", pageVariables));
+                    pw.println(PageGenerator.getPage("auth/signin.html", pageVariables));
                 }
             }
         }
@@ -82,7 +82,7 @@ public class SignInServlet extends HttpServlet {
 
         try (PrintWriter pw = response.getWriter()) {
             if (pw != null) {
-                pw.println(PageGenerator.getPage("signinstatus.html", pageVariables));
+                pw.println(PageGenerator.getPage("auth/signinstatus.html", pageVariables));
             }
         }
 

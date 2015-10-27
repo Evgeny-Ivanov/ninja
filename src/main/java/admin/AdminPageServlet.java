@@ -1,9 +1,9 @@
 package admin;
-import helper.TimeHelper;
+import utils.TimeHelper;
 import main.AccountService;
 import org.eclipse.jetty.server.Server;
 import org.jetbrains.annotations.NotNull;
-import templater.PageGenerator;
+import utils.PageGenerator;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
