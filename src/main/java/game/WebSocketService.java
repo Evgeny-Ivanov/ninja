@@ -6,9 +6,11 @@ package game;
 public interface WebSocketService {
     void addUserSocket(GameWebSocket userSocket);
 
-    void notifyAboutScore(GameUser user);
+    void notifyAboutScores(GameUser user);
 
-    void notifyStartGame(GameUser user);
+    void notifyStartGame(GameUser user, int gameTime);
 
     void notifyGameOver(GameUser user, String win);
+
+    void notifyAboutMessage(GameUser gameUser, String message);
 }

@@ -5,7 +5,10 @@ import org.eclipse.jetty.websocket.api.annotations.OnWebSocketClose;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketConnect;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketMessage;
 import org.eclipse.jetty.websocket.api.annotations.WebSocket;
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
 import java.util.Map;
 
@@ -35,7 +38,21 @@ public class GameWebSocket {
 
     @OnWebSocketMessage
     public void onMessage(String data) {
-        gameMechanics.incrementScore(myName);
+        JSONParser parser = new JSONParser();
+        try {
+            JSONObject jsonObj = (JSONObject) parser.parse(data);
+            Object status = jsonObj.get("paramsStr");
+
+            if ("increment".equals(status)) {
+                gameMechanics.incrementScore(myName);
+            } else if ("message".equals(status)) {
+                Object message = jsonObj.get("text");
+                gameMechanics.messageInChat(myName, message.toString());
+            }
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
     }
 
     @OnWebSocketClose
@@ -44,23 +61,29 @@ public class GameWebSocket {
     }
 
 
-    public void startGame(GameUser user) {
+    public void sendStartGame(GameUser user, int gameTime) {
         try {
             JSONObject jsonStart = new JSONObject();
             jsonStart.put("status", "start");
+            jsonStart.put("your_name", user.getName());
+            jsonStart.put("time_of_game", (int)(gameTime / 1000));
 
-            jsonStart.put("name", user.getMyName());
-
-            for (Map.Entry<String, Integer> enemy: user.getEnemyNameAndScore().entrySet()) {
-                jsonStart.put("name", enemy.getKey());
+            JSONArray ar = new JSONArray();
+            for (GameUser player: user.getPlayersGameUsers()) {
+                JSONObject obj = new JSONObject();
+                obj.put("name", player.getName());
+                ar.add(obj);
             }
+            jsonStart.put("players", ar);
+
+
             session.getRemote().sendString(jsonStart.toJSONString());
         } catch (Exception e) {
             System.out.print(e.toString());
         }
     }
 
-    public void gameOver(GameUser user, String nameWinner) {
+    public void sendGameOver(GameUser user, String nameWinner) {
         try {
             JSONObject jsonStart = new JSONObject();
             jsonStart.put("status", "finish");
@@ -72,14 +95,18 @@ public class GameWebSocket {
     }
 
 
-    public void setScore(GameUser user) {
+    public void sendScores(GameUser user) {
         JSONObject jsonStart = new JSONObject();
-        jsonStart.put("status", "score");
+        jsonStart.put("status", "scores");
 
-        for (Map.Entry<String, Integer> enemy: user.getEnemyNameAndScore().entrySet()) {
-            jsonStart.put("name", enemy.getKey());
-            jsonStart.put("score", enemy.getValue());
+        JSONArray ar = new JSONArray();
+        for (GameUser player: user.getPlayersGameUsers()) {
+            JSONObject obj = new JSONObject();
+            obj.put("name", player.getName());
+            obj.put("score", player.getScore());
+            ar.add(obj);
         }
+        jsonStart.put("players", ar);
 
         try {
             session.getRemote().sendString(jsonStart.toJSONString());
@@ -101,4 +128,19 @@ public class GameWebSocket {
     }
 
 
+    public void sendMessage(GameUser user, String message) {
+        JSONObject jsonStart = new JSONObject();
+        jsonStart.put("status", "message");
+
+        for (GameUser player: user.getPlayersGameUsers()) {
+            jsonStart.put("name", player.getName());
+            jsonStart.put("message", message);
+        }
+
+        try {
+            session.getRemote().sendString(jsonStart.toJSONString());
+        } catch (Exception e) {
+            System.out.print(e.toString());
+        }
+    }
 }

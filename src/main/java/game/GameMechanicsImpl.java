@@ -8,10 +8,12 @@ import java.util.*;
  * Created by ilya on 27.10.15.
  */
 public class GameMechanicsImpl implements GameMechanics {
-    private WebSocketService webSocketService;
     private static final int STEP_TIME = 100;
     private static final int gameTime = 60 * 1000;
     private int numberPlayers = 3;
+
+    private WebSocketService webSocketService;
+
     private Map<String, GameSession> nameToGame = new HashMap<>();
     private Set<GameSession> allSessions = new HashSet<>();
     private List<String> namesPlayers = new ArrayList<>();
@@ -21,24 +23,28 @@ public class GameMechanicsImpl implements GameMechanics {
     }
 
     public void addUser(String userName) {
-        if (namesPlayers.size() < numberPlayers) {
-            namesPlayers.add(userName);
-        } else {
+        namesPlayers.add(userName);
+
+        if (namesPlayers.size() == numberPlayers) {
             startGame(namesPlayers);
             namesPlayers.clear();
         }
     }
 
     public void incrementScore(String userName) {
-        GameSession myGameSession = nameToGame.get(userName);
-        GameUser myUser = myGameSession.getSelf(userName);
-        myUser.incrementMyScore();
-        List<GameUser> enemyUsers = myGameSession.getEnemyUsers(userName);
-        for (GameUser enemyUser: enemyUsers) {
-            enemyUser.incrementEnemyScore("userName");
-        }
+        GameSession userGameSession = nameToGame.get(userName);
+        GameUser gameUser = userGameSession.getGameUser(userName);
+        gameUser.incrementScore();
 
-        webSocketService.notifyAboutScore(myUser);
+        webSocketService.notifyAboutScores(gameUser);
+    }
+
+    public void messageInChat(String userName, String message) {
+        GameSession userGameSession = nameToGame.get(userName);
+
+        for (GameUser user: userGameSession.getGameUsers())  {
+            webSocketService.notifyAboutMessage(user, message);
+        }
     }
 
     @Override
@@ -62,7 +68,7 @@ public class GameMechanicsImpl implements GameMechanics {
 
         for (GameUser user: session.getGameUsers())  {
             webSocketService.notifyGameOver(user, nameWinner);
-            nameToGame.remove(user.getMyName());
+            nameToGame.remove(user.getName());
         }
 
         allSessions.remove(session);
@@ -74,7 +80,7 @@ public class GameMechanicsImpl implements GameMechanics {
 
         for (String userName: namesPlayers) {
             nameToGame.put(userName, gameSession);
-            webSocketService.notifyStartGame(gameSession.getSelf(userName));
+            webSocketService.notifyStartGame(gameSession.getGameUser(userName), gameTime);
         }
     }
 }

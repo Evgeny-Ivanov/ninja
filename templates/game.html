@@ -20,30 +20,30 @@
             ws.onmessage = function (event) {
                 var data = JSON.parse(event.data);
                 if(data.status == "start"){
+                    alert( "Старт игры" );
                     document.getElementById("wait").style.display = "none";
                     document.getElementById("gameplay").style.display = "block";
-                    document.getElementById("chat").style.display = "block";
-                    document.getElementById("enemyName").innerHTML = data.enemyName;
+
+                    document.getElementById("time_of_game").innerHTML = data.time_of_game;
+                    //document.getElementById("enemyName").innerHTML = data.enemyName;
                 }
 
                 if(data.status == "finish"){
+                    alert( "финиш игры");
                    document.getElementById("gameOver").style.display = "block";
                    document.getElementById("gameplay").style.display = "none";
 
 
-                   if(data.win)
-                        document.getElementById("win").innerHTML = "winner!";
-                   else
-                        document.getElementById("win").innerHTML = "loser!";
+                   document.getElementById("win").innerHTML = data.win;
                 }
 
-                if(data.status == "increment" && data.name == "${name}"){
-                    document.getElementById("myScore").innerHTML = data.score;
-                }
+                //if(data.status == "scores" && data.name == "${name}"){
+                //    document.getElementById("myScore").innerHTML = data.score;
+                //}
 
-                if(data.status == "increment" && data.name == document.getElementById("enemyName").innerHTML){
-                    document.getElementById("enemyScore").innerHTML = data.score;
-                }
+                //if(data.status == "increment" && data.name == document.getElementById("enemyName").innerHTML){
+                //    document.getElementById("enemyScore").innerHTML = data.score;
+                //}
             }
 
             ws.onclose = function (event) {
@@ -65,13 +65,12 @@
         <div id="hello">
             <p>Hello, ${name}!</p>
         </div>
-        <tr>
-            <td>
             <div id="wait">
                 <p>Prepare yourself. Wait for enemy!</p>
             </div>
 
             <div id="gameplay" style="display: none">
+                <p>Time of game: <span id="time_of_game"></span></p>
                 <div id="score">
                     <p>${name}: <span id="myScore">0</span></p>
 
@@ -84,13 +83,8 @@
             </div>
 
             <div id="gameOver" style="display: none">
-                <p>Game over! You are <span id="win"></span></p>
+                <p>Game over! Winner - <span id="win"></span></p>
             </div>
-    </td>
-    <td>
-        <iframe id="chat" style="display: none" src="${socket_url_chat}" width="400" height="400" align="right">"Это Женя виноват, что чат не работает</iframe>
-    </td>
-</tr>
 
     </div>
 
