@@ -42,8 +42,7 @@ public class Main {
     public static final String LOGOUT_PAGE_URL = "/api/v1/auth/logout";
     public static final String MAINPAGE_PAGE_URL = "/mainpage";
 
-    public static final String CHAT_SOCKET_URL = "/chat1";
-    public static final String GAME_SOCKET_URL = "/gameplay1";
+    public static final String GAME_SOCKET_URL = "/gameplay";
 
     public static final String PROPERTIES_FILE = "cfg/server.properties";
 
@@ -70,7 +69,6 @@ public class Main {
         logger.info("Host: {} Port: {}", host, port);
 
         Server server = new Server(new Integer(port));
-        UrlParameters chatUrlParameters = new UrlParameters(host, port, CHAT_SOCKET_URL);
         UrlParameters gameUrlParameters = new UrlParameters(host, port, GAME_SOCKET_URL);
         AccountService accountService = new AccountService();
         accountService.autoFullUsers();
@@ -81,8 +79,7 @@ public class Main {
         Servlet logout = new LogoutServlet(accountService);
         Servlet admin = new AdminPageServlet(accountService, server);
         Servlet mainPage = new MainPageServlet();
-        WebSocketServlet chat1 = new WebSocketChatServlet(chatUrlParameters);
-        WebSocketServlet game1 = new WebSocketGameServlet(gameServices, gameUrlParameters, chatUrlParameters);
+        WebSocketServlet game = new WebSocketGameServlet(gameServices, gameUrlParameters);
 
         ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
         context.setVirtualHosts(new String[]{host});
@@ -92,8 +89,7 @@ public class Main {
         context.addServlet(new ServletHolder(admin), ADMIN_PAGE_URL);
         context.addServlet(new ServletHolder(logout), LOGOUT_PAGE_URL);
         context.addServlet(new ServletHolder(mainPage), MAINPAGE_PAGE_URL);
-        context.addServlet(new ServletHolder(chat1), CHAT_SOCKET_URL);
-        context.addServlet(new ServletHolder(game1), GAME_SOCKET_URL);
+        context.addServlet(new ServletHolder(game), GAME_SOCKET_URL);
 
         ResourceHandler resource_handler = new ResourceHandler();
         resource_handler.setDirectoriesListed(true);

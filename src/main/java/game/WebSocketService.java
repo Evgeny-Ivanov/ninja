@@ -4,13 +4,11 @@ package game;
  * Created by ilya on 27.10.15.
  */
 public interface WebSocketService {
-    void addUser(GameWebSocket user);
+    void addUserSocket(GameWebSocket userSocket);
 
-    void notifyMyNewScore(GameUser user);
-
-    void notifyEnemyNewScore(GameUser user);
+    void notifyAboutScore(GameUser user);
 
     void notifyStartGame(GameUser user);
 
-    void notifyGameOver(GameUser user, boolean win);
+    void notifyGameOver(GameUser user, String win);
 }

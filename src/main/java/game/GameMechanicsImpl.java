@@ -2,10 +2,7 @@ package game;
 
 import utils.TimeHelper;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Created by ilya on 27.10.15.
@@ -13,25 +10,22 @@ import java.util.Set;
 public class GameMechanicsImpl implements GameMechanics {
     private WebSocketService webSocketService;
     private static final int STEP_TIME = 100;
-    private static final int WAIT_TIME = 3 * 1000;
     private static final int gameTime = 60 * 1000;
+    private int numberPlayers = 3;
     private Map<String, GameSession> nameToGame = new HashMap<>();
     private Set<GameSession> allSessions = new HashSet<>();
-    private String[] namesPlayers = new String[2];
+    private List<String> namesPlayers = new ArrayList<>();
 
     public GameMechanicsImpl(WebSocketService webSocketService) {
         this.webSocketService = webSocketService;
     }
 
-    public void addUser(String user) {
-        if (namesPlayers[0] != null && namesPlayers[1] == null) {
-            namesPlayers[1] = user;
-            startGame(namesPlayers);
-        } else if (namesPlayers[0] == null && namesPlayers[1] == null) {
-            namesPlayers[0] = user;
+    public void addUser(String userName) {
+        if (namesPlayers.size() < numberPlayers) {
+            namesPlayers.add(userName);
         } else {
-            TimeHelper.sleep(WAIT_TIME);
-            this.addUser(user);
+            startGame(namesPlayers);
+            namesPlayers.clear();
         }
     }
 
@@ -39,10 +33,12 @@ public class GameMechanicsImpl implements GameMechanics {
         GameSession myGameSession = nameToGame.get(userName);
         GameUser myUser = myGameSession.getSelf(userName);
         myUser.incrementMyScore();
-        GameUser enemyUser = myGameSession.getEnemy(userName);
-        enemyUser.incrementEnemyScore();
-        webSocketService.notifyMyNewScore(myUser);
-        webSocketService.notifyEnemyNewScore(enemyUser);
+        List<GameUser> enemyUsers = myGameSession.getEnemyUsers(userName);
+        for (GameUser enemyUser: enemyUsers) {
+            enemyUser.incrementEnemyScore("userName");
+        }
+
+        webSocketService.notifyAboutScore(myUser);
     }
 
     @Override
@@ -62,26 +58,23 @@ public class GameMechanicsImpl implements GameMechanics {
     }
 
     private void finishGame(GameSession session) {
-        boolean firstWin = session.isFirstWin();
-        webSocketService.notifyGameOver(session.getFirst(), firstWin);
-        webSocketService.notifyGameOver(session.getSecond(), !firstWin);
+        String nameWinner = session.getNameWinner();
 
+        for (GameUser user: session.getGameUsers())  {
+            webSocketService.notifyGameOver(user, nameWinner);
+            nameToGame.remove(user.getMyName());
+        }
 
         allSessions.remove(session);
-        nameToGame.remove(namesPlayers[0]);
-        nameToGame.remove(namesPlayers[1]);
-        namesPlayers[0] = null;
-        namesPlayers[1] = null;
-
     }
 
-    private void startGame(String[] namesPlayers) {
-        GameSession gameSession = new GameSession(namesPlayers[0], namesPlayers[1]);
+    private void startGame(List<String> namesPlayers) {
+        GameSession gameSession = new GameSession(namesPlayers);
         allSessions.add(gameSession);
-        nameToGame.put(namesPlayers[0], gameSession);
-        nameToGame.put(namesPlayers[1], gameSession);
 
-        webSocketService.notifyStartGame(gameSession.getSelf(namesPlayers[0]));
-        webSocketService.notifyStartGame(gameSession.getSelf(namesPlayers[1]));
+        for (String userName: namesPlayers) {
+            nameToGame.put(userName, gameSession);
+            webSocketService.notifyStartGame(gameSession.getSelf(userName));
+        }
     }
 }

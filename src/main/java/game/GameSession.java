@@ -1,56 +1,58 @@
 package game;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by ilya on 27.10.15.
  */
 public class GameSession {
     private final long startTime;
-    private final GameUser first;
-    private final GameUser second;
-
+    private List<GameUser> playersGameUsers;
     private Map<String, GameUser> users = new HashMap<>();
 
-    public GameSession(String user1, String user2) {
+    public GameSession(List<String> namesPlayers) {
         startTime = new Date().getTime();
-        GameUser gameUser1 = new GameUser(user1);
-        gameUser1.setEnemyName(user2);
 
-        GameUser gameUser2 = new GameUser(user2);
-        gameUser2.setEnemyName(user1);
-
-        users.put(user1, gameUser1);
-        users.put(user2, gameUser2);
-
-        this.first = gameUser1;
-        this.second = gameUser2;
+        for (String nameUser: namesPlayers) {
+            List<String> arrayEnemyNames = new ArrayList<String>(namesPlayers);
+            arrayEnemyNames.remove(nameUser);
+            GameUser gameUser = new GameUser(nameUser, arrayEnemyNames);
+            users.put(nameUser, gameUser);
+            playersGameUsers.add(gameUser);
+        }
     }
 
-    public GameUser getEnemy(String user) {
-        String enemyName = users.get(user).getEnemyName();
-        return users.get(enemyName);
-    }
-
-    public GameUser getSelf(String user) {
-        return users.get(user);
+    public GameUser getSelf(String nameUser) {
+        return users.get(nameUser);
     }
 
     public long getSessionTime(){
         return new Date().getTime() - startTime;
     }
 
-    public GameUser getFirst() {
-        return first;
+    public  String getNameWinner(){
+        String nameWinner = "";
+        int maxScore = 0;
+        for (GameUser gameUser: playersGameUsers) {
+            if (gameUser.getMyScore() > maxScore) {
+                maxScore = gameUser.getMyScore();
+                nameWinner = gameUser.getMyName();
+            }
+        }
+        return nameWinner;
     }
 
-    public GameUser getSecond() {
-        return second;
+    public List<GameUser> getGameUsers() {
+        return playersGameUsers;
     }
 
-    public  boolean isFirstWin(){
-        return first.getMyScore() > second.getMyScore();
+
+    public List<GameUser> getEnemyUsers(String user) {
+        List<GameUser> arrayEnemyGameUsers = new ArrayList<>(playersGameUsers);
+        GameUser enemyGameUser = users.get(user);
+        arrayEnemyGameUsers.remove(enemyGameUser);
+
+        return arrayEnemyGameUsers;
     }
+
 }

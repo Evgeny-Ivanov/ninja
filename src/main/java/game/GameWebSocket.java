@@ -7,6 +7,8 @@ import org.eclipse.jetty.websocket.api.annotations.OnWebSocketMessage;
 import org.eclipse.jetty.websocket.api.annotations.WebSocket;
 import org.json.simple.JSONObject;
 
+import java.util.Map;
+
 /**
  * Created by ilya on 27.10.15.
  */
@@ -27,7 +29,7 @@ public class GameWebSocket {
     @OnWebSocketConnect
     public void onOpen(Session session) {
         setSession(session);
-        webSocketService.addUser(this);
+        webSocketService.addUserSocket(this);
         gameMechanics.addUser(myName);
     }
 
@@ -46,18 +48,23 @@ public class GameWebSocket {
         try {
             JSONObject jsonStart = new JSONObject();
             jsonStart.put("status", "start");
-            jsonStart.put("enemyName", user.getEnemyName());
+
+            jsonStart.put("name", user.getMyName());
+
+            for (Map.Entry<String, Integer> enemy: user.getEnemyNameAndScore().entrySet()) {
+                jsonStart.put("name", enemy.getKey());
+            }
             session.getRemote().sendString(jsonStart.toJSONString());
         } catch (Exception e) {
             System.out.print(e.toString());
         }
     }
 
-    public void gameOver(GameUser user, boolean win) {
+    public void gameOver(GameUser user, String nameWinner) {
         try {
             JSONObject jsonStart = new JSONObject();
             jsonStart.put("status", "finish");
-            jsonStart.put("win", win);
+            jsonStart.put("win", nameWinner);
             session.getRemote().sendString(jsonStart.toJSONString());
         } catch (Exception e) {
             System.out.print(e.toString());
@@ -65,23 +72,15 @@ public class GameWebSocket {
     }
 
 
-    public void setMyScore(GameUser user) {
+    public void setScore(GameUser user) {
         JSONObject jsonStart = new JSONObject();
-        jsonStart.put("status", "increment");
-        jsonStart.put("name", myName);
-        jsonStart.put("score", user.getMyScore());
-        try {
-            session.getRemote().sendString(jsonStart.toJSONString());
-        } catch (Exception e) {
-            System.out.print(e.toString());
-        }
-    }
+        jsonStart.put("status", "score");
 
-    public void setEnemyScore(GameUser user) {
-        JSONObject jsonStart = new JSONObject();
-        jsonStart.put("status", "increment");
-        jsonStart.put("name", user.getEnemyName());
-        jsonStart.put("score", user.getEnemyScore());
+        for (Map.Entry<String, Integer> enemy: user.getEnemyNameAndScore().entrySet()) {
+            jsonStart.put("name", enemy.getKey());
+            jsonStart.put("score", enemy.getValue());
+        }
+
         try {
             session.getRemote().sendString(jsonStart.toJSONString());
         } catch (Exception e) {
@@ -92,7 +91,6 @@ public class GameWebSocket {
     public String getMyName() {
         return myName;
     }
-
 
     public Session getSession() {
         return session;

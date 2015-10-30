@@ -26,20 +26,16 @@ public class WebSocketGameServlet extends WebSocketServlet {
     @SuppressWarnings("ConstantConditions")
     @NotNull
     static final Logger logger = LogManager.getLogger(WebSocketGameServlet.class);
-    private static final int IDLE_TIME = 60 * 1000;
+    private static final int IDLE_TIME = 10 * 60 * 1000;
     @NotNull
     private GameServices gameServices;
     @NotNull
     private UrlParameters gameUrlParameters;
-    @NotNull
-    private UrlParameters chatUrlParameters;
 
     public WebSocketGameServlet(@NotNull GameServices gameServices,
-                                @NotNull UrlParameters gameUrlParameters,
-                                @NotNull UrlParameters chatUrlParameters) {
+                                @NotNull UrlParameters gameUrlParameters) {
         this.gameServices = gameServices;
         this.gameUrlParameters = gameUrlParameters;
-        this.chatUrlParameters = chatUrlParameters;
     }
 
     @Override
@@ -68,16 +64,12 @@ public class WebSocketGameServlet extends WebSocketServlet {
         pageVariables.put("host_game", gameUrlParameters.getHost());
         pageVariables.put("port_game", gameUrlParameters.getPort());
         pageVariables.put("socket_url_game", gameUrlParameters.getSocketUrl());
-        pageVariables.put("host_chat", chatUrlParameters.getHost());
-        pageVariables.put("port_chat", chatUrlParameters.getPort());
-        pageVariables.put("socket_url_chat", chatUrlParameters.getSocketUrl());
 
         try (PrintWriter pw = response.getWriter()) {
             if (pw != null) {
                 pw.println(PageGenerator.getPage("game.html", pageVariables));
             }
         }
-
 
         response.setStatus(HttpServletResponse.SC_OK);
     }
