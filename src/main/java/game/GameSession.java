@@ -1,5 +1,8 @@
 package game;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import java.util.*;
 
 /**
@@ -7,10 +10,12 @@ import java.util.*;
  */
 public class GameSession {
     private final long startTime;
+    @NotNull
     private List<GameUser> playersGameUsers = new ArrayList<>();
+    @NotNull
     private Map<String, GameUser> users = new HashMap<>();
 
-    public GameSession(List<String> namesPlayers) {
+    public GameSession(@NotNull List<String> namesPlayers) {
         startTime = new Date().getTime();
 
         for (String nameUser: namesPlayers) {
@@ -18,23 +23,24 @@ public class GameSession {
             users.put(nameUser, gameUser);
             playersGameUsers.add(gameUser);
         }
-
-
     }
 
     public long getSessionTime(){
         return new Date().getTime() - startTime;
     }
 
-    public GameUser getGameUser(String nameUser) {
+    @Nullable
+    public GameUser getGameUser(@NotNull String nameUser) {
         return users.get(nameUser);
     }
 
+    @NotNull
     public List<GameUser> getGameUsers() {
         return playersGameUsers;
     }
 
-    public  String getNameWinner(){
+    @NotNull
+    public String getNameWinner(){
         String nameWinner = "";
         int maxScore = 0;
         for (GameUser gameUser: playersGameUsers) {

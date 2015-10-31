@@ -2,6 +2,7 @@
 <head>
     <meta charset="UTF-8"/>
     <title>Game</title>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
     <script type="text/javascript">
         var ws;
         var started = false;
@@ -26,6 +27,10 @@
 
                     document.getElementById("time_of_game").innerHTML = data.time_of_game;
                     //document.getElementById("enemyName").innerHTML = data.enemyName;
+
+                    $("#player1").html(data.players[0].name+ " : "+0);
+                    $("#player2").html(data.players[1].name+ " : "+0);
+                    $("#player3").html(data.players[2].name+ " : "+0);
                 }
 
                 if(data.status == "finish"){
@@ -37,9 +42,12 @@
                    document.getElementById("win").innerHTML = data.win;
                 }
 
-                //if(data.status == "scores" && data.name == "${name}"){
-                //    document.getElementById("myScore").innerHTML = data.score;
-                //}
+                if(data.status == "scores"){
+                    $("#player1").html(data.players[0].name+ " : "+data.players[0].score);
+                    $("#player2").html(data.players[1].name+ " : "+data.players[1].score);
+                    $("#player3").html(data.players[2].name+ " : "+data.players[2].score);
+
+                }
 
                 //if(data.status == "increment" && data.name == document.getElementById("enemyName").innerHTML){
                 //    document.getElementById("enemyScore").innerHTML = data.score;
@@ -53,7 +61,8 @@
         };
 
         function sendMessage() {
-            var message = "{}";
+            var message = { status : "increment" };
+            message = JSON.stringify(message);
             ws.send(message);
         }
 
@@ -72,7 +81,11 @@
             <div id="gameplay" style="display: none">
                 <p>Time of game: <span id="time_of_game"></span></p>
                 <div id="score">
-                    <p>${name}: <span id="myScore">0</span></p>
+                    <!--${name}-->
+
+                    <p id="player1"></p>
+                    <p id="player2" ></p>
+                    <p id="player3" ></p>
 
                     <p><span id="enemyName"></span>: <span id="enemyScore">0</span></p>
                 </div>

@@ -1,6 +1,5 @@
 package game;
 
-import base.AccountService;
 import base.GameServices;
 import base.UrlParameters;
 import org.apache.logging.log4j.LogManager;
@@ -40,12 +39,13 @@ public class WebSocketGameServlet extends WebSocketServlet {
 
     @Override
     public void configure(WebSocketServletFactory factory) {
+        //noinspection ConstantConditions
         factory.getPolicy().setIdleTimeout(IDLE_TIME);
         factory.setCreator(new GameWebSocketCreator(gameServices));
         LOGGER.info("call WebSocketGameServlet.configure");
-
     }
 
+    @Override
     public void doGet(@NotNull HttpServletRequest request,
                       @NotNull HttpServletResponse response) throws ServletException, IOException {
         response.setCharacterEncoding("utf-8");
@@ -55,7 +55,7 @@ public class WebSocketGameServlet extends WebSocketServlet {
         if (hs == null || hs.getId() == null) {
             return;
         }
-        if (hs.getAttribute("name") == null || hs.getAttribute("name").equals("Incognitto")) {
+        if (hs.getAttribute("name") == null || "Incognitto".equals(hs.getAttribute("name"))) {
             return;
         }
 

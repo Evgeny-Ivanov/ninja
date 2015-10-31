@@ -1,5 +1,8 @@
 package game;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.jetbrains.annotations.NotNull;
 import utils.TimeHelper;
 
 import java.util.*;
@@ -8,46 +11,78 @@ import java.util.*;
  * Created by ilya on 27.10.15.
  */
 public class GameMechanics {
+    @SuppressWarnings("ConstantConditions")
+    @NotNull
+    static final Logger LOGGER = LogManager.getLogger(GameMechanics.class);
+
     private static final int STEP_TIME = 100;
-    private static final int gameTime = 60 * 1000;
-    private int numberPlayers = 3;
+    @SuppressWarnings("MagicNumber")
+    private int gameTime = 60 * 1000;
+    @SuppressWarnings("FieldCanBeLocal")
+    private int numberPlayers = 3;//далее будем грузить из файлов
 
+    @NotNull
     private WebSocketService webSocketService;
-
+    @NotNull
     private Map<String, GameSession> nameToGame = new HashMap<>();
+    @NotNull
     private Set<GameSession> allSessions = new HashSet<>();
+    @NotNull
     private List<String> namesPlayers = new ArrayList<>();
 
-    public GameMechanics(WebSocketService webSocketService) {
+    public GameMechanics(@NotNull WebSocketService webSocketService) {
         this.webSocketService = webSocketService;
     }
 
-    public void addUser(String userName) {
+    public void addUser(@NotNull String userName) {
         namesPlayers.add(userName);
 
         if (namesPlayers.size() == numberPlayers) {
-            startGame(namesPlayers);
+            startGame();
             namesPlayers.clear();
         }
     }
 
-    public void incrementScore(String userName) {
-        GameSession userGameSession = nameToGame.get(userName);
-        GameUser gameUser = userGameSession.getGameUser(userName);
-        gameUser.incrementScore();
-
-        webSocketService.notifyAboutScores(gameUser);
+    public void deleteUser(String userName) {
+        namesPlayers.remove(userName);
     }
 
-    public void messageInChat(String userName, String message) {
-        GameSession userGameSession = nameToGame.get(userName);
+    public void incrementScore(@NotNull String userName) {
+        GameSession gameSession = nameToGame.get(userName);
+        if (gameSession == null) {
+            LOGGER.error("userGameSession == null");
+            return;
+        }
 
-        for (GameUser user: userGameSession.getGameUsers())  {
+        GameUser gameUser = gameSession.getGameUser(userName);
+
+        if (gameUser  == null) {
+            LOGGER.error("gameUser == null");
+            return;
+        }
+
+        gameUser.incrementScore();
+
+        //noinspection Convert2streamapi
+        for (GameUser user: gameSession.getGameUsers()) {
+            webSocketService.notifyAboutScores(user);
+        }
+    }
+
+    public void messageInChat(@NotNull String userName, @NotNull String message) {
+        GameSession gameSession = nameToGame.get(userName);
+        if (gameSession == null) {
+            LOGGER.error("userGameSession == null");
+            return;
+        }
+
+        for (GameUser user: gameSession.getGameUsers())  {
             webSocketService.notifyAboutMessage(user, message);
         }
     }
 
     public void run() {
+        //noinspection InfiniteLoopStatement
         while (true) {
             gmStep();
             TimeHelper.sleep(STEP_TIME);
@@ -62,7 +97,7 @@ public class GameMechanics {
         }
     }
 
-    private void finishGame(GameSession session) {
+    private void finishGame(@NotNull GameSession session) {
         String nameWinner = session.getNameWinner();
 
         for (GameUser user: session.getGameUsers())  {
@@ -73,13 +108,19 @@ public class GameMechanics {
         allSessions.remove(session);
     }
 
-    private void startGame(List<String> namesPlayers) {
+    private void startGame() {
         GameSession gameSession = new GameSession(namesPlayers);
         allSessions.add(gameSession);
 
         for (String userName: namesPlayers) {
             nameToGame.put(userName, gameSession);
-            webSocketService.notifyStartGame(gameSession.getGameUser(userName), gameTime);
+            GameUser gameUser = gameSession.getGameUser(userName);
+
+            if (gameUser != null) {
+                webSocketService.notifyStartGame(gameUser, gameTime);
+            } else {
+                LOGGER.error("gameuser == null");
+            }
         }
     }
 }
