@@ -45,7 +45,7 @@ public class UrlParameters {
         return socketUrl;
     }
 
-    public void setSSocketUrl(@NotNull String socketUrl) {
+    public void setSocketUrl(@NotNull String socketUrl) {
         this.socketUrl = socketUrl;
     }
 }

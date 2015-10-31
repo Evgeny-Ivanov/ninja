@@ -1,16 +1,31 @@
 package game;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * Created by ilya on 27.10.15.
  */
-public interface WebSocketService {
-    void addUserSocket(GameWebSocket userSocket);
+public class WebSocketService {
+    private Map<String, GameWebSocket> userSockets = new HashMap<>();
 
-    void notifyAboutScores(GameUser user);
+    public void addUserSocket(GameWebSocket userSocket) {
+        userSockets.put(userSocket.getMyName(), userSocket);
+    }
 
-    void notifyStartGame(GameUser user, int gameTime);
+    public void notifyAboutScores(GameUser user) {
+        userSockets.get(user.getName()).sendScores(user);
+    }
 
-    void notifyGameOver(GameUser user, String win);
+    public void notifyAboutMessage(GameUser user, String message) {
+        userSockets.get(user.getName()).sendMessage(user, message);
+    }
 
-    void notifyAboutMessage(GameUser gameUser, String message);
+    public void notifyStartGame(GameUser user, int gameTime) {
+        userSockets.get(user.getName()).sendStartGame(user, gameTime);
+    }
+
+    public void notifyGameOver(GameUser user, String nameWinner) {
+        userSockets.get(user.getName()).sendGameOver(user, nameWinner);
+    }
 }

@@ -25,7 +25,7 @@ import java.util.Map;
 public class WebSocketGameServlet extends WebSocketServlet {
     @SuppressWarnings("ConstantConditions")
     @NotNull
-    static final Logger logger = LogManager.getLogger(WebSocketGameServlet.class);
+    static final Logger LOGGER = LogManager.getLogger(WebSocketGameServlet.class);
     private static final int IDLE_TIME = 10 * 60 * 1000;
     @NotNull
     private GameServices gameServices;
@@ -42,7 +42,7 @@ public class WebSocketGameServlet extends WebSocketServlet {
     public void configure(WebSocketServletFactory factory) {
         factory.getPolicy().setIdleTimeout(IDLE_TIME);
         factory.setCreator(new GameWebSocketCreator(gameServices));
-        logger.info("call WebSocketGameServlet.configure");
+        LOGGER.info("call WebSocketGameServlet.configure");
 
     }
 

@@ -5,13 +5,11 @@ import admin.AdminPageServlet;
 import base.AccountService;
 import base.GameServices;
 import base.UrlParameters;
-import base.UserProfile;
-import game.*;
-import chat.WebSocketChatServlet;
 import frontend.LogoutServlet;
 import frontend.MainPageServlet;
 import frontend.SignInServlet;
 import frontend.SignUpServlet;
+import game.WebSocketGameServlet;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.eclipse.jetty.server.Handler;
@@ -34,16 +32,14 @@ import java.util.Properties;
 public class Main {
     @SuppressWarnings("ConstantConditions")
     @NotNull
-    static final Logger logger = LogManager.getLogger(Main.class);
+    static final Logger LOGGER = LogManager.getLogger(Main.class);
 
-    public static final String ADMIN_PAGE_URL = "/admin";
     public static final String SIGNIN_PAGE_URL = "/api/v1/auth/signin";
     public static final String SIGNUP_PAGE_URL = "/api/v1/auth/signup";
     public static final String LOGOUT_PAGE_URL = "/api/v1/auth/logout";
     public static final String MAINPAGE_PAGE_URL = "/mainpage";
-
+    public static final String ADMIN_PAGE_URL = "/admin";
     public static final String GAME_SOCKET_URL = "/gameplay";
-
     public static final String PROPERTIES_FILE = "cfg/server.properties";
 
     public static void main(@NotNull String[] args) {
@@ -57,16 +53,16 @@ public class Main {
             host = properties.getProperty("host");
             port = properties.getProperty("port");
         } catch (IOException e) {
-            logger.error(e);
+            LOGGER.error(e);
             return;
         }
 
         if (port == null || host == null) {
-            logger.error("Port or host is null");
+            LOGGER.error("Port or host is null");
             return;
         }
 
-        logger.info("Host: {} Port: {}", host, port);
+        LOGGER.info("Host: {} Port: {}", host, port);
 
         Server server = new Server(new Integer(port));
         UrlParameters gameUrlParameters = new UrlParameters(host, port, GAME_SOCKET_URL);
@@ -103,7 +99,7 @@ public class Main {
         try {
             server.start();
         } catch (Exception e) {
-            logger.error("Server isn't started");
+            LOGGER.error("Server isn't started");
             e.printStackTrace();
         }
 

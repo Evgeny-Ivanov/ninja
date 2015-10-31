@@ -1,9 +1,7 @@
 package base;
 
 import game.GameMechanics;
-import game.GameMechanicsImpl;
 import game.WebSocketService;
-import game.WebSocketServiceImpl;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -11,16 +9,16 @@ import org.jetbrains.annotations.NotNull;
  */
 public class GameServices {
     @NotNull
-    AccountService accountService;
+    private AccountService accountService;
     @NotNull
-    WebSocketService webSocketService;
+    private WebSocketService webSocketService;
     @NotNull
-    GameMechanics gameMechanics;
+    private GameMechanics gameMechanics;
 
     public GameServices(@NotNull AccountService accountService) {
         this.accountService = accountService;
-        this.webSocketService = new WebSocketServiceImpl();
-        this.gameMechanics = new GameMechanicsImpl(webSocketService);
+        this.webSocketService = new WebSocketService();
+        this.gameMechanics = new GameMechanics(webSocketService);
     }
 
     @NotNull
@@ -38,16 +36,7 @@ public class GameServices {
     }
 
     @NotNull
-    public void setWebSocketService(@NotNull WebSocketService webSocketService) {
-        this.webSocketService = webSocketService;
-    }
-
-    @NotNull
     public GameMechanics getGameMechanics() {
         return gameMechanics;
-    }
-
-    public void setGameMechanics(@NotNull GameMechanics gameMechanics) {
-        this.gameMechanics = gameMechanics;
     }
 }
