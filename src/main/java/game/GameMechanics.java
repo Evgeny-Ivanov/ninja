@@ -43,8 +43,31 @@ public class GameMechanics {
         }
     }
 
-    public void deleteUser(String userName) {
-        namesPlayers.remove(userName);
+    public boolean removeUser(@NotNull String userName) {
+        if (namesPlayers.remove(userName)) {
+            return false;
+        }
+
+        GameSession gameSession = nameToGame.get(userName);
+        if (gameSession == null) {
+            return false;
+        }
+
+        //noinspection Convert2streamapi
+        for (GameUser user: gameSession.getGameUsers()) {
+            if (!userName.equals(user.getName())) {
+                user.getPlayersGameUsers().remove(nameToGame.get(userName).getGameUser(userName));
+                webSocketService.notifyAboutLeave(user.getName(), userName);
+            }
+        }
+
+        gameSession.removeGameUser(userName);
+        nameToGame.remove(userName);
+
+        if (gameSession.getGameUsers().size() == 0) {
+            allSessions.remove(gameSession);
+        }
+        return true;
     }
 
     public void incrementScore(@NotNull String userName) {
@@ -77,7 +100,7 @@ public class GameMechanics {
         }
 
         for (GameUser user: gameSession.getGameUsers())  {
-            webSocketService.notifyAboutMessage(user, message);
+            webSocketService.notifyAboutMessage(user.getName(), userName, message);
         }
     }
 

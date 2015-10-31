@@ -5,7 +5,6 @@ import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -23,6 +22,8 @@ public class WebSocketService {
         userSockets.put(userSocket.getMyName(), userSocket);
     }
 
+
+
     public void notifyAboutScores(@NotNull GameUser user) {
         GameWebSocket gameWebSocket = userSockets.get(user.getName());
         if (gameWebSocket != null) {
@@ -32,10 +33,19 @@ public class WebSocketService {
         }
     }
 
-    public void notifyAboutMessage(@NotNull GameUser user, @NotNull String message) {
-        GameWebSocket gameWebSocket = userSockets.get(user.getName());
+    public void notifyAboutMessage(@NotNull String nameUser, @NotNull String authorName, @NotNull String message) {
+        GameWebSocket gameWebSocket = userSockets.get(nameUser);
         if (gameWebSocket != null) {
-            gameWebSocket.sendMessage(user, message);
+            gameWebSocket.sendMessage(authorName, message);
+        } else {
+            LOGGER.error("gameWebSocket == null");
+        }
+    }
+
+    public void notifyAboutLeave(@NotNull String nameUser, @NotNull String whoLeave) {
+        GameWebSocket gameWebSocket = userSockets.get(nameUser);
+        if (gameWebSocket != null) {
+            gameWebSocket.sendLeave(nameUser, whoLeave);
         } else {
             LOGGER.error("gameWebSocket == null");
         }
@@ -57,5 +67,9 @@ public class WebSocketService {
         } else {
             LOGGER.error("gameWebSocket == null");
         }
+    }
+
+    public boolean removeSocket(@NotNull GameWebSocket gameWebSocket) {
+        return userSockets.remove(gameWebSocket.getMyName()) != null;
     }
 }

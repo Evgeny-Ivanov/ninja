@@ -52,4 +52,14 @@ public class GameSession {
         return nameWinner;
     }
 
+    public boolean removeGameUser(String userName) {
+        GameUser gameUser = users.get(userName);
+
+        if (gameUser == null) {
+            return false;
+        }
+        playersGameUsers.remove(gameUser);
+        users.remove(userName);
+        return true;
+    }
 }

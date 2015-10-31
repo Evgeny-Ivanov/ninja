@@ -70,7 +70,8 @@ public class GameWebSocket {
 
     @OnWebSocketClose
     public void onClose(int statusCode, String reason) {
-        gameMechanics.deleteUser(myName);
+        gameMechanics.removeUser(myName);
+        webSocketService.removeSocket(this);
     }
 
 
@@ -129,14 +130,24 @@ public class GameWebSocket {
 
 
 
-    public void sendMessage(@NotNull GameUser user, String message) {
+    public void sendMessage(@NotNull String authorName, String message) {
         JSONObject jsonStart = new JSONObject();
         jsonStart.put("status", "message");
 
-        for (GameUser player: user.getPlayersGameUsers()) {
-            jsonStart.put("name", player.getName());
-            jsonStart.put("message", message);
+        jsonStart.put("name", authorName);
+        jsonStart.put("message", message);
+
+        try {
+            session.getRemote().sendString(jsonStart.toJSONString());
+        } catch (IOException e) {
+            e.printStackTrace();
         }
+    }
+
+    public void sendLeave(String nameUser, String whoLeave) {
+        JSONObject jsonStart = new JSONObject();
+        jsonStart.put("status", "leave");
+        jsonStart.put("name", whoLeave);
 
         try {
             session.getRemote().sendString(jsonStart.toJSONString());
