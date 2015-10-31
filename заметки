@@ -1,2 +1,0 @@
-время простоя, если ни че не было, то выключится
-factory.getPolicy().setIdleTimeout(LOGOUT_TIME);
