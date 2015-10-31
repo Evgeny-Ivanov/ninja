@@ -1,6 +1,8 @@
 package game;
 
 import org.jetbrains.annotations.NotNull;
+
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -16,7 +18,7 @@ public class GameUser {
     public GameUser(@NotNull String name, @NotNull List<GameUser> playersGameUsers) {
         this.name = name;
         this.score = 0;
-        this.playersGameUsers = playersGameUsers;
+        this.playersGameUsers = new ArrayList<>(playersGameUsers);
     }
 
     @NotNull

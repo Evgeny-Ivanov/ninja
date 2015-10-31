@@ -53,8 +53,9 @@ public class GameMechanics {
             return false;
         }
 
+        List<GameUser> gameUsers = gameSession.getGameUsers();
         //noinspection Convert2streamapi
-        for (GameUser user: gameSession.getGameUsers()) {
+        for (GameUser user: gameUsers) {
             if (!userName.equals(user.getName())) {
                 user.getPlayersGameUsers().remove(nameToGame.get(userName).getGameUser(userName));
                 webSocketService.notifyAboutLeave(user.getName(), userName);
@@ -64,7 +65,7 @@ public class GameMechanics {
         gameSession.removeGameUser(userName);
         nameToGame.remove(userName);
 
-        if (gameSession.getGameUsers().size() == 0) {
+        if (gameSession.getGameUsers().isEmpty()) {
             allSessions.remove(gameSession);
         }
         return true;
