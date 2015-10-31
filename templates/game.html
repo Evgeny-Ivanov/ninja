@@ -29,9 +29,9 @@
                     document.getElementById("time_of_game").innerHTML = data.time_of_game;
                     //document.getElementById("enemyName").innerHTML = data.enemyName;
 
-                    $("#player1").html(data.players[0].name+ " : "+0);
-                    $("#player2").html(data.players[1].name+ " : "+0);
-                    $("#player3").html(data.players[2].name+ " : "+0);
+                    var p1 = $("#player1").html(data.players[0].name+ " : "+0).data("name",data.players[0]);
+                    var p2 = $("#player2").html(data.players[1].name+ " : "+0).data("name",data.players[1]);
+                    var p3 = $("#player3").html(data.players[2].name+ " : "+0).data("name",data.players[2]);
                 }
 
                 if(data.status == "finish"){
@@ -53,6 +53,11 @@
                 if(data.status=="message"){
                 	console.log(data);
                 	$("#textarea").append(" "+data.name+" : "+data.message+"\n");
+                }
+
+                if(data.status=="leave"){
+                	var selector  = "p[data-columns='"+data.name+"']";
+					$(selector).hide();
                 }
 
                 //if(data.status == "increment" && data.name == document.getElementById("enemyName").innerHTML){
@@ -99,7 +104,7 @@
                 <div id="score">
                     <!--${name}-->
 
-                    <p id="player1"></p>
+                    <p id="player1" ></p>
                     <p id="player2" ></p>
                     <p id="player3" ></p>
 
