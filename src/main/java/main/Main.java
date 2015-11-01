@@ -20,6 +20,7 @@ import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.jetty.websocket.servlet.WebSocketServlet;
 import org.jetbrains.annotations.NotNull;
+import utils.Configuration;
 
 import javax.servlet.Servlet;
 import java.io.FileInputStream;
@@ -34,38 +35,23 @@ public class Main {
     @NotNull
     static final Logger LOGGER = LogManager.getLogger(Main.class);
 
-    public static final String SIGNIN_PAGE_URL = "/api/v1/auth/signin";
-    public static final String SIGNUP_PAGE_URL = "/api/v1/auth/signup";
-    public static final String LOGOUT_PAGE_URL = "/api/v1/auth/logout";
-    public static final String MAINPAGE_PAGE_URL = "/mainpage";
-    public static final String ADMIN_PAGE_URL = "/admin";
-    public static final String GAME_SOCKET_URL = "/gameplay";
-    public static final String PROPERTIES_FILE = "cfg/server.properties";
-
     public static void main(@NotNull String[] args) {
-        String port;
-        String host;
-
-        try (final FileInputStream fis = new FileInputStream(PROPERTIES_FILE)) {
-            final Properties properties = new Properties();
-            properties.load(fis);
-
-            host = properties.getProperty("host");
-            port = properties.getProperty("port");
-        } catch (IOException e) {
-            LOGGER.error(e);
+        Configuration configuration;
+        try {
+            configuration = Configuration.getInstance();
+        }catch (NullPointerException e){
+            e.printStackTrace();
             return;
         }
 
-        if (port == null || host == null) {
-            LOGGER.error("Port or host is null");
-            return;
-        }
+        int port = configuration.getPort();
+        String host = configuration.getHost();
 
         LOGGER.info("Host: {} Port: {}", host, port);
 
-        Server server = new Server(new Integer(port));
-        UrlParameters gameUrlParameters = new UrlParameters(host, port, GAME_SOCKET_URL);
+        Server server = new Server(port);
+
+        UrlParameters gameUrlParameters = new UrlParameters(host,Integer.toString(port),configuration.getGameSocketUrl());
         AccountService accountService = new AccountService();
         accountService.autoFullUsers();
         GameServices gameServices = new GameServices(accountService);
@@ -80,12 +66,12 @@ public class Main {
         ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
         context.setVirtualHosts(new String[]{host});
 
-        context.addServlet(new ServletHolder(signIn), SIGNIN_PAGE_URL);
-        context.addServlet(new ServletHolder(signUp), SIGNUP_PAGE_URL);
-        context.addServlet(new ServletHolder(admin), ADMIN_PAGE_URL);
-        context.addServlet(new ServletHolder(logout), LOGOUT_PAGE_URL);
-        context.addServlet(new ServletHolder(mainPage), MAINPAGE_PAGE_URL);
-        context.addServlet(new ServletHolder(game), GAME_SOCKET_URL);
+        context.addServlet(new ServletHolder(signIn), configuration.getSigninPageUrl());
+        context.addServlet(new ServletHolder(signUp), configuration.getSignupPageUrl());
+        context.addServlet(new ServletHolder(admin), configuration.getAdminPageUrl());
+        context.addServlet(new ServletHolder(logout), configuration.getLogoutPageUrl());
+        context.addServlet(new ServletHolder(mainPage), configuration.getMainPageUrl());
+        context.addServlet(new ServletHolder(game), configuration.getGameSocketUrl());
 
         ResourceHandler resource_handler = new ResourceHandler();
         resource_handler.setDirectoriesListed(true);

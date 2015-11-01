@@ -39,7 +39,7 @@ public class AdminPageServletTest extends Mockito {
     @Test
     public void testDoGet() throws Exception {
         ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
-        context.addServlet(new ServletHolder(servlet), Main.ADMIN_PAGE_URL);
+        context.addServlet(new ServletHolder(servlet), "/admin");
         server.setHandler(context);
 
         try {
