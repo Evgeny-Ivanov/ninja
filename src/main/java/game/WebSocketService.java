@@ -24,10 +24,10 @@ public class WebSocketService {
 
 
 
-    public void notifyAboutScores(@NotNull GameUser user) {
-        GameWebSocket gameWebSocket = userSockets.get(user.getName());
+    public void notifyAboutScores(@NotNull String userName, GameSession gameSession) {
+        GameWebSocket gameWebSocket = userSockets.get(userName);
         if (gameWebSocket != null) {
-            gameWebSocket.sendScores(user);
+            gameWebSocket.sendScores(gameSession);
         } else {
             LOGGER.error("gameWebSocket == null");
         }
@@ -51,10 +51,10 @@ public class WebSocketService {
         }
     }
 
-    public void notifyStartGame(@NotNull GameUser user, int gameTime) {
-        GameWebSocket gameWebSocket = userSockets.get(user.getName());
+    public void notifyStartGame(@NotNull String userName, GameSession gameSession, int gameTime) {
+        GameWebSocket gameWebSocket = userSockets.get(userName);
         if (gameWebSocket != null) {
-            gameWebSocket.sendStartGame(user, gameTime);
+            gameWebSocket.sendStartGame(gameSession, gameTime);
         } else {
             LOGGER.error("gameWebSocket == null");
         }

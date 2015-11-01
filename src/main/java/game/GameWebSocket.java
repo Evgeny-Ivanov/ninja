@@ -75,14 +75,14 @@ public class GameWebSocket {
     }
 
 
-    public void sendStartGame(@NotNull GameUser user, int gameTime) {
+    public void sendStartGame(@NotNull GameSession gameSession, int gameTime) {
         JSONObject jsonStart = new JSONObject();
         jsonStart.put("status", "start");
-        jsonStart.put("your_name", user.getName());
+        jsonStart.put("your_name", myName);
         jsonStart.put("time_of_game", gameTime / 1000);
 
         JSONArray ar = new JSONArray();
-        for (GameUser player: user.getPlayersGameUsers()) {
+        for (GameUser player: gameSession.getGameUsers()) {
             JSONObject obj = new JSONObject();
             obj.put("name", player.getName());
             ar.add(obj);
@@ -108,12 +108,12 @@ public class GameWebSocket {
     }
 
 
-    public void sendScores(@NotNull GameUser user) {
+    public void sendScores(GameSession gameSession) {
         JSONObject jsonStart = new JSONObject();
         jsonStart.put("status", "scores");
 
         JSONArray ar = new JSONArray();
-        for (GameUser player: user.getPlayersGameUsers()) {
+        for (GameUser player: gameSession.getGameUsers()) {
             JSONObject obj = new JSONObject();
             obj.put("name", player.getName());
             obj.put("score", player.getScore());

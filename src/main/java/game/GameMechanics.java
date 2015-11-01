@@ -89,7 +89,7 @@ public class GameMechanics {
 
         //noinspection Convert2streamapi
         for (GameUser user: gameSession.getGameUsers()) {
-            webSocketService.notifyAboutScores(user);
+            webSocketService.notifyAboutScores(user.getName(), gameSession);
         }
     }
 
@@ -141,7 +141,7 @@ public class GameMechanics {
             GameUser gameUser = gameSession.getGameUser(userName);
 
             if (gameUser != null) {
-                webSocketService.notifyStartGame(gameUser, gameTime);
+                webSocketService.notifyStartGame(userName, gameSession, gameTime);
             } else {
                 LOGGER.error("gameuser == null");
             }

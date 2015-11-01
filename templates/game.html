@@ -29,13 +29,16 @@
                     document.getElementById("time_of_game").innerHTML = data.time_of_game;
                     //document.getElementById("enemyName").innerHTML = data.enemyName;
 
-                    var p1 = $("#player1").html(data.players[0].name+ " : "+0).data("name",data.players[0]);
-                    var p2 = $("#player2").html(data.players[1].name+ " : "+0).data("name",data.players[1]);
-                    var p3 = $("#player3").html(data.players[2].name+ " : "+0).data("name",data.players[2]);
+                    console.log("Start: Пришло количество игроков: "+data.players.length);
+                    console.log("Их список: ");
+                    for(i=0;i<data.players.length;i++){
+                    	console.log(data.players[i].name);
+                    	$('#score').append("<p id="+data.players[i].name+">"+data.players[i].name+ " : 0</p>");
+                    }
                 }
 
                 if(data.status == "finish"){
-                    alert( "финиш игры");
+                   alert( "финиш игры");
                    document.getElementById("gameOver").style.display = "block";
                    document.getElementById("gameplay").style.display = "none";
 
@@ -44,10 +47,12 @@
                 }
 
                 if(data.status == "scores"){
-                    $("#player1").html(data.players[0].name+ " : "+data.players[0].score);
-                    $("#player2").html(data.players[1].name+ " : "+data.players[1].score);
-                    $("#player3").html(data.players[2].name+ " : "+data.players[2].score);
-
+                	console.log(data.status+" пришло количество игроков: "+data.players.length);
+                	console.log("их список: ");
+                    for(i=0;i<data.players.length;i++){
+                    	console.log(data.players[i].name);
+                    	$("#"+data.players[i].name).html(data.players[i].name+ " : "+data.players[i].score);
+                    }
                 }
 
                 if(data.status=="message"){
@@ -56,8 +61,7 @@
                 }
 
                 if(data.status=="leave"){
-                	var selector  = "p[data-name='"+data.name+"']";
-					$(selector).hide();
+                    $("#"+data.name).hide();
                 }
 
                 //if(data.status == "increment" && data.name == document.getElementById("enemyName").innerHTML){
@@ -66,7 +70,7 @@
             }
 
             ws.onclose = function (event) {
-
+            	console.log("соеднинение закрыто");
             }
 
         };
@@ -104,11 +108,7 @@
                 <div id="score">
                     <!--${name}-->
 
-                    <p id="player1" ></p>
-                    <p id="player2" ></p>
-                    <p id="player3" ></p>
-
-                    <p><span id="enemyName"></span>: <span id="enemyScore">0</span></p>
+                   <!-- <p><span id="enemyName"></span>: <span id="enemyScore">0</span></p>-->
                 </div>
 
                 <form name="gamePlay" action="">
