@@ -29,12 +29,12 @@ public class WebSocketGameServlet extends WebSocketServlet {
     @NotNull
     private GameServices gameServices;
     @NotNull
-    private UrlParameters gameUrlParameters;
+    private UrlParameters gameplaySocketUrl;
 
     public WebSocketGameServlet(@NotNull GameServices gameServices,
-                                @NotNull UrlParameters gameUrlParameters) {
+                                @NotNull UrlParameters gameplaySocketUrl) {
         this.gameServices = gameServices;
-        this.gameUrlParameters = gameUrlParameters;
+        this.gameplaySocketUrl = gameplaySocketUrl;
     }
 
     @Override
@@ -61,9 +61,9 @@ public class WebSocketGameServlet extends WebSocketServlet {
 
         Map<String, Object> pageVariables = new HashMap<>();
         pageVariables.put("name", hs.getAttribute("name"));
-        pageVariables.put("host_game", gameUrlParameters.getHost());
-        pageVariables.put("port_game", gameUrlParameters.getPort());
-        pageVariables.put("socket_url_game", gameUrlParameters.getSocketUrl());
+        pageVariables.put("host_game", gameplaySocketUrl.getHost());
+        pageVariables.put("port_game", gameplaySocketUrl.getPort());
+        pageVariables.put("socket_url_game", gameplaySocketUrl.getSocketUrl());
 
         try (PrintWriter pw = response.getWriter()) {
             if (pw != null) {
