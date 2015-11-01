@@ -1,0 +1,5 @@
+<class type='resourceSystem.GMResource'>
+    <stepTime>100</stepTime>
+    <gameTime>60000</gameTime>
+    <numberPlayers>3</numberPlayers>
+</class>
