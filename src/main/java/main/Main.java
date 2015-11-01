@@ -20,10 +20,16 @@ import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.jetty.websocket.servlet.WebSocketServlet;
 import org.jetbrains.annotations.NotNull;
+import resourceSystem.Resource;
+import resourceSystem.ResourceFactory;
+import utils.VFS;
 
 import javax.servlet.Servlet;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 import java.util.Properties;
 
 /**
@@ -41,6 +47,7 @@ public class Main {
     public static final String ADMIN_PAGE_URL = "/admin";
     public static final String GAME_SOCKET_URL = "/gameplay";
     public static final String PROPERTIES_FILE = "cfg/server.properties";
+    public static final String RESOURCES_DIRECTORY = "./data";
 
     public static void main(@NotNull String[] args) {
         String port;
@@ -64,16 +71,16 @@ public class Main {
 
         LOGGER.info("Host: {} Port: {}", host, port);
 
-        Server server = new Server(new Integer(port));
         UrlParameters gameUrlParameters = new UrlParameters(host, port, GAME_SOCKET_URL);
-        AccountService accountService = new AccountService();
-        accountService.autoFullUsers();
-        GameServices gameServices = new GameServices(accountService);
+        GameServices gameServices = new GameServices(RESOURCES_DIRECTORY);
+        gameServices.getAccountService().autoFullUsers();
+        Server server = new Server(new Integer(port));
 
-        Servlet signIn = new SignInServlet(accountService);
-        Servlet signUp = new SignUpServlet(accountService);
-        Servlet logout = new LogoutServlet(accountService);
-        Servlet admin = new AdminPageServlet(accountService, server);
+
+        Servlet signIn = new SignInServlet(gameServices.getAccountService());
+        Servlet signUp = new SignUpServlet(gameServices.getAccountService());
+        Servlet logout = new LogoutServlet(gameServices.getAccountService());
+        Servlet admin = new AdminPageServlet(gameServices.getAccountService(), server);
         Servlet mainPage = new MainPageServlet();
         WebSocketServlet game = new WebSocketGameServlet(gameServices, gameUrlParameters);
 

@@ -24,7 +24,7 @@ public class WebSocketService {
 
 
 
-    public void notifyAboutScores(@NotNull String userName, GameSession gameSession) {
+    public void notifyAboutScores(@NotNull String userName, @NotNull GameSession gameSession) {
         GameWebSocket gameWebSocket = userSockets.get(userName);
         if (gameWebSocket != null) {
             gameWebSocket.sendScores(gameSession);
@@ -51,7 +51,7 @@ public class WebSocketService {
         }
     }
 
-    public void notifyStartGame(@NotNull String userName, GameSession gameSession, int gameTime) {
+    public void notifyStartGame(@NotNull String userName, @NotNull GameSession gameSession, int gameTime) {
         GameWebSocket gameWebSocket = userSockets.get(userName);
         if (gameWebSocket != null) {
             gameWebSocket.sendStartGame(gameSession, gameTime);

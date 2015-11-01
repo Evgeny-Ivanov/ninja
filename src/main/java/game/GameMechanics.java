@@ -3,6 +3,8 @@ package game;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
+import resourceSystem.GMResource;
+import resourceSystem.Resource;
 import utils.TimeHelper;
 
 import java.util.*;
@@ -14,13 +16,8 @@ public class GameMechanics {
     @SuppressWarnings("ConstantConditions")
     @NotNull
     static final Logger LOGGER = LogManager.getLogger(GameMechanics.class);
-
-    private static final int STEP_TIME = 100;
-    @SuppressWarnings("MagicNumber")
-    private int gameTime = 60 * 1000;
-    @SuppressWarnings("FieldCanBeLocal")
-    private int numberPlayers = 3;//далее будем грузить из файлов
-
+    @NotNull
+    private GMResource gMResource;
     @NotNull
     private WebSocketService webSocketService;
     @NotNull
@@ -30,14 +27,22 @@ public class GameMechanics {
     @NotNull
     private List<String> namesPlayers = new ArrayList<>();
 
-    public GameMechanics(@NotNull WebSocketService webSocketService) {
+    public GameMechanics(@NotNull WebSocketService webSocketService,
+                         @NotNull Map<String, Resource> resources) {
         this.webSocketService = webSocketService;
+
+        GMResource newGMResource = (GMResource) (resources.get("GMResource"));
+        if (newGMResource == null) {
+            LOGGER.error("GMResource == null");
+        } else {
+            this.gMResource = newGMResource;
+        }
     }
 
     public void addUser(@NotNull String userName) {
         namesPlayers.add(userName);
 
-        if (namesPlayers.size() == numberPlayers) {
+        if (namesPlayers.size() == gMResource.getNumberPlayers()) {
             startGame();
             namesPlayers.clear();
         }
@@ -109,13 +114,13 @@ public class GameMechanics {
         //noinspection InfiniteLoopStatement
         while (true) {
             gmStep();
-            TimeHelper.sleep(STEP_TIME);
+            TimeHelper.sleep(gMResource.getStepTime());
         }
     }
 
     private void gmStep() {
         for (GameSession session : allSessions) {
-            if (session.getSessionTime() > gameTime) {
+            if (session.getSessionTime() > gMResource.getGameTime()) {
                 finishGame(session);
             }
         }
@@ -141,7 +146,7 @@ public class GameMechanics {
             GameUser gameUser = gameSession.getGameUser(userName);
 
             if (gameUser != null) {
-                webSocketService.notifyStartGame(userName, gameSession, gameTime);
+                webSocketService.notifyStartGame(userName, gameSession, gMResource.getGameTime());
             } else {
                 LOGGER.error("gameuser == null");
             }
