@@ -12,8 +12,8 @@
         var enemyName = "";
 
         init = function () {
-            ws = new WebSocket("ws://${host_game}:${port_game}${socket_url_game}");
-
+            ws = new WebSocket("ws://${host_game}:80${socket_url_game}");
+//${port_game}
             ws.onopen = function (event) {
 
             }
