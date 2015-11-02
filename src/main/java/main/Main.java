@@ -57,7 +57,7 @@ public class Main {
         WebSocketServlet game = new WebSocketGameServlet(gameServices, gameplaySocketUrl);
 
         ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
-        context.setVirtualHosts(new String[]{host});
+        //context.setVirtualHosts(new String[]{host});
 
         context.addServlet(new ServletHolder(signIn), configuration.getSigninPageUrl());
         context.addServlet(new ServletHolder(signUp), configuration.getSignupPageUrl());
