@@ -31,7 +31,7 @@ public final class Configuration {
     private String port;
     private String host;
 
-    private Configuration(){
+    private Configuration() {
 
         try (final FileInputStream fis = new FileInputStream(PROPERTIES_FILE)) {
             final Properties properties = new Properties();
@@ -71,9 +71,9 @@ public final class Configuration {
             LOGGER.error("Servlet url is null");
             throw new NullPointerException("Servlet Url is null");
         }
-
     }
 
+    @NotNull
     public static Configuration getInstance(){
         if(configuration == null){
             configuration = new Configuration();

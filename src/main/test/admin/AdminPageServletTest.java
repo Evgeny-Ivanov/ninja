@@ -50,7 +50,6 @@ public class AdminPageServletTest extends Mockito {
 
         String timeString = "10";
 
-        //noinspection ConstantConditions
         when(request.getParameter("shutdown")).thenReturn(timeString);
 
         servlet.doGet(request,response);
