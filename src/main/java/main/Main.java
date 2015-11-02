@@ -43,10 +43,6 @@ public class Main {
     @NotNull
     static final Logger LOGGER = LogManager.getLogger(Main.class);
 
-
-    public static final String RESOURCES_DIRECTORY = "./data";
-
-
     public static void main(@NotNull String[] args) {
         Configuration configuration;
         try {
@@ -58,12 +54,14 @@ public class Main {
 
         int port = configuration.getPort();
         String host = configuration.getHost();
+        if(host == null){
+            host = "localhost";
+        }
 
         LOGGER.info("Host: {} Port: {}", host, port);
 
-
         UrlParameters gameUrlParameters = new UrlParameters(host,Integer.toString(port),configuration.getGameSocketUrl());
-        GameServices gameServices = new GameServices(RESOURCES_DIRECTORY);
+        GameServices gameServices = new GameServices(configuration.getResourcesDirectory());
         gameServices.getAccountService().autoFullUsers();
         Server server = new Server(port);
 

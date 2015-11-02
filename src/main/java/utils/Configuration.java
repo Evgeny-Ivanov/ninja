@@ -3,6 +3,7 @@ package utils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -11,7 +12,7 @@ import java.util.Properties;
 /**
  * Created by stalker on 01.11.15.
  */
-public class Configuration {
+public final class Configuration {
     @SuppressWarnings("ConstantConditions")
     @NotNull
     static final Logger LOGGER = LogManager.getLogger(Configuration.class);
@@ -25,6 +26,7 @@ public class Configuration {
     private String mainPageUrl;
     private String adminPageUrl;
     private String gameSocketUrl;
+    private String resourcesDirectory;
 
     private String port;
     private String host;
@@ -44,6 +46,7 @@ public class Configuration {
             mainPageUrl = properties.getProperty("mainPageUrl");
             adminPageUrl = properties.getProperty("adminPageUrl");
             gameSocketUrl = properties.getProperty("gameSocketUrl");
+            resourcesDirectory = properties.getProperty("resourcesDirectory");
 
         } catch (IOException e) {
             LOGGER.error(e);
@@ -55,9 +58,16 @@ public class Configuration {
             throw new NullPointerException("Port or host is null");
         }
 
-        if(signinPageUrl == null || signupPageUrl == null
-                || logoutPageUrl == null || mainPageUrl == null
-                || adminPageUrl == null || gameSocketUrl == null){
+        if(signinPageUrl == null || signupPageUrl == null){
+            LOGGER.error("Servlet url is null");
+            throw new NullPointerException("Servlet Url is null");
+        }
+        if(logoutPageUrl == null || mainPageUrl == null){
+            LOGGER.error("Servlet url is null");
+            throw new NullPointerException("Servlet Url is null");
+        }
+
+        if(adminPageUrl == null || gameSocketUrl == null){
             LOGGER.error("Servlet url is null");
             throw new NullPointerException("Servlet Url is null");
         }
@@ -74,33 +84,37 @@ public class Configuration {
     public int getPort(){
         return new Integer(port);
     }
-
+    @Nullable
     public String getHost(){
         return host;
     }
 
-
+    @Nullable
     public String getSigninPageUrl(){
         return signinPageUrl;
     }
-
+    @Nullable
     public String getSignupPageUrl(){
         return signupPageUrl;
     }
-
-    public String getMainPageUrl(){
-        return mainPageUrl;
-    }
-
+    @Nullable
+    public String getMainPageUrl(){ return mainPageUrl; }
+    @Nullable
     public String getLogoutPageUrl(){
         return logoutPageUrl;
     }
-
+    @Nullable
     public String getAdminPageUrl(){
         return adminPageUrl;
     }
-
+    @NotNull
     public String getGameSocketUrl(){
-        return  gameSocketUrl;
+        if(gameSocketUrl != null) return  gameSocketUrl;
+        return "/gameplay";
+    }
+    @NotNull
+    public String getResourcesDirectory() {
+        if(resourcesDirectory != null) return  resourcesDirectory;
+        return "./data";
     }
 }
