@@ -1,6 +1,7 @@
 package game;
 
-import base.GameServices;
+import base.AccountService;
+import base.GameContext;
 import base.UserProfile;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -16,12 +17,7 @@ public class GameWebSocketCreator implements WebSocketCreator {
     @SuppressWarnings("ConstantConditions")
     @NotNull
     static final Logger LOGGER = LogManager.getLogger(GameWebSocketCreator.class);
-    @NotNull
-    private GameServices gameServices;
 
-    public GameWebSocketCreator(@NotNull GameServices gameServices) {
-        this.gameServices = gameServices;
-    }
 
     @Override
     public Object createWebSocket(ServletUpgradeRequest req, ServletUpgradeResponse resp) {
@@ -33,8 +29,25 @@ public class GameWebSocketCreator implements WebSocketCreator {
             LOGGER.error("Error recive session");
         }
 
+        GameContext gameContext = GameContext.getInstance();
+
+        AccountService accountService = (AccountService)gameContext.get(AccountService.class);
+        if (accountService == null) {
+            throw new NullPointerException();
+        }
+
+        GameMechanics gameMechanics = (GameMechanics)gameContext.get(GameMechanics.class);
+        if (gameMechanics == null) {
+            throw new NullPointerException();
+        }
+
+        WebSocketService webSocketService = (WebSocketService)gameContext.get(WebSocketService.class);
+        if (webSocketService == null) {
+            throw new NullPointerException();
+        }
+
         String name;
-        UserProfile userProfile = gameServices.getAccountService().getSessions(sessionId);
+        UserProfile userProfile = accountService.getSessions(sessionId);
 
         if (userProfile != null) {
             name = userProfile.getName();
@@ -43,6 +56,6 @@ public class GameWebSocketCreator implements WebSocketCreator {
             name = "";
         }
 
-        return new GameWebSocket(name, gameServices.getGameMechanics(), gameServices.getWebSocketService());
+        return new GameWebSocket(name, gameMechanics, webSocketService);
     }
 }

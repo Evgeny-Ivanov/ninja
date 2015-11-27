@@ -1,10 +1,11 @@
 package game;
 
+import base.GameContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 import resourceSystem.GMResource;
-import resourceSystem.Resource;
+import resourceSystem.ResourcesContext;
 import utils.TimeHelper;
 
 import java.util.*;
@@ -16,10 +17,12 @@ public class GameMechanics {
     @SuppressWarnings("ConstantConditions")
     @NotNull
     static final Logger LOGGER = LogManager.getLogger(GameMechanics.class);
+
     @NotNull
     private GMResource gMResource;
     @NotNull
     private WebSocketService webSocketService;
+
     @NotNull
     private Map<String, GameSession> nameToGame = new HashMap<>();
     @NotNull
@@ -27,16 +30,28 @@ public class GameMechanics {
     @NotNull
     private List<String> namesPlayers = new ArrayList<>();
 
-    public GameMechanics(@NotNull WebSocketService webSocketService,
-                         @NotNull Map<String, Resource> resources) {
-        this.webSocketService = webSocketService;
 
-        GMResource newGMResource = (GMResource) (resources.get("GMResource"));
-        if (newGMResource == null) {
-            LOGGER.error("GMResource == null");
-        } else {
-            this.gMResource = newGMResource;
+    public GameMechanics() {
+        WebSocketService newWebSocketService = (WebSocketService)GameContext.getInstance().get(WebSocketService.class);
+        if (newWebSocketService == null) {
+            LOGGER.error("newWebSocketService == null");
+            throw new NullPointerException();
         }
+        this.webSocketService = newWebSocketService;
+
+        ResourcesContext resourcesContext = (ResourcesContext)GameContext.getInstance().get(ResourcesContext.class);
+        if (resourcesContext == null) {
+            LOGGER.error("resourcesContext == null");
+            throw new NullPointerException();
+        }
+        this.webSocketService = newWebSocketService;
+
+        GMResource newGMResource = (GMResource) (resourcesContext.get(GMResource.class));
+        if (newGMResource == null) {
+            LOGGER.error("newGMResource == null");
+            throw new NullPointerException();
+        }
+        this.gMResource = newGMResource;
     }
 
     public void addUser(@NotNull String userName) {

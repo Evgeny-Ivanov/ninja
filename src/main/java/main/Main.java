@@ -1,14 +1,15 @@
 package main;
 
-
 import admin.AdminPageServlet;
-import base.GameServices;
-import base.UrlParameters;
+import base.AccountService;
+import base.GameContext;
 import frontend.LogoutServlet;
 import frontend.MainPageServlet;
 import frontend.SignInServlet;
 import frontend.SignUpServlet;
+import game.GameMechanics;
 import game.WebSocketGameServlet;
+import game.WebSocketService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.eclipse.jetty.server.Handler;
@@ -19,7 +20,9 @@ import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.jetty.websocket.servlet.WebSocketServlet;
 import org.jetbrains.annotations.NotNull;
-import utils.Configuration;
+import base.Configuration;
+import resourceSystem.ResourcesContext;
+
 import javax.servlet.Servlet;
 
 /**
@@ -30,41 +33,46 @@ public class Main {
     @NotNull
     static final Logger LOGGER = LogManager.getLogger(Main.class);
 
+    private static final String PROPERTIES_FILE = "cfg/server.properties";
+
     public static void main(@NotNull String[] args) {
-        Configuration configuration = Configuration.getInstance();
 
-        int port = configuration.getPort();
-        String host = configuration.getHost();
+        GameContext gameСontext = GameContext.getInstance();
 
-        if(host == null){
-            host = "localhost";
-        }
+        Configuration conf = new Configuration(PROPERTIES_FILE);
+        gameСontext.add(Configuration.class, conf);
 
-        LOGGER.info("Host: {} Port: {}", host, port);
+        AccountService accountService = new AccountService();
+        gameСontext.add(AccountService.class, accountService);
+        accountService.autoFullUsers();
 
-        UrlParameters gameplaySocketUrl = new UrlParameters(host,Integer.toString(port),configuration.getGameSocketUrl());
-        GameServices gameServices = new GameServices(configuration.getResourcesDirectory());
+        WebSocketService webSocketService = new WebSocketService();
+        gameСontext.add(WebSocketService.class, webSocketService);
 
-        gameServices.getAccountService().autoFullUsers();
+        ResourcesContext resourcesContext = new ResourcesContext(conf.getResourcesDirectory());
+        gameСontext.add(ResourcesContext.class, resourcesContext);
 
-        Server server = new Server(port);
+        GameMechanics gameMechanics = new GameMechanics();
+        gameСontext.add(GameMechanics.class, gameMechanics);
+
+        Server server = new Server(conf.getPort());
 
         Servlet mainPage = new MainPageServlet();
-        Servlet signIn = new SignInServlet(gameServices.getAccountService());
-        Servlet signUp = new SignUpServlet(gameServices.getAccountService());
-        Servlet logout = new LogoutServlet(gameServices.getAccountService());
-        Servlet admin = new AdminPageServlet(gameServices.getAccountService(), server);
-        WebSocketServlet game = new WebSocketGameServlet(gameServices, gameplaySocketUrl);
+        Servlet signIn = new SignInServlet(accountService);
+        Servlet signUp = new SignUpServlet(accountService);
+        Servlet logout = new LogoutServlet(accountService);
+        Servlet admin = new AdminPageServlet(accountService, server);
+        WebSocketServlet game = new WebSocketGameServlet();
 
         ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
-        //context.setVirtualHosts(new String[]{host});
+        //context.setVirtualHosts(new String[]{configuration.getHost()});
 
-        context.addServlet(new ServletHolder(signIn), configuration.getSigninPageUrl());
-        context.addServlet(new ServletHolder(signUp), configuration.getSignupPageUrl());
-        context.addServlet(new ServletHolder(admin), configuration.getAdminPageUrl());
-        context.addServlet(new ServletHolder(logout), configuration.getLogoutPageUrl());
-        context.addServlet(new ServletHolder(mainPage), configuration.getMainPageUrl());
-        context.addServlet(new ServletHolder(game), configuration.getGameSocketUrl());
+        context.addServlet(new ServletHolder(signIn), conf.getSigninPageUrl());
+        context.addServlet(new ServletHolder(signUp), conf.getSignupPageUrl());
+        context.addServlet(new ServletHolder(admin), conf.getAdminPageUrl());
+        context.addServlet(new ServletHolder(logout), conf.getLogoutPageUrl());
+        context.addServlet(new ServletHolder(mainPage), conf.getMainPageUrl());
+        context.addServlet(new ServletHolder(game), conf.getGameSocketUrl());
 
         ResourceHandler resource_handler = new ResourceHandler();
         resource_handler.setDirectoriesListed(true);
@@ -72,7 +80,6 @@ public class Main {
 
         HandlerList handlers = new HandlerList();
         handlers.setHandlers(new Handler[]{resource_handler, context});
-
         server.setHandler(handlers);
 
         try {
@@ -82,6 +89,6 @@ public class Main {
             e.printStackTrace();
         }
 
-        gameServices.getGameMechanics().run();
+        gameMechanics.run();
     }
 }

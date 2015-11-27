@@ -1,13 +1,12 @@
 package game;
 
-import base.GameServices;
-import base.UrlParameters;
+import base.GameContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.eclipse.jetty.websocket.servlet.WebSocketServlet;
 import org.eclipse.jetty.websocket.servlet.WebSocketServletFactory;
 import org.jetbrains.annotations.NotNull;
-import utils.Configuration;
+import base.Configuration;
 import utils.PageGenerator;
 
 import javax.servlet.ServletException;
@@ -27,23 +26,15 @@ public class WebSocketGameServlet extends WebSocketServlet {
     @NotNull
     static final Logger LOGGER = LogManager.getLogger(WebSocketGameServlet.class);
     private static final int IDLE_TIME = 10 * 60 * 1000;
-    @NotNull
-    private GameServices gameServices;
-    @NotNull
-    private UrlParameters gameplaySocketUrl;
 
-    public WebSocketGameServlet(@NotNull GameServices gameServices,
-                                @NotNull UrlParameters gameplaySocketUrl) {
-        this.gameServices = gameServices;
-        this.gameplaySocketUrl = gameplaySocketUrl;
-    }
+
 
     @Override
     public void configure(WebSocketServletFactory factory) {
         //noinspection ConstantConditions
         factory.getPolicy().setIdleTimeout(IDLE_TIME);
-        factory.setCreator(new GameWebSocketCreator(gameServices));
-        LOGGER.info("call WebSocketGameServlet.configure");
+        factory.setCreator(new GameWebSocketCreator());
+        LOGGER.info("call configure");
     }
 
     @Override
@@ -59,13 +50,14 @@ public class WebSocketGameServlet extends WebSocketServlet {
         if (hs.getAttribute("name") == null || "Incognitto".equals(hs.getAttribute("name"))) {
             return;
         }
-        Configuration configuration = Configuration.getInstance();
+
+        Configuration conf = (Configuration)GameContext.getInstance().get(Configuration.class);
 
         Map<String, Object> pageVariables = new HashMap<>();
         pageVariables.put("name", hs.getAttribute("name"));
-        pageVariables.put("host_game", configuration.getHost());
-        pageVariables.put("port_game", configuration.getPort());
-        pageVariables.put("socket_url_game", configuration.getGameSocketUrl());
+        pageVariables.put("host_game", conf.getGameSocketHost());
+        pageVariables.put("port_game", conf.getGameSocketPort());
+        pageVariables.put("url_game", conf.getGameSocketUrl());
 
         try (PrintWriter pw = response.getWriter()) {
             if (pw != null) {

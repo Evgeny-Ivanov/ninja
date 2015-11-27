@@ -12,8 +12,8 @@
         var enemyName = "";
 
         init = function () {
-            ws = new WebSocket("ws://${host_game}:80${socket_url_game}");
-//${port_game}
+            ws = new WebSocket("ws://${host_game}:${port_game}${url_game}");
+
             ws.onopen = function (event) {
 
             }
@@ -125,7 +125,7 @@
     <p><b>Чат:</b></p>
    <p><textarea id="textarea" rows="10" cols="45" name="text" ></textarea></p>
   <form action="javascript:void(0)" method="post" style="">
-    <p><input id="chat" name="text"></input></p>
+    <p><input id="chat" name="text" /></p>
     <p><input  type="submit" onclick="sendMessageChat();" value="Отправить"></p>
   </form>
 </div>
