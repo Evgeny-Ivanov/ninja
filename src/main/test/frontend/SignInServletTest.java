@@ -1,6 +1,6 @@
 package frontend;
 
-import base.AccountService;
+import base.AccountServiceImpl;
 import base.UserProfile;
 import org.jetbrains.annotations.NotNull;
 import org.junit.Before;
@@ -20,7 +20,7 @@ import static org.junit.Assert.*;
  */
 public class SignInServletTest extends Mockito {
     @NotNull
-    private final AccountService accountService = new AccountService();
+    private final AccountServiceImpl accountService = new AccountServiceImpl();
 
     @SuppressWarnings("ConstantConditions")
     @NotNull

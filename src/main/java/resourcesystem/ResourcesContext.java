@@ -4,6 +4,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
 import java.util.Map;
 
 /**
@@ -16,26 +17,27 @@ public class ResourcesContext {
 
     private Map<Class<?>, Resource> context;
 
-    private ResourcesContext() {}
+    private ResourcesContext() {
+    }
 
     public ResourcesContext(@NotNull String dir) {
         context = ResourceFactory.loadResources(dir);
     }
 
-    public void add(Class<?> clazz, Resource resource){
+    public void add(Class<?> clazz, Resource resource) {
         if (context == null) {
             LOGGER.error("context == null");
             throw new NullPointerException();
         }
 
-        if(context.containsKey(clazz)){
+        if (context.containsKey(clazz)) {
             throw new RuntimeException();
         }
         context.put(clazz, resource);
     }
 
     @Nullable
-    public Resource get(Class<?> clazz){
+    public Resource get(Class<?> clazz) {
         if (context == null) {
             LOGGER.error("context == null");
             throw new NullPointerException();

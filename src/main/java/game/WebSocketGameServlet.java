@@ -22,7 +22,8 @@ import java.util.Map;
  * Created by ilya on 27.10.15.
  */
 public class WebSocketGameServlet extends WebSocketServlet {
-    @NotNull  @SuppressWarnings("ConstantConditions")
+    @NotNull
+    @SuppressWarnings("ConstantConditions")
     static final Logger LOGGER = LogManager.getLogger(WebSocketGameServlet.class);
 
     private static final int IDLE_TIME = 10 * 60 * 1000;
@@ -46,13 +47,13 @@ public class WebSocketGameServlet extends WebSocketServlet {
             return;
         }
 
-        String name = (String)hs.getAttribute("name");
+        String name = (String) hs.getAttribute("name");
         if (name == null || "Incognitto".equals(name)) {
             LOGGER.warn("name == (null || Incognitto)");
             return;
         }
 
-        Configuration conf = (Configuration)GameContext.getInstance().get(Configuration.class);
+        Configuration conf = (Configuration) GameContext.getInstance().get(Configuration.class);
         if (conf == null) {
             LOGGER.error("conf == null");
             throw new NullPointerException();

@@ -1,6 +1,7 @@
 package frontend;
 
 import base.AccountService;
+import base.AccountServiceImpl;
 import base.UserProfile;
 import org.jetbrains.annotations.NotNull;
 import utils.PageGenerator;
@@ -28,7 +29,7 @@ public class SignUpServlet extends HttpServlet {
 
     @Override
     public void doPost(@NotNull HttpServletRequest request,
-                      @NotNull HttpServletResponse response) throws ServletException, IOException {
+                       @NotNull HttpServletResponse response) throws ServletException, IOException {
         response.setCharacterEncoding("utf-8");
 
         String name = request.getParameter("name");

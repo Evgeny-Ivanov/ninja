@@ -17,20 +17,21 @@ public final class GameContext {
         return INSTANCE;
     }
 
-    private GameContext() {}
+    private GameContext() {
+    }
 
     @NotNull
     private final Map<Class<?>, Object> context = new HashMap<>();
 
-    public void add(Class<?> clazz, Object object){
-        if(context.containsKey(clazz)){
+    public void add(Class<?> clazz, Object object) {
+        if (context.containsKey(clazz)) {
             throw new RuntimeException();
         }
         context.put(clazz, object);
     }
 
     @Nullable
-    public Object get(Class<?> clazz){
+    public Object get(Class<?> clazz) {
         return context.get(clazz);
     }
 }

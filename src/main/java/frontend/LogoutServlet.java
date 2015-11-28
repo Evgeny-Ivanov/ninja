@@ -1,6 +1,7 @@
 package frontend;
 
 import base.AccountService;
+import base.AccountServiceImpl;
 import org.jetbrains.annotations.NotNull;
 import utils.PageGenerator;
 
@@ -40,7 +41,7 @@ public class LogoutServlet extends HttpServlet {
 
         try (PrintWriter pw = response.getWriter()) {
             if (pw != null) {
-                
+
                 if (accountService.deleteSessions(hs.getId()) == null) {
                     pageVariables.put("logoutStatus", "User already logout");
                     pw.println(PageGenerator.getPage("auth/logoutstatus.html", pageVariables));

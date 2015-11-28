@@ -1,6 +1,8 @@
 package admin;
-import utils.TimeHelper;
+
 import base.AccountService;
+import utils.TimeHelper;
+import base.AccountServiceImpl;
 import org.eclipse.jetty.server.Server;
 import org.jetbrains.annotations.NotNull;
 import utils.PageGenerator;
@@ -22,14 +24,14 @@ public class AdminPageServlet extends HttpServlet {
     @NotNull
     private final Server server;
 
-    public AdminPageServlet(@NotNull AccountService accountService, @NotNull Server server){
+    public AdminPageServlet(@NotNull AccountService accountService, @NotNull Server server) {
         this.accountService = accountService;
         this.server = server;
     }
 
     @Override
     public void doGet(@NotNull HttpServletRequest request,
-                      @NotNull HttpServletResponse response) throws ServletException, IOException{
+                      @NotNull HttpServletResponse response) throws ServletException, IOException {
         response.setContentType("text/html;charset=utf-8");
         Map<String, Object> pageVariables = new HashMap<>();
 
@@ -39,7 +41,7 @@ public class AdminPageServlet extends HttpServlet {
             if (timeMS == null) {
                 return;
             }
-            System.out.print("Server will be down after: "+ timeMS + " ms");
+            System.out.print("Server will be down after: " + timeMS + " ms");
             TimeHelper.sleep(timeMS);
             System.out.print("\nShutdown");
             try {
@@ -50,8 +52,8 @@ public class AdminPageServlet extends HttpServlet {
         }
 
         pageVariables.put("status", "run");
-        pageVariables.put("countUser",accountService.countUsers());
-        pageVariables.put("countSession",accountService.countSessions());
+        pageVariables.put("countUser", accountService.countUsers());
+        pageVariables.put("countSession", accountService.countSessions());
 
         try (PrintWriter pw = response.getWriter()) {
             if (pw != null) {

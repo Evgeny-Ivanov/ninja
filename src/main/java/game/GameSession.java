@@ -11,21 +11,18 @@ import java.util.*;
 public class GameSession {
     private final long startTime;
     @NotNull
-    private final List<GameUser> playersGameUsers = new ArrayList<>();
-    @NotNull
     private final Map<String, GameUser> users = new HashMap<>();
 
     public GameSession(@NotNull Set<String> namesPlayers) {
         startTime = new Date().getTime();
 
-        for (String nameUser: namesPlayers) {
+        for (String nameUser : namesPlayers) {
             GameUser gameUser = new GameUser(nameUser);
             users.put(nameUser, gameUser);
-            playersGameUsers.add(gameUser);
         }
     }
 
-    public long getSessionTime(){
+    public long getSessionTime() {
         return new Date().getTime() - startTime;
     }
 
@@ -35,15 +32,15 @@ public class GameSession {
     }
 
     @NotNull
-    public List<GameUser> getGameUsers() {
-        return playersGameUsers;
+    public Collection<GameUser> getGameUsers() {
+        return users.values();
     }
 
     @NotNull
-    public String getNameWinner(){
+    public String getNameWinner() {
         String nameWinner = "";
         int maxScore = 0;
-        for (GameUser gameUser: playersGameUsers) {
+        for (GameUser gameUser : users.values()) {
             if (gameUser.getScore() >= maxScore) {
                 maxScore = gameUser.getScore();
                 nameWinner = gameUser.getName();
@@ -58,7 +55,6 @@ public class GameSession {
         if (gameUser == null) {
             return false;
         }
-        playersGameUsers.remove(gameUser);
         users.remove(userName);
         return true;
     }

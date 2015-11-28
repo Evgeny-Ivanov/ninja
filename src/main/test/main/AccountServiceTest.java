@@ -1,6 +1,6 @@
 package main;
 
-import base.AccountService;
+import base.AccountServiceImpl;
 import base.UserProfile;
 import org.jetbrains.annotations.NotNull;
 import org.junit.Before;
@@ -13,7 +13,7 @@ import static org.junit.Assert.*;
  */
 public class AccountServiceTest {
     @NotNull
-    private AccountService accountService = new AccountService();
+    private AccountServiceImpl accountService = new AccountServiceImpl();
 
     @NotNull
     private final UserProfile testUser = new UserProfile("testLogin", "testPassword", "test@mail.ru");
@@ -23,7 +23,7 @@ public class AccountServiceTest {
 
     @Before
     public void setUp() throws Exception {
-        accountService = new AccountService();
+        accountService = new AccountServiceImpl();
     }
 
     @Test

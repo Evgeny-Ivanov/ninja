@@ -57,30 +57,12 @@ public class GameMessager {
         result.addProperty("time_of_game", gameTime / 1000);
 
         JsonArray arr = new JsonArray();
-        for (GameUser player: gameSession.getGameUsers()) {
+        for (GameUser player : gameSession.getGameUsers()) {
             JsonObject guser = new JsonObject();
             guser.addProperty("name", player.getName());
             arr.add(guser);
         }
 
-        result.add("players", arr);
-
-        //noinspection ConstantConditions
-        return result.toString();
-    }
-
-    @NotNull
-    public String createMessageIncrementScore(@NotNull GameSession gameSession) {
-        JsonObject result = new JsonObject();
-        result.addProperty("status", "scores");
-
-        JsonArray arr = new JsonArray();
-        for (GameUser player: gameSession.getGameUsers()) {
-            JsonObject guser = new JsonObject();
-            guser.addProperty("name", player.getName());
-            guser.addProperty("score", player.getScore());
-            arr.add(guser);
-        }
         result.add("players", arr);
 
         //noinspection ConstantConditions
@@ -92,6 +74,24 @@ public class GameMessager {
         JsonObject result = new JsonObject();
         result.addProperty("status", "finish");
         result.addProperty("win", nameWinner);
+
+        //noinspection ConstantConditions
+        return result.toString();
+    }
+
+    @NotNull
+    public String createMessageIncrementScore(@NotNull GameSession gameSession) {
+        JsonObject result = new JsonObject();
+        result.addProperty("status", "scores");
+
+        JsonArray arr = new JsonArray();
+        for (GameUser player : gameSession.getGameUsers()) {
+            JsonObject guser = new JsonObject();
+            guser.addProperty("name", player.getName());
+            guser.addProperty("score", player.getScore());
+            arr.add(guser);
+        }
+        result.add("players", arr);
 
         //noinspection ConstantConditions
         return result.toString();

@@ -3,6 +3,7 @@ package base;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
+
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Properties;
@@ -186,18 +187,18 @@ public final class Configuration {
 
     @Override
     public String toString() {
-        return "Configuration{" +'\n' +
+        return "Configuration{" + '\n' +
                 "signinPageUrl='" + signinPageUrl + '\'' + '\n' +
-                ", signupPageUrl='" + signupPageUrl + '\'' +'\n' +
-                ", logoutPageUrl='" + logoutPageUrl + '\'' +'\n' +
-                ", mainPageUrl='" + mainPageUrl + '\'' +'\n' +
-                ", adminPageUrl='" + adminPageUrl + '\'' +'\n' +
-                ", resourcesDirectory='" + resourcesDirectory + '\'' +'\n' +
-                ", gameSocketUrl='" + gameSocketUrl + '\'' +'\n' +
-                ", gameSocketHost='" + gameSocketHost + '\'' +'\n' +
-                ", gameSocketPort='" + gameSocketPort + '\'' +'\n' +
-                ", host='" + host + '\'' +'\n' +
-                ", port='" + port + '\'' +'\n' +
+                ", signupPageUrl='" + signupPageUrl + '\'' + '\n' +
+                ", logoutPageUrl='" + logoutPageUrl + '\'' + '\n' +
+                ", mainPageUrl='" + mainPageUrl + '\'' + '\n' +
+                ", adminPageUrl='" + adminPageUrl + '\'' + '\n' +
+                ", resourcesDirectory='" + resourcesDirectory + '\'' + '\n' +
+                ", gameSocketUrl='" + gameSocketUrl + '\'' + '\n' +
+                ", gameSocketHost='" + gameSocketHost + '\'' + '\n' +
+                ", gameSocketPort='" + gameSocketPort + '\'' + '\n' +
+                ", host='" + host + '\'' + '\n' +
+                ", port='" + port + '\'' + '\n' +
                 '}';
     }
 }

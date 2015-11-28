@@ -8,6 +8,7 @@ import org.eclipse.jetty.websocket.api.annotations.OnWebSocketConnect;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketMessage;
 import org.eclipse.jetty.websocket.api.annotations.WebSocket;
 import org.jetbrains.annotations.NotNull;
+
 import java.io.IOException;
 
 /**
@@ -16,7 +17,8 @@ import java.io.IOException;
 
 @WebSocket
 public class GameWebSocket {
-    @NotNull @SuppressWarnings("ConstantConditions")
+    @NotNull
+    @SuppressWarnings("ConstantConditions")
     static final Logger LOGGER = LogManager.getLogger(GameWebSocket.class);
 
     @NotNull
@@ -43,14 +45,14 @@ public class GameWebSocket {
     @OnWebSocketConnect
     public void onOpen(@NotNull Session newSession) {
         this.session = newSession;
-        webSocketService.addUserSocket(this);
+        webSocketService.add(this);
         gameMechanics.addUser(myName);
     }
 
     @OnWebSocketClose
     public void onClose(int statusCode, String reason) {
         gameMechanics.removeUser(myName);
-        webSocketService.removeSocket(myName);
+        webSocketService.remove(myName);
     }
 
     @OnWebSocketMessage

@@ -7,13 +7,15 @@ import org.jetbrains.annotations.NotNull;
 import resourcesystem.GMResource;
 import resourcesystem.ResourcesContext;
 import utils.TimeHelper;
+
 import java.util.*;
 
 /**
  * Created by ilya on 27.10.15.
  */
-public class GameMechanics {
-    @NotNull @SuppressWarnings("ConstantConditions")
+public class GameMechanics{
+    @NotNull
+    @SuppressWarnings("ConstantConditions")
     static final Logger LOGGER = LogManager.getLogger(GameMechanics.class);
 
     @NotNull
@@ -32,14 +34,16 @@ public class GameMechanics {
 
 
     public GameMechanics() {
-        WebSocketService newWebSocketService = (WebSocketService)GameContext.getInstance().get(WebSocketService.class);
+        GameContext gameContext = GameContext.getInstance();
+
+        WebSocketService newWebSocketService = (WebSocketService) gameContext.get(WebSocketService.class);
         if (newWebSocketService == null) {
             LOGGER.error("newWebSocketService == null");
             throw new NullPointerException();
         }
         this.webSocketService = newWebSocketService;
 
-        ResourcesContext resourcesContext = (ResourcesContext)GameContext.getInstance().get(ResourcesContext.class);
+        ResourcesContext resourcesContext = (ResourcesContext) gameContext.get(ResourcesContext.class);
         if (resourcesContext == null) {
             LOGGER.error("resourcesContext == null");
             throw new NullPointerException();
@@ -70,7 +74,7 @@ public class GameMechanics {
     }
 
     private void gmStep(int gameTime) {
-        for (Iterator<GameSession> iterator = allSessions.iterator(); iterator.hasNext();) {
+        for (Iterator<GameSession> iterator = allSessions.iterator(); iterator.hasNext(); ) {
             GameSession session = iterator.next();
             if (session == null) {
                 LOGGER.warn("session == null");
@@ -95,7 +99,7 @@ public class GameMechanics {
         allSessions.add(gameSession);
         LOGGER.info("start game");
 
-        for (String userName: namesPlayers) {
+        for (String userName : namesPlayers) {
             nameToGame.put(userName, gameSession);
             GameUser gameUser = gameSession.getGameUser(userName);
 
@@ -129,7 +133,7 @@ public class GameMechanics {
 
         String message = gameMessager.createMessageLeave(userName);
 
-        for (GameUser user: gameSession.getGameUsers()) {
+        for (GameUser user : gameSession.getGameUsers()) {
             webSocketService.notify(user.getName(), message);
         }
 
@@ -141,7 +145,7 @@ public class GameMechanics {
         String message = gameMessager.createMessageGameOver(nameWinner);
         LOGGER.info("finish game");
 
-        for (GameUser user: session.getGameUsers())  {
+        for (GameUser user : session.getGameUsers()) {
             webSocketService.notify(user.getName(), message);
             nameToGame.remove(user.getName());
         }
@@ -155,7 +159,7 @@ public class GameMechanics {
         }
 
         GameUser gameUser = gameSession.getGameUser(userName);
-        if (gameUser  == null) {
+        if (gameUser == null) {
             LOGGER.warn("gameUser == null");
             return;
         }
@@ -163,7 +167,7 @@ public class GameMechanics {
         gameUser.incrementScore();
 
         String message = gameMessager.createMessageIncrementScore(gameSession);
-        for (GameUser user: gameSession.getGameUsers()) {
+        for (GameUser user : gameSession.getGameUsers()) {
             webSocketService.notify(user.getName(), message);
         }
     }
@@ -176,7 +180,7 @@ public class GameMechanics {
         }
 
         String message = gameMessager.createMessageTextInChat(authorName, text);
-        for (GameUser user: gameSession.getGameUsers())  {
+        for (GameUser user : gameSession.getGameUsers()) {
             webSocketService.notify(user.getName(), message);
         }
     }

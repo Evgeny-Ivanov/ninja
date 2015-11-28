@@ -3,7 +3,7 @@ package resourcesystem;
 /**
  * Created by ilya on 01.11.15.
  */
-public class GMResource implements  Resource {
+public class GMResource implements Resource {
     private int stepTime;
     private int gameTime;
     private int numberPlayers;

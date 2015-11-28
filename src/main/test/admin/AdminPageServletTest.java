@@ -1,7 +1,6 @@
 package admin;
 
-import base.AccountService;
-import main.Main;
+import base.AccountServiceImpl;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
@@ -24,7 +23,7 @@ public class AdminPageServletTest extends Mockito {
     @NotNull
     private final Server server = new Server(PORT);
     @NotNull
-    private final AccountService accountService = new AccountService();
+    private final AccountServiceImpl accountService = new AccountServiceImpl();
     @NotNull
     private final AdminPageServlet servlet = new AdminPageServlet(accountService,server);
 

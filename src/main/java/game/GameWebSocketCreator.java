@@ -1,6 +1,7 @@
 package game;
 
 import base.AccountService;
+import base.AccountServiceImpl;
 import base.GameContext;
 import base.UserProfile;
 import org.apache.logging.log4j.LogManager;
@@ -26,19 +27,19 @@ public class GameWebSocketCreator implements WebSocketCreator {
 
         GameContext gameContext = GameContext.getInstance();
 
-        AccountService accountService = (AccountService)gameContext.get(AccountService.class);
+        AccountService accountService = (AccountService) gameContext.get(AccountService.class);
         if (accountService == null) {
             LOGGER.error("accountService == null");
             throw new NullPointerException();
         }
 
-        GameMechanics gameMechanics = (GameMechanics)gameContext.get(GameMechanics.class);
+        GameMechanics gameMechanics = (GameMechanics) gameContext.get(GameMechanics.class);
         if (gameMechanics == null) {
             LOGGER.error("gameMechanics == null");
             throw new NullPointerException();
         }
 
-        WebSocketService webSocketService = (WebSocketService)gameContext.get(WebSocketService.class);
+        WebSocketService webSocketService = (WebSocketService) gameContext.get(WebSocketService.class);
         if (webSocketService == null) {
             LOGGER.error("webSocketService == null");
             throw new NullPointerException();

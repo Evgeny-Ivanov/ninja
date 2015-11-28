@@ -2,6 +2,7 @@ package main;
 
 import admin.AdminPageServlet;
 import base.AccountService;
+import base.AccountServiceImpl;
 import base.GameContext;
 import frontend.LogoutServlet;
 import frontend.MainPageServlet;
@@ -10,6 +11,7 @@ import frontend.SignUpServlet;
 import game.GameMechanics;
 import game.WebSocketGameServlet;
 import game.WebSocketService;
+import game.WebSocketServiceImpl;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.eclipse.jetty.server.Handler;
@@ -42,11 +44,11 @@ public class Main {
         Configuration conf = new Configuration(PROPERTIES_FILE);
         gameСontext.add(Configuration.class, conf);
 
-        AccountService accountService = new AccountService();
+        AccountService accountService = new AccountServiceImpl();
         gameСontext.add(AccountService.class, accountService);
-        accountService.autoFullUsers();
+        ((AccountServiceImpl)accountService).autoFullUsers();
 
-        WebSocketService webSocketService = new WebSocketService();
+        WebSocketService webSocketService = new WebSocketServiceImpl();
         gameСontext.add(WebSocketService.class, webSocketService);
 
         ResourcesContext resourcesContext = new ResourcesContext(conf.getResourcesDirectory());
