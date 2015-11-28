@@ -22,19 +22,16 @@ import java.util.Map;
  * Created by ilya on 27.10.15.
  */
 public class WebSocketGameServlet extends WebSocketServlet {
-    @SuppressWarnings("ConstantConditions")
-    @NotNull
+    @NotNull  @SuppressWarnings("ConstantConditions")
     static final Logger LOGGER = LogManager.getLogger(WebSocketGameServlet.class);
+
     private static final int IDLE_TIME = 10 * 60 * 1000;
-
-
 
     @Override
     public void configure(WebSocketServletFactory factory) {
         //noinspection ConstantConditions
         factory.getPolicy().setIdleTimeout(IDLE_TIME);
         factory.setCreator(new GameWebSocketCreator());
-        LOGGER.info("call configure");
     }
 
     @Override
@@ -44,17 +41,25 @@ public class WebSocketGameServlet extends WebSocketServlet {
         response.setContentType("text/html;charset=utf-8");
 
         HttpSession hs = request.getSession();
-        if (hs == null || hs.getId() == null) {
+        if (hs == null) {
+            LOGGER.info("hs == null || hs.getId() == null");
             return;
         }
-        if (hs.getAttribute("name") == null || "Incognitto".equals(hs.getAttribute("name"))) {
+
+        String name = (String)hs.getAttribute("name");
+        if (name == null || "Incognitto".equals(name)) {
+            LOGGER.info("name == (null || Incognitto)");
             return;
         }
 
         Configuration conf = (Configuration)GameContext.getInstance().get(Configuration.class);
+        if (conf == null) {
+            LOGGER.error("conf == null");
+            throw new NullPointerException();
+        }
 
         Map<String, Object> pageVariables = new HashMap<>();
-        pageVariables.put("name", hs.getAttribute("name"));
+        pageVariables.put("name", name);
         pageVariables.put("host_game", conf.getGameSocketHost());
         pageVariables.put("port_game", conf.getGameSocketPort());
         pageVariables.put("url_game", conf.getGameSocketUrl());

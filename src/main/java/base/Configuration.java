@@ -13,137 +13,192 @@ import java.util.Properties;
  * Created by stalker on 01.11.15.
  */
 public final class Configuration {
-    @SuppressWarnings("ConstantConditions")
     @NotNull
+    @SuppressWarnings("ConstantConditions")
     static final Logger LOGGER = LogManager.getLogger(Configuration.class);
 
+    @NotNull
     private String signinPageUrl;
+    @NotNull
     private String signupPageUrl;
+    @NotNull
     private String logoutPageUrl;
+    @NotNull
     private String mainPageUrl;
+    @NotNull
     private String adminPageUrl;
+    @NotNull
     private String resourcesDirectory;
-
+    @NotNull
     private String gameSocketUrl;
+    @NotNull
     private String gameSocketHost;
+    @NotNull
     private String gameSocketPort;
-
-
+    @NotNull
     private String host;
+    @NotNull
     private String port;
 
     public Configuration(@NotNull String propertiesFile) {
+        @NotNull
+        final Properties properties = new Properties();
 
         try (final FileInputStream fis = new FileInputStream(propertiesFile)) {
-            final Properties properties = new Properties();
             properties.load(fis);
-
-            host = properties.getProperty("host");
-            port = properties.getProperty("port");
-
-            gameSocketHost = properties.getProperty("gameSocketHost");
-            gameSocketPort = properties.getProperty("gameSocketPort");
-
-            signinPageUrl = properties.getProperty("signinPageUrl");
-            signupPageUrl = properties.getProperty("signupPageUrl");
-            logoutPageUrl = properties.getProperty("logoutPageUrl");
-            mainPageUrl = properties.getProperty("mainPageUrl");
-            adminPageUrl = properties.getProperty("adminPageUrl");
-            gameSocketUrl = properties.getProperty("gameSocketUrl");
-            resourcesDirectory = properties.getProperty("resourcesDirectory");
-
-        } catch (IOException e) {
-            LOGGER.error(e);
-            return;
+        } catch (IOException ignored) {
+            LOGGER.error("IOException");
+            throw new RuntimeException();
         }
 
-        if (port == null || host == null) {
-            LOGGER.error("Port or host is null");
-            throw new NullPointerException("Port or host is null");
+        String readedHost = properties.getProperty("host");
+        if (readedHost == null) {
+            LOGGER.error("host is null");
+            throw new NullPointerException();
         }
+        host = readedHost;
 
-        if (gameSocketPort == null || gameSocketHost == null) {
-            LOGGER.error("Port or host is null");
-            throw new NullPointerException("Port or host is null");
+        String readedPort = properties.getProperty("port");
+        if (readedPort == null) {
+            LOGGER.error("port is null");
+            throw new NullPointerException();
         }
+        port = readedPort;
 
-        if(signinPageUrl == null || signupPageUrl == null){
-            LOGGER.error("Servlet url is null");
-            throw new NullPointerException("Servlet Url is null");
+        String readedGameSocketHost = properties.getProperty("gameSocketHost");
+        if (readedGameSocketHost == null) {
+            LOGGER.error("gameSocketHost is null");
+            throw new NullPointerException();
         }
-        if(logoutPageUrl == null || mainPageUrl == null){
-            LOGGER.error("Servlet url is null");
-            throw new NullPointerException("Servlet Url is null");
-        }
+        gameSocketHost = readedHost;
 
-        if(adminPageUrl == null || gameSocketUrl == null){
-            LOGGER.error("Servlet url is null");
-            throw new NullPointerException("Servlet Url is null");
+        String readedGameSocketPort = properties.getProperty("gameSocketPort");
+        if (readedGameSocketPort == null) {
+            LOGGER.error("gameSocketPort is null");
+            throw new NullPointerException();
         }
+        gameSocketPort = readedGameSocketPort;
+
+        String readedSigninPageUrl = properties.getProperty("signinPageUrl");
+        if (readedSigninPageUrl == null) {
+            LOGGER.error("signinPageUrl is null");
+            throw new NullPointerException();
+        }
+        signinPageUrl = readedSigninPageUrl;
+
+        String readedSignupPageUrl = properties.getProperty("signupPageUrl");
+        if (readedSignupPageUrl == null) {
+            LOGGER.error("signupPageUrl is null");
+            throw new NullPointerException();
+        }
+        signupPageUrl = readedSignupPageUrl;
+
+        String readedLogoutPageUrl = properties.getProperty("logoutPageUrl");
+        if (readedLogoutPageUrl == null) {
+            LOGGER.error("logoutPageUrl is null");
+            throw new NullPointerException();
+        }
+        logoutPageUrl = readedLogoutPageUrl;
+
+        String readedMainPageUrl = properties.getProperty("mainPageUrl");
+        if (readedMainPageUrl == null) {
+            LOGGER.error("mainPageUrl is null");
+            throw new NullPointerException();
+        }
+        mainPageUrl = readedMainPageUrl;
+
+        String readedAdminPageUrl = properties.getProperty("adminPageUrl");
+        if (readedAdminPageUrl == null) {
+            LOGGER.error("adminPageUrl is null");
+            throw new NullPointerException();
+        }
+        adminPageUrl = readedAdminPageUrl;
+
+        String readedGameSocketUrl = properties.getProperty("gameSocketUrl");
+        if (readedGameSocketUrl == null) {
+            LOGGER.error("gameSocketUrl is null");
+            throw new NullPointerException();
+        }
+        gameSocketUrl = readedGameSocketUrl;
+
+        String readedResourcesDirectory = properties.getProperty("resourcesDirectory");
+        if (readedResourcesDirectory == null) {
+            LOGGER.error("resourcesDirectory is null");
+            throw new NullPointerException();
+        }
+        resourcesDirectory = readedResourcesDirectory;
 
         LOGGER.info(this);
     }
 
+    @NotNull
     public String getGameSocketHost() {
         return gameSocketHost;
     }
 
+    @NotNull
     public String getGameSocketPort() {
         return gameSocketPort;
     }
 
-    public int getPort(){
+    public int getPort() {
         return new Integer(port);
     }
-    @Nullable
-    public String getHost(){
+
+    @NotNull
+    public String getHost() {
         return host;
     }
 
-    @Nullable
-    public String getSigninPageUrl(){
+    @NotNull
+    public String getSigninPageUrl() {
         return signinPageUrl;
     }
-    @Nullable
-    public String getSignupPageUrl(){
+
+    @NotNull
+    public String getSignupPageUrl() {
         return signupPageUrl;
     }
-    @Nullable
-    public String getMainPageUrl(){ return mainPageUrl; }
-    @Nullable
-    public String getLogoutPageUrl(){
+
+    @NotNull
+    public String getMainPageUrl() {
+        return mainPageUrl;
+    }
+
+    @NotNull
+    public String getLogoutPageUrl() {
         return logoutPageUrl;
     }
-    @Nullable
-    public String getAdminPageUrl(){
+
+    @NotNull
+    public String getAdminPageUrl() {
         return adminPageUrl;
     }
+
     @NotNull
-    public String getGameSocketUrl(){
-        if(gameSocketUrl != null) return  gameSocketUrl;
-        return "/gameplay";
+    public String getGameSocketUrl() {
+        return gameSocketUrl;
     }
 
     @NotNull
     public String getResourcesDirectory() {
-        if(resourcesDirectory != null) return  resourcesDirectory;
-        return "./data";
+        return resourcesDirectory;
     }
 
     @Override
     public String toString() {
-        return "Configuration{" +
-                "signinPageUrl='" + signinPageUrl + '\'' +
-                ", signupPageUrl='" + signupPageUrl + '\'' +
-                ", logoutPageUrl='" + logoutPageUrl + '\'' +
-                ", mainPageUrl='" + mainPageUrl + '\'' +
-                ", adminPageUrl='" + adminPageUrl + '\'' +
-                ", gameSocketUrl='" + gameSocketUrl + '\'' +
-                ", gameSocketHost='" + gameSocketHost + '\'' +
-                ", gameSocketPort='" + gameSocketPort + '\'' +
-                ", resourcesDirectory='" + resourcesDirectory + '\'' +
-                ", host='" + host + '\'' +
-                ", port='" + port + '\'' +
+        return "Configuration{" +'\n' +
+                "signinPageUrl='" + signinPageUrl + '\'' + '\n' +
+                ", signupPageUrl='" + signupPageUrl + '\'' +'\n' +
+                ", logoutPageUrl='" + logoutPageUrl + '\'' +'\n' +
+                ", mainPageUrl='" + mainPageUrl + '\'' +'\n' +
+                ", adminPageUrl='" + adminPageUrl + '\'' +'\n' +
+                ", resourcesDirectory='" + resourcesDirectory + '\'' +'\n' +
+                ", gameSocketUrl='" + gameSocketUrl + '\'' +'\n' +
+                ", gameSocketHost='" + gameSocketHost + '\'' +'\n' +
+                ", gameSocketPort='" + gameSocketPort + '\'' +'\n' +
+                ", host='" + host + '\'' +'\n' +
+                ", port='" + port + '\'' +'\n' +
                 '}';
     }
 }

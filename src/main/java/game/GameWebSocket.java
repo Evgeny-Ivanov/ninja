@@ -8,8 +8,6 @@ import org.eclipse.jetty.websocket.api.annotations.OnWebSocketConnect;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketMessage;
 import org.eclipse.jetty.websocket.api.annotations.WebSocket;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -22,18 +20,16 @@ import java.io.IOException;
 
 @WebSocket
 public class GameWebSocket {
-    @SuppressWarnings("ConstantConditions")
-    @NotNull
+    @NotNull @SuppressWarnings("ConstantConditions")
     static final Logger LOGGER = LogManager.getLogger(GameWebSocket.class);
 
     @NotNull
     private String myName;
     @NotNull
-    private Session session;
-    @NotNull
     private GameMechanics gameMechanics;
     @NotNull
     private WebSocketService webSocketService;
+    private Session session;
 
     public GameWebSocket(@NotNull String myName,
                          @NotNull GameMechanics gameMechanics,
@@ -48,31 +44,11 @@ public class GameWebSocket {
         return myName;
     }
 
-    @SuppressWarnings("ParameterHidesMemberVariable")
     @OnWebSocketConnect
-    public void onOpen(@NotNull Session session) {
-        this.session = session;
+    public void onOpen(@NotNull Session newSession) {
+        this.session = newSession;
         webSocketService.addUserSocket(this);
         gameMechanics.addUser(myName);
-    }
-
-    @OnWebSocketMessage
-    public void onMessage(String data) {
-        JSONParser parser = new JSONParser();
-        try {
-            JSONObject jsonObj = (JSONObject) parser.parse(data);
-            String status = (String)jsonObj.get("status");
-
-            if ("increment".equals(status)) {
-                gameMechanics.incrementScore(myName);
-            } else if ("message".equals(status)) {
-                String message = (String)jsonObj.get("text");
-                gameMechanics.textInChat(myName, message);
-            }
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-
     }
 
     @OnWebSocketClose
@@ -81,57 +57,24 @@ public class GameWebSocket {
         webSocketService.removeSocket(myName);
     }
 
+    @OnWebSocketMessage
+    public void onMessage(String data) {
+        if (data == null) {
+            return;
+        }
+        gameMechanics.getGameMessager().reciveMessage(myName, data);
+    }
 
     public void send(String message) {
+        if (session == null) {
+            LOGGER.error("session == null");
+            return;
+        }
         try {
             //noinspection ConstantConditions
             session.getRemote().sendString(message);
         } catch (IOException e) {
             LOGGER.error("IOException");
-        }
-    }
-
-    public void sendStartGame(@NotNull GameSession gameSession, int gameTime) {
-        JSONObject jsonStart = new JSONObject();
-        jsonStart.put("status", "start");
-        jsonStart.put("your_name", myName);
-        jsonStart.put("time_of_game", gameTime / 1000);
-
-        JSONArray ar = new JSONArray();
-        for (GameUser player: gameSession.getGameUsers()) {
-            JSONObject obj = new JSONObject();
-            obj.put("name", player.getName());
-            ar.add(obj);
-        }
-        jsonStart.put("players", ar);
-
-        try {
-            session.getRemote().sendString(jsonStart.toJSONString());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void sendGameOver(GameUser user, String nameWinner) {
-        JSONObject jsonStart = new JSONObject();
-        jsonStart.put("status", "finish");
-        jsonStart.put("win", nameWinner);
-        try {
-            session.getRemote().sendString(jsonStart.toJSONString());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void sendLeave(String nameUser, String whoLeave) {
-        JSONObject jsonStart = new JSONObject();
-        jsonStart.put("status", "leave");
-        jsonStart.put("name", whoLeave);
-
-        try {
-            session.getRemote().sendString(jsonStart.toJSONString());
-        } catch (IOException e) {
-            e.printStackTrace();
         }
     }
 }

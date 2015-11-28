@@ -21,7 +21,7 @@ import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.jetty.websocket.servlet.WebSocketServlet;
 import org.jetbrains.annotations.NotNull;
 import base.Configuration;
-import resourceSystem.ResourcesContext;
+import resourcesystem.ResourcesContext;
 
 import javax.servlet.Servlet;
 

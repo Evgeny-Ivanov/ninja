@@ -36,30 +36,4 @@ public class WebSocketService {
         gameWebSocket.send(message);
     }
 
-    public void notifyAboutLeave(@NotNull String nameUser, @NotNull String whoLeave) {
-        GameWebSocket gameWebSocket = userSockets.get(nameUser);
-        if (gameWebSocket != null) {
-            gameWebSocket.sendLeave(nameUser, whoLeave);
-        } else {
-            LOGGER.error("gameWebSocket == null");
-        }
-    }
-
-    public void notifyStartGame(@NotNull String userName, @NotNull GameSession gameSession, int gameTime) {
-        GameWebSocket gameWebSocket = userSockets.get(userName);
-        if (gameWebSocket != null) {
-            gameWebSocket.sendStartGame(gameSession, gameTime);
-        } else {
-            LOGGER.error("gameWebSocket == null");
-        }
-    }
-
-    public void notifyGameOver(@NotNull GameUser user, @NotNull String nameWinner) {
-        GameWebSocket gameWebSocket = userSockets.get(user.getName());
-        if (gameWebSocket != null) {
-            gameWebSocket.sendGameOver(user, nameWinner);
-        } else {
-            LOGGER.error("gameWebSocket == null");
-        }
-    }
 }

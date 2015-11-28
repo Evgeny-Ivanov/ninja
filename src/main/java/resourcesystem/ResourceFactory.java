@@ -1,12 +1,13 @@
-package resourceSystem;
+package resourcesystem;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.xml.sax.SAXException;
 import utils.SaxHandler;
 import utils.VFS;
 
+import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 import java.io.IOException;
@@ -17,39 +18,48 @@ import java.util.Map;
 /**
  * Created by ilya on 01.11.15.
  */
-public class ResourceFactory {
+public final class ResourceFactory {
     @SuppressWarnings("ConstantConditions")
     @NotNull
     static final Logger LOGGER = LogManager.getLogger(ResourceFactory.class);
 
-    private static ResourceFactory resourceFactory;
+    @NotNull
+    private SAXParser saxParser;
+
+    @NotNull
+    private static final ResourceFactory RESOURCEFACTORY = new ResourceFactory();
 
     private ResourceFactory() {
+        SAXParserFactory factory = SAXParserFactory.newInstance();
+        if (factory == null) {
+            LOGGER.error("factory == null");
+            throw new NullPointerException();
+        }
+        try {
+            //noinspection ConstantConditions
+            saxParser = factory.newSAXParser();
+        } catch (ParserConfigurationException | SAXException ignored) {
+            LOGGER.error("ParserConfigurationException | SAXException");
+            throw new RuntimeException();
+        }
     }
 
     @NotNull
-    public static ResourceFactory instance() {
-        if (resourceFactory == null) {
-            resourceFactory = new ResourceFactory();
-        }
-        return resourceFactory;
-    }
+    public Resource get(@NotNull String xmlFile) {
+        SaxHandler handler = new SaxHandler();
 
-    @Nullable
-    public Resource get(String xmlFile) {
         try {
-            SAXParserFactory factory = SAXParserFactory.newInstance();
-            SAXParser saxParser = factory.newSAXParser();
-
-            SaxHandler handler = new SaxHandler();
             saxParser.parse(xmlFile, handler);
-
-            return (Resource)handler.getObject();
-
-        } catch (Exception e) {
+        } catch (SAXException | IOException e) {
             e.printStackTrace();
         }
-        return null;
+
+        if (handler.getObject() == null) {
+            LOGGER.error("handler.getObject() == null");
+            throw new NullPointerException();
+        }
+
+        return (Resource) handler.getObject();
     }
 
     @NotNull
@@ -61,8 +71,8 @@ public class ResourceFactory {
             String fileName = iter.next();
             System.out.println(fileName);
             if (fileName != null && fileName.contains(".xml")) {
-                Resource resource = ResourceFactory.instance().get(fileName);
-                if (resource != null && resource.getClass() != null) {
+                Resource resource = RESOURCEFACTORY.get(fileName);
+                if (resource.getClass() != null) {
                     resources.put(resource.getClass(), resource);
                 } else {
                     LOGGER.error("Fail to create resource class");

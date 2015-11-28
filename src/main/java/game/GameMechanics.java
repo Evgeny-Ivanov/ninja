@@ -4,10 +4,8 @@ import base.GameContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-import resourceSystem.GMResource;
-import resourceSystem.ResourcesContext;
+import resourcesystem.GMResource;
+import resourcesystem.ResourcesContext;
 import utils.TimeHelper;
 import java.util.*;
 
@@ -15,8 +13,7 @@ import java.util.*;
  * Created by ilya on 27.10.15.
  */
 public class GameMechanics {
-    @SuppressWarnings("ConstantConditions")
-    @NotNull
+    @NotNull @SuppressWarnings("ConstantConditions")
     static final Logger LOGGER = LogManager.getLogger(GameMechanics.class);
 
     @NotNull
@@ -30,6 +27,8 @@ public class GameMechanics {
     private Set<GameSession> allSessions = new HashSet<>();
     @NotNull
     private Set<String> namesPlayers = new HashSet<>();
+    @NotNull
+    private GameMessager gameMessager = new GameMessager(this);
 
 
     public GameMechanics() {
@@ -55,12 +54,57 @@ public class GameMechanics {
         this.gMResource = newGMResource;
     }
 
+    @NotNull
+    public GameMessager getGameMessager() {
+        return gameMessager;
+    }
+
+    public void run() {
+        int stepTime = gMResource.getStepTime();
+        int gameTime = gMResource.getGameTime();
+        //noinspection InfiniteLoopStatement
+        while (true) {
+            gmStep(gameTime);
+            TimeHelper.sleep(stepTime);
+        }
+    }
+
+    private void gmStep(int gameTime) {
+        for (Iterator<GameSession> iterator = allSessions.iterator(); iterator.hasNext();) {
+            GameSession session = iterator.next();
+            if (session == null) {
+                LOGGER.error("session == null");
+            } else if (session.getSessionTime() > gameTime) {
+                finishGame(session);
+                iterator.remove();
+            }
+        }
+    }
+
     public void addUser(@NotNull String userName) {
         namesPlayers.add(userName);
 
         if (namesPlayers.size() == gMResource.getNumberPlayers()) {
             startGame();
             namesPlayers.clear();
+        }
+    }
+
+    private void startGame() {
+        GameSession gameSession = new GameSession(namesPlayers);
+        allSessions.add(gameSession);
+
+        for (String userName: namesPlayers) {
+            nameToGame.put(userName, gameSession);
+            GameUser gameUser = gameSession.getGameUser(userName);
+
+            String message = gameMessager.createMessageStartGame(gameSession, userName, gMResource.getGameTime());
+
+            if (gameUser != null) {
+                webSocketService.notify(userName, message);
+            } else {
+                LOGGER.error("gameuser == null");
+            }
         }
     }
 
@@ -82,12 +126,24 @@ public class GameMechanics {
             return true;
         }
 
-        //noinspection Convert2streamapi
+        String message = gameMessager.createMessageLeave(userName);
+
         for (GameUser user: gameSession.getGameUsers()) {
-            webSocketService.notifyAboutLeave(user.getName(), userName);
+            webSocketService.notify(user.getName(), message);
         }
 
         return true;
+    }
+
+    private void finishGame(@NotNull GameSession session) {
+        String nameWinner = session.getNameWinner();
+
+        String message = gameMessager.createMessageGameOver(nameWinner);
+
+        for (GameUser user: session.getGameUsers())  {
+            webSocketService.notify(user.getName(), message);
+            nameToGame.remove(user.getName());
+        }
     }
 
     public void incrementScore(@NotNull String userName) {
@@ -104,102 +160,25 @@ public class GameMechanics {
         }
 
         gameUser.incrementScore();
-        String message = createMessageIncrementScore(gameSession);
+
+        String message = gameMessager.createMessageIncrementScore(gameSession);
 
         for (GameUser user: gameSession.getGameUsers()) {
             webSocketService.notify(user.getName(), message);
         }
     }
 
-    @NotNull
-    private String createMessageIncrementScore(GameSession gameSession) {
-        JSONObject jsonStart = new JSONObject();
-        jsonStart.put("status", "scores");
-
-        JSONArray ar = new JSONArray();
-        for (GameUser player: gameSession.getGameUsers()) {
-            JSONObject obj = new JSONObject();
-            obj.put("name", player.getName());
-            obj.put("score", player.getScore());
-            ar.add(obj);
-        }
-        jsonStart.put("players", ar);
-        String message = jsonStart.toJSONString();
-        if (message == null) {
-            LOGGER.error("message == null");
-            throw new NullPointerException();
-        }
-
-        return message;
-    }
-
     public void textInChat(@NotNull String authorName, @NotNull String text) {
         GameSession gameSession = nameToGame.get(authorName);
         if (gameSession == null) {
-            LOGGER.error("userGameSession == null");
+            LOGGER.warn("userGameSession == null");
             return;
         }
 
-        String message = createMessageTextInChat(authorName, text);
+        String message = gameMessager.createMessageTextInChat(authorName, text);
 
         for (GameUser user: gameSession.getGameUsers())  {
             webSocketService.notify(user.getName(), message);
-        }
-    }
-
-    @NotNull
-    private String createMessageTextInChat(@NotNull String authorName, String text) {
-        JSONObject jsonStart = new JSONObject();
-        jsonStart.put("status", "message");
-
-        jsonStart.put("name", authorName);
-        jsonStart.put("text", text);
-
-        String message = jsonStart.toJSONString();
-
-        return message;
-    }
-
-    public void run() {
-        //noinspection InfiniteLoopStatement
-        while (true) {
-            gmStep();
-            TimeHelper.sleep(gMResource.getStepTime());
-        }
-    }
-
-    private void gmStep() {
-        for (GameSession session : allSessions) {
-            if (session.getSessionTime() > gMResource.getGameTime()) {
-                finishGame(session);
-            }
-        }
-    }
-
-    private void finishGame(@NotNull GameSession session) {
-        String nameWinner = session.getNameWinner();
-
-        for (GameUser user: session.getGameUsers())  {
-            webSocketService.notifyGameOver(user, nameWinner);
-            nameToGame.remove(user.getName());
-        }
-
-        allSessions.remove(session);
-    }
-
-    private void startGame() {
-        GameSession gameSession = new GameSession(namesPlayers);
-        allSessions.add(gameSession);
-
-        for (String userName: namesPlayers) {
-            nameToGame.put(userName, gameSession);
-            GameUser gameUser = gameSession.getGameUser(userName);
-
-            if (gameUser != null) {
-                webSocketService.notifyStartGame(userName, gameSession, gMResource.getGameTime());
-            } else {
-                LOGGER.error("gameuser == null");
-            }
         }
     }
 }

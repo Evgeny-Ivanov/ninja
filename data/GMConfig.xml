@@ -1,5 +1,5 @@
-<class type='resourceSystem.GMResource'>
-    <stepTime>100</stepTime>
-    <gameTime>60000</gameTime>
+<class type='resourcesystem.GMResource'>
+    <stepTime>1000</stepTime>
+    <gameTime>30000</gameTime>
     <numberPlayers>3</numberPlayers>
 </class>

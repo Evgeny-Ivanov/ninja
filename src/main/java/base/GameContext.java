@@ -11,7 +11,7 @@ import java.util.Map;
  */
 public final class GameContext {
     @NotNull
-    public static final GameContext INSTANCE = new GameContext();
+    private static final GameContext INSTANCE = new GameContext();
 
     public static GameContext getInstance() {
         return INSTANCE;
