@@ -12,13 +12,10 @@ public class GameUser {
     @NotNull
     private final String name;
     private int score;
-    @NotNull
-    private List<GameUser> playersGameUsers;
 
-    public GameUser(@NotNull String name, @NotNull List<GameUser> playersGameUsers) {
+    public GameUser(@NotNull String name) {
         this.name = name;
         this.score = 0;
-        this.playersGameUsers = new ArrayList<>(playersGameUsers);
     }
 
     @NotNull
@@ -28,11 +25,6 @@ public class GameUser {
 
     public int getScore() {
         return score;
-    }
-
-    @NotNull
-    public List<GameUser> getPlayersGameUsers() {
-        return playersGameUsers;
     }
 
     public void incrementScore() {

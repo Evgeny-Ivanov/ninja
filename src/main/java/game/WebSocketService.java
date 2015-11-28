@@ -22,24 +22,18 @@ public class WebSocketService {
         userSockets.put(userSocket.getMyName(), userSocket);
     }
 
-
-
-    public void notifyAboutScores(@NotNull String userName, @NotNull GameSession gameSession) {
-        GameWebSocket gameWebSocket = userSockets.get(userName);
-        if (gameWebSocket != null) {
-            gameWebSocket.sendScores(gameSession);
-        } else {
-            LOGGER.error("gameWebSocket == null");
-        }
+    public boolean removeSocket(@NotNull String name) {
+        return userSockets.remove(name) != null;
     }
 
-    public void notifyAboutMessage(@NotNull String nameUser, @NotNull String authorName, @NotNull String message) {
-        GameWebSocket gameWebSocket = userSockets.get(nameUser);
-        if (gameWebSocket != null) {
-            gameWebSocket.sendMessage(authorName, message);
-        } else {
+    public void notify(@NotNull String userName, @NotNull String message) {
+        GameWebSocket gameWebSocket = userSockets.get(userName);
+        if (gameWebSocket == null) {
             LOGGER.error("gameWebSocket == null");
+            return;
         }
+
+        gameWebSocket.send(message);
     }
 
     public void notifyAboutLeave(@NotNull String nameUser, @NotNull String whoLeave) {
@@ -67,9 +61,5 @@ public class WebSocketService {
         } else {
             LOGGER.error("gameWebSocket == null");
         }
-    }
-
-    public boolean removeSocket(@NotNull GameWebSocket gameWebSocket) {
-        return userSockets.remove(gameWebSocket.getMyName()) != null;
     }
 }

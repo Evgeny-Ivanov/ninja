@@ -21,41 +21,35 @@ public class GameWebSocketCreator implements WebSocketCreator {
 
     @Override
     public Object createWebSocket(ServletUpgradeRequest req, ServletUpgradeResponse resp) {
-        String sessionId = null;
-        if (req != null && req.getHttpServletRequest() != null
-                && req.getHttpServletRequest().getSession() != null) {
-            sessionId = req.getHttpServletRequest().getSession().getId();
-        } else {
-            LOGGER.error("Error recive session");
-        }
+        @SuppressWarnings("ConstantConditions")
+        String sessionId = req.getHttpServletRequest().getSession().getId();
 
         GameContext gameContext = GameContext.getInstance();
 
         AccountService accountService = (AccountService)gameContext.get(AccountService.class);
         if (accountService == null) {
+            LOGGER.error("accountService == null");
             throw new NullPointerException();
         }
 
         GameMechanics gameMechanics = (GameMechanics)gameContext.get(GameMechanics.class);
         if (gameMechanics == null) {
+            LOGGER.error("gameMechanics == null");
             throw new NullPointerException();
         }
 
         WebSocketService webSocketService = (WebSocketService)gameContext.get(WebSocketService.class);
         if (webSocketService == null) {
+            LOGGER.error("webSocketService == null");
             throw new NullPointerException();
         }
 
-        String name;
         UserProfile userProfile = accountService.getSessions(sessionId);
-
-        if (userProfile != null) {
-            name = userProfile.getName();
-        } else {
-            LOGGER.error("No userprofile");
-            name = "";
+        if (userProfile == null) {
+            LOGGER.error("userProfile == null");
+            throw new NullPointerException();
         }
 
-        return new GameWebSocket(name, gameMechanics, webSocketService);
+        return new GameWebSocket(userProfile.getName(), gameMechanics, webSocketService);
     }
 }

@@ -1,5 +1,7 @@
 package game;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.eclipse.jetty.websocket.api.Session;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketClose;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketConnect;
@@ -20,8 +22,13 @@ import java.io.IOException;
 
 @WebSocket
 public class GameWebSocket {
+    @SuppressWarnings("ConstantConditions")
+    @NotNull
+    static final Logger LOGGER = LogManager.getLogger(GameWebSocket.class);
+
     @NotNull
     private String myName;
+    @NotNull
     private Session session;
     @NotNull
     private GameMechanics gameMechanics;
@@ -60,7 +67,7 @@ public class GameWebSocket {
                 gameMechanics.incrementScore(myName);
             } else if ("message".equals(status)) {
                 String message = (String)jsonObj.get("text");
-                gameMechanics.messageInChat(myName, message);
+                gameMechanics.textInChat(myName, message);
             }
         } catch (ParseException e) {
             e.printStackTrace();
@@ -71,9 +78,18 @@ public class GameWebSocket {
     @OnWebSocketClose
     public void onClose(int statusCode, String reason) {
         gameMechanics.removeUser(myName);
-        webSocketService.removeSocket(this);
+        webSocketService.removeSocket(myName);
     }
 
+
+    public void send(String message) {
+        try {
+            //noinspection ConstantConditions
+            session.getRemote().sendString(message);
+        } catch (IOException e) {
+            LOGGER.error("IOException");
+        }
+    }
 
     public void sendStartGame(@NotNull GameSession gameSession, int gameTime) {
         JSONObject jsonStart = new JSONObject();
@@ -100,43 +116,6 @@ public class GameWebSocket {
         JSONObject jsonStart = new JSONObject();
         jsonStart.put("status", "finish");
         jsonStart.put("win", nameWinner);
-        try {
-            session.getRemote().sendString(jsonStart.toJSONString());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-
-    public void sendScores(GameSession gameSession) {
-        JSONObject jsonStart = new JSONObject();
-        jsonStart.put("status", "scores");
-
-        JSONArray ar = new JSONArray();
-        for (GameUser player: gameSession.getGameUsers()) {
-            JSONObject obj = new JSONObject();
-            obj.put("name", player.getName());
-            obj.put("score", player.getScore());
-            ar.add(obj);
-        }
-        jsonStart.put("players", ar);
-
-        try {
-            session.getRemote().sendString(jsonStart.toJSONString());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-
-
-    public void sendMessage(@NotNull String authorName, String message) {
-        JSONObject jsonStart = new JSONObject();
-        jsonStart.put("status", "message");
-
-        jsonStart.put("name", authorName);
-        jsonStart.put("message", message);
-
         try {
             session.getRemote().sendString(jsonStart.toJSONString());
         } catch (IOException e) {

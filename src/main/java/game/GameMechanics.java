@@ -4,10 +4,11 @@ import base.GameContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 import resourceSystem.GMResource;
 import resourceSystem.ResourcesContext;
 import utils.TimeHelper;
-
 import java.util.*;
 
 /**
@@ -28,7 +29,7 @@ public class GameMechanics {
     @NotNull
     private Set<GameSession> allSessions = new HashSet<>();
     @NotNull
-    private List<String> namesPlayers = new ArrayList<>();
+    private Set<String> namesPlayers = new HashSet<>();
 
 
     public GameMechanics() {
@@ -65,7 +66,7 @@ public class GameMechanics {
 
     public boolean removeUser(@NotNull String userName) {
         if (namesPlayers.remove(userName)) {
-            return false;
+            return true;
         }
 
         GameSession gameSession = nameToGame.get(userName);
@@ -73,21 +74,19 @@ public class GameMechanics {
             return false;
         }
 
-        List<GameUser> gameUsers = gameSession.getGameUsers();
-        //noinspection Convert2streamapi
-        for (GameUser user: gameUsers) {
-            if (!userName.equals(user.getName())) {
-                user.getPlayersGameUsers().remove(nameToGame.get(userName).getGameUser(userName));
-                webSocketService.notifyAboutLeave(user.getName(), userName);
-            }
-        }
-
         gameSession.removeGameUser(userName);
         nameToGame.remove(userName);
 
         if (gameSession.getGameUsers().isEmpty()) {
             allSessions.remove(gameSession);
+            return true;
         }
+
+        //noinspection Convert2streamapi
+        for (GameUser user: gameSession.getGameUsers()) {
+            webSocketService.notifyAboutLeave(user.getName(), userName);
+        }
+
         return true;
     }
 
@@ -99,30 +98,66 @@ public class GameMechanics {
         }
 
         GameUser gameUser = gameSession.getGameUser(userName);
-
         if (gameUser  == null) {
             LOGGER.error("gameUser == null");
             return;
         }
 
         gameUser.incrementScore();
+        String message = createMessageIncrementScore(gameSession);
 
-        //noinspection Convert2streamapi
         for (GameUser user: gameSession.getGameUsers()) {
-            webSocketService.notifyAboutScores(user.getName(), gameSession);
+            webSocketService.notify(user.getName(), message);
         }
     }
 
-    public void messageInChat(@NotNull String userName, @NotNull String message) {
-        GameSession gameSession = nameToGame.get(userName);
+    @NotNull
+    private String createMessageIncrementScore(GameSession gameSession) {
+        JSONObject jsonStart = new JSONObject();
+        jsonStart.put("status", "scores");
+
+        JSONArray ar = new JSONArray();
+        for (GameUser player: gameSession.getGameUsers()) {
+            JSONObject obj = new JSONObject();
+            obj.put("name", player.getName());
+            obj.put("score", player.getScore());
+            ar.add(obj);
+        }
+        jsonStart.put("players", ar);
+        String message = jsonStart.toJSONString();
+        if (message == null) {
+            LOGGER.error("message == null");
+            throw new NullPointerException();
+        }
+
+        return message;
+    }
+
+    public void textInChat(@NotNull String authorName, @NotNull String text) {
+        GameSession gameSession = nameToGame.get(authorName);
         if (gameSession == null) {
             LOGGER.error("userGameSession == null");
             return;
         }
 
+        String message = createMessageTextInChat(authorName, text);
+
         for (GameUser user: gameSession.getGameUsers())  {
-            webSocketService.notifyAboutMessage(user.getName(), userName, message);
+            webSocketService.notify(user.getName(), message);
         }
+    }
+
+    @NotNull
+    private String createMessageTextInChat(@NotNull String authorName, String text) {
+        JSONObject jsonStart = new JSONObject();
+        jsonStart.put("status", "message");
+
+        jsonStart.put("name", authorName);
+        jsonStart.put("text", text);
+
+        String message = jsonStart.toJSONString();
+
+        return message;
     }
 
     public void run() {

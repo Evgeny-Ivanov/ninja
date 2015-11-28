@@ -15,11 +15,11 @@ public class GameSession {
     @NotNull
     private Map<String, GameUser> users = new HashMap<>();
 
-    public GameSession(@NotNull List<String> namesPlayers) {
+    public GameSession(@NotNull Set<String> namesPlayers) {
         startTime = new Date().getTime();
 
         for (String nameUser: namesPlayers) {
-            GameUser gameUser = new GameUser(nameUser, playersGameUsers);
+            GameUser gameUser = new GameUser(nameUser);
             users.put(nameUser, gameUser);
             playersGameUsers.add(gameUser);
         }
