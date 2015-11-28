@@ -7,11 +7,11 @@ import org.jetbrains.annotations.NotNull;
  */
 public class UserProfile {
     @NotNull
-    private String name;
+    private final String name;
     @NotNull
-    private String password;
+    private final String password;
     @NotNull
-    private String email;
+    private final String email;
 
     public UserProfile(@NotNull String name, @NotNull String password, @NotNull String email) {
         this.name = name;

@@ -3,6 +3,7 @@ package utils;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Queue;
@@ -10,14 +11,10 @@ import java.util.Queue;
 /**
  * Created by ilya on 01.11.15.
  */
-public class VFS{
-    private String root;
+public class VirtualFS {
+    private final String root;
 
-    public VFS(String root) {
-        this.root = root;
-    }
-
-    public VFS() {
+    public VirtualFS() {
         this.root = "";
     }
 
@@ -26,38 +23,45 @@ public class VFS{
     }
 
     @NotNull
-    public Iterator<String> getIterator(String startDir) {
+    public Iterator<String> getIterator(@NotNull String startDir) {
         return new FileIterator(startDir);
     }
 
-    private class FileIterator implements Iterator<String> {
-        private Queue<File> files = new LinkedList<>();
+    private final class FileIterator implements Iterator<String> {
+        @NotNull
+        private final Queue<File> files = new LinkedList<>();
 
-        public FileIterator(String path) {
-            files.add(new File(root + path));
+        private FileIterator(@NotNull String path) {
+            File file = new File(root + path);
+            files.add(file);
         }
 
+        @Override
         public boolean hasNext() {
             return !files.isEmpty();
         }
 
+        @SuppressWarnings("IteratorNextCanNotThrowNoSuchElementException")
+        @Override
         public String next() {
             File file = files.peek();
             if (file != null && file.isDirectory()) {
-                for (File subFile : file.listFiles()) {
-                    files.add(subFile);
-                }
+                //noinspection ConstantConditions
+                Collections.addAll(files, file.listFiles());
             }
 
+            //noinspection ConstantConditions
             return files.poll().getAbsolutePath();
         }
 
+        @Override
         public void remove() {
 
         }
 
     }
 
+    @SuppressWarnings("unused")
     public String getAbsolutePath(String file) {
         return new File(root + file).getAbsolutePath();
     }

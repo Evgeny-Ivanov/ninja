@@ -22,13 +22,13 @@ public class GameMechanics {
     private WebSocketService webSocketService;
 
     @NotNull
-    private Map<String, GameSession> nameToGame = new HashMap<>();
+    private final Map<String, GameSession> nameToGame = new HashMap<>();
     @NotNull
-    private Set<GameSession> allSessions = new HashSet<>();
+    private final Set<GameSession> allSessions = new HashSet<>();
     @NotNull
-    private Set<String> namesPlayers = new HashSet<>();
+    private final Set<String> namesPlayers = new HashSet<>();
     @NotNull
-    private GameMessager gameMessager = new GameMessager(this);
+    private final GameMessager gameMessager = new GameMessager(this);
 
 
     public GameMechanics() {
@@ -73,7 +73,7 @@ public class GameMechanics {
         for (Iterator<GameSession> iterator = allSessions.iterator(); iterator.hasNext();) {
             GameSession session = iterator.next();
             if (session == null) {
-                LOGGER.error("session == null");
+                LOGGER.warn("session == null");
             } else if (session.getSessionTime() > gameTime) {
                 finishGame(session);
                 iterator.remove();
@@ -93,6 +93,7 @@ public class GameMechanics {
     private void startGame() {
         GameSession gameSession = new GameSession(namesPlayers);
         allSessions.add(gameSession);
+        LOGGER.info("start game");
 
         for (String userName: namesPlayers) {
             nameToGame.put(userName, gameSession);
@@ -137,8 +138,8 @@ public class GameMechanics {
 
     private void finishGame(@NotNull GameSession session) {
         String nameWinner = session.getNameWinner();
-
         String message = gameMessager.createMessageGameOver(nameWinner);
+        LOGGER.info("finish game");
 
         for (GameUser user: session.getGameUsers())  {
             webSocketService.notify(user.getName(), message);
@@ -149,20 +150,19 @@ public class GameMechanics {
     public void incrementScore(@NotNull String userName) {
         GameSession gameSession = nameToGame.get(userName);
         if (gameSession == null) {
-            LOGGER.error("userGameSession == null");
+            LOGGER.warn("userGameSession == null");
             return;
         }
 
         GameUser gameUser = gameSession.getGameUser(userName);
         if (gameUser  == null) {
-            LOGGER.error("gameUser == null");
+            LOGGER.warn("gameUser == null");
             return;
         }
 
         gameUser.incrementScore();
 
         String message = gameMessager.createMessageIncrementScore(gameSession);
-
         for (GameUser user: gameSession.getGameUsers()) {
             webSocketService.notify(user.getName(), message);
         }
@@ -176,7 +176,6 @@ public class GameMechanics {
         }
 
         String message = gameMessager.createMessageTextInChat(authorName, text);
-
         for (GameUser user: gameSession.getGameUsers())  {
             webSocketService.notify(user.getName(), message);
         }

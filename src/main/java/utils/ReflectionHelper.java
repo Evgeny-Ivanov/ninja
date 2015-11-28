@@ -1,36 +1,70 @@
 package utils;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.jetbrains.annotations.NotNull;
+
 import java.lang.reflect.Field;
 
 /**
  * Created by ilya on 01.11.15.
  */
 public class ReflectionHelper {
-    public static Object createInstance(String className) {
+    @SuppressWarnings("ConstantConditions")
+    @NotNull
+    static final Logger LOGGER = LogManager.getLogger(ReflectionHelper.class);
+
+    @NotNull
+    public static Object createInstance(@NotNull String className) {
+        Object obj;
         try {
-            return Class.forName(className).newInstance();
-        } catch (ClassNotFoundException | NullPointerException |IllegalAccessException | InstantiationException e) {
-            e.printStackTrace();
+            //noinspection ConstantConditions
+            obj = Class.forName(className).newInstance();
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException ignored) {
+            LOGGER.error(ignored);
+            throw new RuntimeException();
         }
-        return null;
+
+        if (obj == null) {
+            LOGGER.error("obj == null");
+            throw new NullPointerException();
+        }
+        return obj;
     }
 
-    public static void setFieldValue(Object object,
-                                     String fieldName,
-                                     String value) {
+    public static void setFieldValue(@NotNull Object object,
+                                     @NotNull String fieldName,
+                                     @NotNull String value) {
+        Field field;
         try {
-            Field field = object.getClass().getDeclaredField(fieldName);
-            field.setAccessible(true);
+            //noinspection ConstantConditions
+            field = object.getClass().getDeclaredField(fieldName);
+        } catch (NoSuchFieldException e) {
+            LOGGER.error(e);
+            return;
+        }
 
+        if (field == null) {
+            LOGGER.error("field == null");
+            return;
+        }
+
+        field.setAccessible(true);
+        try {
+
+            //noinspection ConstantConditions
             if (field.getType().equals(String.class)) {
                 field.set(object, value);
+
             } else if (field.getType().equals(int.class)) {
                 field.set(object, Integer.decode(value));
             }
 
-            field.setAccessible(false);
-        } catch (SecurityException | NoSuchFieldException | IllegalArgumentException | IllegalAccessException e) {
-            e.printStackTrace();
+        } catch (IllegalAccessException ignored) {
+            LOGGER.error(ignored);
+            throw new RuntimeException();
         }
+
+        field.setAccessible(false);
     }
 }

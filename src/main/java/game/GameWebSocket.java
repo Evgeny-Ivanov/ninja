@@ -8,10 +8,6 @@ import org.eclipse.jetty.websocket.api.annotations.OnWebSocketConnect;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketMessage;
 import org.eclipse.jetty.websocket.api.annotations.WebSocket;
 import org.jetbrains.annotations.NotNull;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
-
 import java.io.IOException;
 
 /**
@@ -24,11 +20,11 @@ public class GameWebSocket {
     static final Logger LOGGER = LogManager.getLogger(GameWebSocket.class);
 
     @NotNull
-    private String myName;
+    private final String myName;
     @NotNull
-    private GameMechanics gameMechanics;
+    private final GameMechanics gameMechanics;
     @NotNull
-    private WebSocketService webSocketService;
+    private final WebSocketService webSocketService;
     private Session session;
 
     public GameWebSocket(@NotNull String myName,

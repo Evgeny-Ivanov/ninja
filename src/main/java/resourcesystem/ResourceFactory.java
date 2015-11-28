@@ -5,7 +5,7 @@ import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 import org.xml.sax.SAXException;
 import utils.SaxHandler;
-import utils.VFS;
+import utils.VirtualFS;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
@@ -65,8 +65,8 @@ public final class ResourceFactory {
     @NotNull
     public static Map<Class<?>, Resource> loadResources(@NotNull String resourcesDirectory) {
         Map<Class<?>, Resource> resources = new HashMap<>();
-        VFS vfs = new VFS();
-        Iterator<String> iter = vfs.getIterator(resourcesDirectory);
+        VirtualFS virtualFS = new VirtualFS();
+        Iterator<String> iter = virtualFS.getIterator(resourcesDirectory);
         while (iter.hasNext()) {
             String fileName = iter.next();
             System.out.println(fileName);

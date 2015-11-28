@@ -17,10 +17,10 @@ import java.util.Map;
 public class AdminPageServlet extends HttpServlet {
 
     @NotNull
-    private AccountService accountService;
+    private final AccountService accountService;
 
     @NotNull
-    private  Server server;
+    private final Server server;
 
     public AdminPageServlet(@NotNull AccountService accountService, @NotNull Server server){
         this.accountService = accountService;

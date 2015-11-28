@@ -11,9 +11,9 @@ import java.util.Map;
  */
 public class AccountService {
     @NotNull
-    private Map<String, UserProfile> users = new HashMap<>();
+    private final Map<String, UserProfile> users = new HashMap<>();
     @NotNull
-    private Map<String, UserProfile> sessions = new HashMap<>();
+    private final Map<String, UserProfile> sessions = new HashMap<>();
 
     public boolean addUser(@NotNull String userEmail, @NotNull UserProfile userProfile) {
         if (users.containsKey(userEmail))

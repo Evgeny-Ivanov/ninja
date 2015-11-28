@@ -2,9 +2,6 @@ package game;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * Created by ilya on 27.10.15.
  */

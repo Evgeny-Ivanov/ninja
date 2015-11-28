@@ -16,7 +16,7 @@ public class WebSocketService {
     static final Logger LOGGER = LogManager.getLogger(WebSocketService.class);
 
     @NotNull
-    private Map<String, GameWebSocket> userSockets = new HashMap<>();
+    private final Map<String, GameWebSocket> userSockets = new HashMap<>();
 
     public void addUserSocket(@NotNull GameWebSocket userSocket) {
         userSockets.put(userSocket.getMyName(), userSocket);

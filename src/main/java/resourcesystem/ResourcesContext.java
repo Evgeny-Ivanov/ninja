@@ -16,8 +16,7 @@ public class ResourcesContext {
 
     private Map<Class<?>, Resource> context;
 
-    private ResourcesContext() {
-    }
+    private ResourcesContext() {}
 
     public ResourcesContext(@NotNull String dir) {
         context = ResourceFactory.loadResources(dir);

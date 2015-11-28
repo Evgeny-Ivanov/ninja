@@ -1,129 +1,110 @@
 package game;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import org.jetbrains.annotations.NotNull;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
 
 /**
  * Created by ilya on 28.11.15.
  */
 public class GameMessager {
-    @NotNull @SuppressWarnings("ConstantConditions")
-    static final Logger LOGGER = LogManager.getLogger(GameMessager.class);
-
     @NotNull
-    GameMechanics gameMechanics;
+    private final GameMechanics gameMechanics;
+    @NotNull
+    private final JsonParser jsonParser = new JsonParser();
 
     public GameMessager(@NotNull GameMechanics gameMechanics) {
         this.gameMechanics = gameMechanics;
     }
 
-    public void reciveMessage(String myName, String data) {
-        JSONParser parser = new JSONParser();
-        try {
-            JSONObject jsonObj = (JSONObject) parser.parse(data);
-            String status = (String)jsonObj.get("status");
+    public void reciveMessage(@NotNull String myName, @NotNull String data) {
+        @SuppressWarnings("ConstantConditions")
+        JsonObject jsonObj = jsonParser.parse(data).getAsJsonObject();
 
-            if ("increment".equals(status)) {
-                gameMechanics.incrementScore(myName);
-                return;
-            }
+        @SuppressWarnings("ConstantConditions")
+        String status = jsonObj.get("status").getAsString();
 
-            if ("message".equals(status)) {
-                String message = (String)jsonObj.get("text");
-                gameMechanics.textInChat(myName, message);
-                return;
-            }
+        if ("increment".equals(status)) {
+            gameMechanics.incrementScore(myName);
+            return;
+        }
 
-        } catch (ParseException e) {
-            LOGGER.error("parser JSONObject");
+        if ("message".equals(status)) {
+            @SuppressWarnings("ConstantConditions")
+            String text = jsonObj.get("text").getAsString();
+            gameMechanics.textInChat(myName, text);
         }
     }
 
-
-
     @NotNull
-    private String pushMessage(JSONObject json) {
-        String message = json.toJSONString();
-        if (message == null) {
-            LOGGER.error("message == null");
-            throw new NullPointerException();
-        }
+    public String createMessageLeave(@NotNull String whoLeave) {
+        JsonObject result = new JsonObject();
+        result.addProperty("status", "leave");
+        result.addProperty("name", whoLeave);
 
-        return message;
+        //noinspection ConstantConditions
+        return result.toString();
     }
 
     @NotNull
-    public String createMessageLeave(String whoLeave) {
-        JSONObject jsonStart = new JSONObject();
-        jsonStart.put("status", "leave");
-        jsonStart.put("name", whoLeave);
+    public String createMessageStartGame(@NotNull GameSession gameSession,
+                                         @NotNull String myName,
+                                         int gameTime) {
+        JsonObject result = new JsonObject();
+        result.addProperty("status", "start");
+        result.addProperty("your_name", myName);
+        result.addProperty("time_of_game", gameTime / 1000);
 
-        return pushMessage(jsonStart);
-    }
-
-    @NotNull
-    public String createMessageStartGame(@NotNull GameSession gameSession, String myName, int gameTime) {
-        JSONObject jsonStart = new JSONObject();
-        jsonStart.put("status", "start");
-        jsonStart.put("your_name", myName);
-        jsonStart.put("time_of_game", gameTime / 1000);
-
-        JSONArray ar = new JSONArray();
+        JsonArray arr = new JsonArray();
         for (GameUser player: gameSession.getGameUsers()) {
-            JSONObject obj = new JSONObject();
-            obj.put("name", player.getName());
-            ar.add(obj);
+            JsonObject guser = new JsonObject();
+            guser.addProperty("name", player.getName());
+            arr.add(guser);
         }
-        jsonStart.put("players", ar);
 
-        return pushMessage(jsonStart);
+        result.add("players", arr);
+
+        //noinspection ConstantConditions
+        return result.toString();
     }
 
     @NotNull
-    public String createMessageIncrementScore(GameSession gameSession) {
-        JSONObject jsonStart = new JSONObject();
-        jsonStart.put("status", "scores");
+    public String createMessageIncrementScore(@NotNull GameSession gameSession) {
+        JsonObject result = new JsonObject();
+        result.addProperty("status", "scores");
 
-        JSONArray ar = new JSONArray();
+        JsonArray arr = new JsonArray();
         for (GameUser player: gameSession.getGameUsers()) {
-            JSONObject obj = new JSONObject();
-            obj.put("name", player.getName());
-            obj.put("score", player.getScore());
-            ar.add(obj);
+            JsonObject guser = new JsonObject();
+            guser.addProperty("name", player.getName());
+            guser.addProperty("score", player.getScore());
+            arr.add(guser);
         }
-        jsonStart.put("players", ar);
+        result.add("players", arr);
 
-        return pushMessage(jsonStart);
+        //noinspection ConstantConditions
+        return result.toString();
     }
 
     @NotNull
-    public String createMessageGameOver(String nameWinner) {
-        JSONObject jsonStart = new JSONObject();
-        jsonStart.put("status", "finish");
-        jsonStart.put("win", nameWinner);
+    public String createMessageGameOver(@NotNull String nameWinner) {
+        JsonObject result = new JsonObject();
+        result.addProperty("status", "finish");
+        result.addProperty("win", nameWinner);
 
-        return pushMessage(jsonStart);
+        //noinspection ConstantConditions
+        return result.toString();
     }
 
     @NotNull
-    public String createMessageTextInChat(@NotNull String authorName, String text) {
-        JSONObject jsonStart = new JSONObject();
-        jsonStart.put("status", "message");
+    public String createMessageTextInChat(@NotNull String authorName, @NotNull String text) {
+        JsonObject result = new JsonObject();
+        result.addProperty("status", "message");
+        result.addProperty("name", authorName);
+        result.addProperty("text", text);
 
-        jsonStart.put("name", authorName);
-        jsonStart.put("text", text);
-
-        String message = jsonStart.toJSONString();
-        if (message == null) {
-            LOGGER.error("message == null");
-            throw new NullPointerException();
-        }
-
-        return message;
+        //noinspection ConstantConditions
+        return result.toString();
     }
 }

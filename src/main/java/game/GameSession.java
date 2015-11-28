@@ -11,9 +11,9 @@ import java.util.*;
 public class GameSession {
     private final long startTime;
     @NotNull
-    private List<GameUser> playersGameUsers = new ArrayList<>();
+    private final List<GameUser> playersGameUsers = new ArrayList<>();
     @NotNull
-    private Map<String, GameUser> users = new HashMap<>();
+    private final Map<String, GameUser> users = new HashMap<>();
 
     public GameSession(@NotNull Set<String> namesPlayers) {
         startTime = new Date().getTime();

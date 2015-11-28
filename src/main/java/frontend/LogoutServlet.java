@@ -19,7 +19,7 @@ import java.util.Map;
  */
 public class LogoutServlet extends HttpServlet {
     @NotNull
-    private AccountService accountService;
+    private final AccountService accountService;
 
     public LogoutServlet(@NotNull AccountService accountService) {
         this.accountService = accountService;

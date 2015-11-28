@@ -3,8 +3,6 @@ package base;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Properties;
@@ -145,6 +143,7 @@ public final class Configuration {
         return new Integer(port);
     }
 
+    @SuppressWarnings("unused")
     @NotNull
     public String getHost() {
         return host;

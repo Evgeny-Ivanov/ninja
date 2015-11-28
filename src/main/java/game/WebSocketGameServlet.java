@@ -42,13 +42,13 @@ public class WebSocketGameServlet extends WebSocketServlet {
 
         HttpSession hs = request.getSession();
         if (hs == null) {
-            LOGGER.info("hs == null || hs.getId() == null");
+            LOGGER.warn("hs == null || hs.getId() == null");
             return;
         }
 
         String name = (String)hs.getAttribute("name");
         if (name == null || "Incognitto".equals(name)) {
-            LOGGER.info("name == (null || Incognitto)");
+            LOGGER.warn("name == (null || Incognitto)");
             return;
         }
 
