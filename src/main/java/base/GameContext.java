@@ -13,15 +13,15 @@ public final class GameContext {
     @NotNull
     private static final GameContext INSTANCE = new GameContext();
 
-    public static GameContext getInstance() {
-        return INSTANCE;
-    }
+    @NotNull
+    private final Map<Class<?>, Object> context = new HashMap<>();
 
     private GameContext() {
     }
 
-    @NotNull
-    private final Map<Class<?>, Object> context = new HashMap<>();
+    public static GameContext getInstance() {
+        return INSTANCE;
+    }
 
     public void add(Class<?> clazz, Object object) {
         if (context.containsKey(clazz)) {

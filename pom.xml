@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>Zhenya_i_Ilya</groupId>
-    <artifactId>WebFishing</artifactId>
+    <artifactId>MultiNunja</artifactId>
     <version>0.1</version>
 
     <properties>
@@ -109,6 +109,12 @@
             <groupId>com.google.code.gson</groupId>
             <artifactId>gson</artifactId>
             <version>2.5</version>
+        </dependency>
+
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>5.1.6</version>
         </dependency>
 
 

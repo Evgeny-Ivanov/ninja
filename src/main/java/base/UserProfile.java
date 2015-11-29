@@ -7,15 +7,33 @@ import org.jetbrains.annotations.NotNull;
  */
 public class UserProfile {
     @NotNull
-    private final String name;
+    private String name;
     @NotNull
-    private final String password;
+    private String password;
     @NotNull
-    private final String email;
+    private String email;
 
     public UserProfile(@NotNull String name, @NotNull String password, @NotNull String email) {
         this.name = name;
         this.password = password;
+        this.email = email;
+    }
+
+    public UserProfile() {
+        this.name = "";
+        this.password = "";
+        this.email = "";
+    }
+
+    public void setName(@NotNull String name) {
+        this.name = name;
+    }
+
+    public void setPassword(@NotNull String password) {
+        this.password = password;
+    }
+
+    public void setEmail(@NotNull String email) {
         this.email = email;
     }
 
@@ -33,4 +51,5 @@ public class UserProfile {
     public String getEmail() {
         return email;
     }
+
 }

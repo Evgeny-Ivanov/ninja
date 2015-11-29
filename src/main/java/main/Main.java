@@ -2,8 +2,8 @@ package main;
 
 import admin.AdminPageServlet;
 import base.AccountService;
-import base.AccountServiceImpl;
 import base.GameContext;
+import database.DBAccountService;
 import frontend.LogoutServlet;
 import frontend.MainPageServlet;
 import frontend.SignInServlet;
@@ -35,18 +35,20 @@ public class Main {
     @NotNull
     static final Logger LOGGER = LogManager.getLogger(Main.class);
 
+    @NotNull
     private static final String PROPERTIES_FILE = "cfg/server.properties";
+    @NotNull
+    private static final String PROPERTIES_FILE_DB = "cfg/db.properties";
 
     public static void main(@NotNull String[] args) {
-
         GameContext gameСontext = GameContext.getInstance();
 
         Configuration conf = new Configuration(PROPERTIES_FILE);
         gameСontext.add(Configuration.class, conf);
 
-        AccountService accountService = new AccountServiceImpl();
+        AccountService accountService = new DBAccountService(PROPERTIES_FILE_DB);
+        ((DBAccountService)accountService).openConnection();
         gameСontext.add(AccountService.class, accountService);
-        ((AccountServiceImpl)accountService).autoFullUsers();
 
         WebSocketService webSocketService = new WebSocketServiceImpl();
         gameСontext.add(WebSocketService.class, webSocketService);
@@ -92,5 +94,7 @@ public class Main {
         }
 
         gameMechanics.run();
+
+        ((DBAccountService)accountService).closeConnection();
     }
 }

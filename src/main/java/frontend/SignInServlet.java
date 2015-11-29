@@ -1,7 +1,6 @@
 package frontend;
 
 import base.AccountService;
-import base.AccountServiceImpl;
 import base.UserProfile;
 import org.jetbrains.annotations.NotNull;
 import utils.PageGenerator;
