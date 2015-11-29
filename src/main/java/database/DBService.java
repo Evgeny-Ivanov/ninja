@@ -20,10 +20,9 @@ public class DBService {
     @NotNull
     private DBConfiguration dbConfiguration;
 
-    private DBExecutor exec;
-
     public DBService(@NotNull String configurationFileName) {
         dbConfiguration = new DBConfiguration(configurationFileName);
+        openConnection();
     }
 
     @NotNull
@@ -36,16 +35,7 @@ public class DBService {
     }
 
     @NotNull
-    public DBExecutor getExecutor() {
-        if (exec == null) {
-            LOGGER.error("exec == null");
-            throw new NullPointerException();
-        }
-        return exec;
-    }
-
-    @NotNull
-    public Connection openConnection() {
+    private Connection openConnection() {
         String nameDriver = dbConfiguration.getNameDriver();
         String jdbcUrl = dbConfiguration.getJdbcUrl();
         String userName = dbConfiguration.getUserName();
@@ -72,10 +62,8 @@ public class DBService {
             throw new NullPointerException();
         }
 
-        //noinspection ConstantConditions
-        exec = new DBExecutor(connection);
-
         LOGGER.info(printInfoOfConnection());
+        //noinspection ConstantConditions
         return connection;
     }
 
@@ -92,7 +80,6 @@ public class DBService {
         try {
             //noinspection ConstantConditions
             connection.close();
-            exec = null;
         } catch (SQLException e) {
             e.printStackTrace();
             return false;

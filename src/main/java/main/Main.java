@@ -47,7 +47,6 @@ public class Main {
         gameСontext.add(Configuration.class, conf);
 
         AccountService accountService = new DBAccountService(PROPERTIES_FILE_DB);
-        ((DBAccountService)accountService).openConnection();
         gameСontext.add(AccountService.class, accountService);
 
         WebSocketService webSocketService = new WebSocketServiceImpl();

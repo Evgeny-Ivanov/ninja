@@ -14,15 +14,9 @@ public class DBExecutor {
     @NotNull
     static final Logger LOGGER = LogManager.getLogger(DBService.class);
 
-    @NotNull
-    Connection connection;
-
-    public DBExecutor(@NotNull Connection connection) {
-        this.connection = connection;
-    }
-
     @Nullable
-    public <T> T execQueryT(@NotNull String query,
+    public static <T> T execQueryT(@NotNull Connection connection,
+                            @NotNull String query,
                             @NotNull TResultHandler<T> handler)
             throws SQLException
     {
@@ -49,7 +43,8 @@ public class DBExecutor {
         return value;
     }
 
-    public void execQuery(@NotNull String query,
+    public static void execQuery(@NotNull Connection connection,
+                          @NotNull String query,
                           @NotNull TResultHandler handler)
             throws SQLException
     {
@@ -68,7 +63,10 @@ public class DBExecutor {
         }
     }
 
-    public int execUpdate(@NotNull String update) throws SQLException {
+    public static int execUpdate(@NotNull Connection connection,
+                          @NotNull String update)
+            throws SQLException
+    {
         int count = 0;
         try (Statement stmt = connection.createStatement()) {
             if (stmt == null) {

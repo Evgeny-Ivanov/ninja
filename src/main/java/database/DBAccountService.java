@@ -2,6 +2,7 @@ package database;
 
 import base.AccountService;
 import base.UserProfile;
+import database.dao.UserProfileDao;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
@@ -15,32 +16,31 @@ import java.util.Map;
  * Created by ilya on 29.11.15.
  */
 public class DBAccountService  extends DBService  implements AccountService {
-    @SuppressWarnings("ConstantConditions")
+    @SuppressWarnings({"ConstantConditions", "FieldNameHidesFieldInSuperclass"})
     @NotNull
     static final Logger LOGGER = LogManager.getLogger(DBAccountService.class);
 
     @NotNull
     private final Map<String, UserProfile> sessions = new HashMap<>();
 
+    @NotNull
+    private UserProfileDao userProfileDao;
+
     public DBAccountService(@NotNull String configurationFileName) {
         super(configurationFileName);
+        userProfileDao = new UserProfileDao(getConnection());
     }
 
     @Override
     public boolean addUser(@NotNull String userEmail, @NotNull UserProfile userProfile) {
         try {
-            getExecutor().execUpdate("insert into userprofile (name, password, email) " +
-                    "values ( '" + userProfile.getName() + "' , '"
-                    + userProfile.getPassword() + "' , "
-                    + " '" +userProfile.getEmail() +"' )");
-
+            userProfileDao.insert(userProfile);
             return true;
         } catch (SQLException e) {
             LOGGER.warn("SQLException addUser ");
             LOGGER.warn(e);
+            return false;
         }
-
-        return false;
     }
 
     @Override
@@ -51,35 +51,16 @@ public class DBAccountService  extends DBService  implements AccountService {
     @Nullable
     @Override
     public UserProfile getUser(@Nullable String userEmail) {
-        UserProfile userProfile = null;
-
+        if (userEmail == null) {
+            return null;
+        }
         try {
-            userProfile = getExecutor().execQueryT("select * from userprofile where email = '" + userEmail + "' ", result -> {
-                UserProfile up = null;
-                if (result.next()) {
-                    if (result.getString("name") == null ||
-                            result.getString("email") == null ||
-                            result.getString("password") == null)
-                    {
-                        LOGGER.warn("result.### == null");
-                        return null;
-                    }
-
-                    //noinspection ConstantConditions
-                    up = new UserProfile(result.getString("name"),
-                            result.getString("password"),
-                            result.getString("email"));
-                }
-
-                return up;
-            });
-
+            return userProfileDao.readByEmail(userEmail);
         } catch (SQLException e) {
             LOGGER.warn("SQLException getUser ");
             LOGGER.warn(e);
+            return null;
         }
-
-        return userProfile;
     }
 
     @Nullable
@@ -90,18 +71,12 @@ public class DBAccountService  extends DBService  implements AccountService {
 
     @Override
     public int countUsers() {
-        int count = 0;
         try {
-            String query = "SELECT count(*) FROM userprofile";
-            count = getExecutor().execQueryT(query, result -> {
-                result.next();
-                return result.getInt(1);
-            });
-
+            return userProfileDao.count();
         } catch (SQLException e) {
             LOGGER.warn("SQLException");
+            return 0;
         }
-        return count;
     }
 
     @Override
