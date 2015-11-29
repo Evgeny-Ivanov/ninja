@@ -59,8 +59,17 @@ public class UserProfileDao {
     public int count() throws SQLException {
         String query = "SELECT count(*) FROM userprofile";
         return  DBExecutor.execQueryT(connection, query, result -> {
-            result.next();
-            return result.getInt(1);
+
+            if (result.next()) {
+                return result.getInt(1);
+            } else {
+                LOGGER.warn("count() result == null");
+                return 0;
+            }
         });
+    }
+
+    public int deleteAll() throws SQLException {
+        return DBExecutor.execUpdate(connection, "delete from userprofile ");
     }
 }

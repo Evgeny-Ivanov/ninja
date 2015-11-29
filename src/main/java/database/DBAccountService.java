@@ -94,4 +94,14 @@ public class DBAccountService  extends DBService  implements AccountService {
     public void deleteAllSessions() {
         sessions.clear();
     }
+
+    @Override
+    public int deleteAllUsers() {
+        try {
+            return userProfileDao.deleteAll();
+        } catch (SQLException e) {
+            LOGGER.warn("SQLException");
+            return 0;
+        }
+    }
 }

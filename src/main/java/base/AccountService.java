@@ -15,4 +15,5 @@ public interface AccountService {
     int countSessions();
     UserProfile deleteSessions(@Nullable String sessionId);
     void deleteAllSessions();
+    int deleteAllUsers();
 }

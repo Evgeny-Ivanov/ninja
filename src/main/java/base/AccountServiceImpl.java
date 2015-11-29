@@ -64,6 +64,13 @@ public class AccountServiceImpl implements AccountService {
         sessions.clear();
     }
 
+    @Override
+    public int deleteAllUsers() {
+        int count = users.size();
+        users.clear();
+        return count;
+    }
+
     public void autoFullUsers() {
         UserProfile testUser1 = new UserProfile("Егор", "123", "test1@mail.ru");
         addUser(testUser1.getEmail(), testUser1);
