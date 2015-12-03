@@ -1,5 +1,6 @@
 package game;
 
+import base.AccountService;
 import base.GameContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -22,6 +23,8 @@ public class GameMechanics{
     private GMResource gMResource;
     @NotNull
     private WebSocketService webSocketService;
+    @NotNull
+    private AccountService accountService;
 
     @NotNull
     private final Map<String, GameSession> nameToGame = new HashMap<>();
@@ -42,6 +45,13 @@ public class GameMechanics{
             throw new NullPointerException();
         }
         this.webSocketService = newWebSocketService;
+
+        AccountService newAccountService = (AccountService) gameContext.get(AccountService.class);
+        if (newAccountService == null) {
+            LOGGER.error("newAccountService == null");
+            throw new NullPointerException();
+        }
+        this.accountService = newAccountService;
 
         ResourcesContext resourcesContext = (ResourcesContext) gameContext.get(ResourcesContext.class);
         if (resourcesContext == null) {
@@ -147,6 +157,7 @@ public class GameMechanics{
 
         for (GameUser user : session.getGameUsers()) {
             webSocketService.notify(user.getName(), message);
+            accountService.addScore(user.getName(), user.getScore());
             nameToGame.remove(user.getName());
         }
     }

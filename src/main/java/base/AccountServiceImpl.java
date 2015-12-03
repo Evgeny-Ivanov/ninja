@@ -1,9 +1,12 @@
 package base;
 
+import database.dataset.Score;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -22,6 +25,16 @@ public class AccountServiceImpl implements AccountService {
 
         users.put(userEmail, userProfile);
         return true;
+    }
+
+    @Override
+    public List<Score> getListScore(int amount) {
+        return new ArrayList<>(0);
+    }
+
+    @Override
+    public boolean addScore(@NotNull String name, int scoreCount) {
+        return false;
     }
 
     @Override

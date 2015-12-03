@@ -2,14 +2,19 @@ package database;
 
 import base.AccountService;
 import base.UserProfile;
-import database.dao.UserProfileDao;
+import database.dao.ScoreDao;
+import database.dao.UserDao;
+import database.dataset.Score;
+import database.dataset.User;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -24,22 +29,55 @@ public class DBAccountService  extends DBService  implements AccountService {
     private final Map<String, UserProfile> sessions = new HashMap<>();
 
     @NotNull
-    private UserProfileDao userProfileDao;
+    private UserDao userDao;
+    @NotNull
+    private ScoreDao scoreDao;
 
     public DBAccountService(@NotNull String configurationFileName) {
         super(configurationFileName);
-        userProfileDao = new UserProfileDao(getConnection());
+        userDao = new UserDao(getConnection());
+        scoreDao = new ScoreDao(getConnection());
     }
 
     @Override
     public boolean addUser(@NotNull String userEmail, @NotNull UserProfile userProfile) {
         try {
-            userProfileDao.insert(userProfile);
+            User user = new User();
+            user.setName(userProfile.getName());
+            user.setPassword(userProfile.getPassword());
+            user.setEmail(userProfile.getEmail());
+            userDao.insert(user);
             return true;
         } catch (SQLException e) {
             LOGGER.warn("SQLException addUser ");
             LOGGER.warn(e);
             return false;
+        }
+    }
+
+    @Override
+    public boolean addScore(@NotNull String name, int scoreCount) {
+        try {
+            Score score = new Score();
+            score.setName(name);
+            score.setScore(scoreCount);
+            scoreDao.insert(score);
+            return true;
+        } catch (SQLException e) {
+            LOGGER.warn("SQLException v ");
+            LOGGER.warn(e);
+            return false;
+        }
+    }
+
+    @Override
+    public List<Score> getListScore(int amount) {
+        try {
+            return scoreDao.read(amount);
+        } catch (SQLException e) {
+            LOGGER.warn("SQLException v ");
+            LOGGER.warn(e);
+            return new ArrayList<>(0);
         }
     }
 
@@ -55,7 +93,15 @@ public class DBAccountService  extends DBService  implements AccountService {
             return null;
         }
         try {
-            return userProfileDao.readByEmail(userEmail);
+            User user = userDao.readByEmail(userEmail);
+            if (user == null) {
+                return null;
+            }
+            UserProfile up = new UserProfile();
+            up.setEmail(user.getEmail());
+            up.setName(user.getName());
+            up.setPassword(user.getPassword());
+            return up;
         } catch (SQLException e) {
             LOGGER.warn("SQLException getUser ");
             LOGGER.warn(e);
@@ -72,7 +118,7 @@ public class DBAccountService  extends DBService  implements AccountService {
     @Override
     public int countUsers() {
         try {
-            return userProfileDao.count();
+            return userDao.count();
         } catch (SQLException e) {
             LOGGER.warn("SQLException");
             return 0;
@@ -98,7 +144,7 @@ public class DBAccountService  extends DBService  implements AccountService {
     @Override
     public int deleteAllUsers() {
         try {
-            return userProfileDao.deleteAll();
+            return userDao.deleteAll();
         } catch (SQLException e) {
             LOGGER.warn("SQLException");
             return 0;
