@@ -19,6 +19,8 @@ public final class Configuration {
     @NotNull
     private String signinPageUrl;
     @NotNull
+    private String scoresPageUrl;
+    @NotNull
     private String signupPageUrl;
     @NotNull
     private String logoutPageUrl;
@@ -64,6 +66,7 @@ public final class Configuration {
         }
         port = readedPort;
 
+
         String readedGameSocketHost = properties.getProperty("gameSocketHost");
         if (readedGameSocketHost == null) {
             LOGGER.error("gameSocketHost is null");
@@ -91,6 +94,13 @@ public final class Configuration {
             throw new NullPointerException();
         }
         signupPageUrl = readedSignupPageUrl;
+
+        String readedScoresPageUrl = properties.getProperty("scoresPageUrl");
+        if (readedScoresPageUrl == null) {
+            LOGGER.error("ScoresPageUrl is null");
+            throw new NullPointerException();
+        }
+        scoresPageUrl = readedScoresPageUrl;
 
         String readedLogoutPageUrl = properties.getProperty("logoutPageUrl");
         if (readedLogoutPageUrl == null) {
@@ -128,6 +138,11 @@ public final class Configuration {
         resourcesDirectory = readedResourcesDirectory;
 
         LOGGER.info(this);
+    }
+
+    @NotNull
+    public String getScoresPageUrl() {
+        return scoresPageUrl;
     }
 
     @NotNull

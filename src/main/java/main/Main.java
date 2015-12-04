@@ -4,10 +4,7 @@ import admin.AdminPageServlet;
 import base.AccountService;
 import base.GameContext;
 import database.DBAccountService;
-import frontend.LogoutServlet;
-import frontend.MainPageServlet;
-import frontend.SignInServlet;
-import frontend.SignUpServlet;
+import frontend.*;
 import game.GameMechanics;
 import game.WebSocketGameServlet;
 import game.WebSocketService;
@@ -64,12 +61,14 @@ public class Main {
         Servlet signIn = new SignInServlet(accountService);
         Servlet signUp = new SignUpServlet(accountService);
         Servlet logout = new LogoutServlet(accountService);
+        Servlet scores = new ScoresServlet(accountService);
         Servlet admin = new AdminPageServlet(accountService, server);
         WebSocketServlet game = new WebSocketGameServlet();
 
         ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
         //context.setVirtualHosts(new String[]{configuration.getHost()});
 
+        context.addServlet(new ServletHolder(scores), conf.getScoresPageUrl());
         context.addServlet(new ServletHolder(signIn), conf.getSigninPageUrl());
         context.addServlet(new ServletHolder(signUp), conf.getSignupPageUrl());
         context.addServlet(new ServletHolder(admin), conf.getAdminPageUrl());

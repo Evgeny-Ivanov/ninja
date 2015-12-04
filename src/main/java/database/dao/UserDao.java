@@ -26,10 +26,12 @@ public class UserDao {
     }
 
     public int insert(@NotNull User user) throws SQLException {
-        return DBExecutor.execUpdate(connection, "insert into user (name, password, email) " +
+        String query = "insert into user (name, password, email) " +
                 "values ( '" + user.getName() + "' , '"
                 + user.getPassword() + "' , "
-                + " '" + user.getEmail() + "' )");
+                + " '" + user.getEmail() + "' )";
+        LOGGER.info(query);
+        return DBExecutor.execUpdate(connection, query);
     }
 
     @Nullable

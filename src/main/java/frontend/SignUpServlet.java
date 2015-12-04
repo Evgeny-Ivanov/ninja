@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 /**
  * Created by v.chibrikov on 13.09.2014.
@@ -39,6 +40,10 @@ public class SignUpServlet extends HttpServlet {
 
         if (name == null || password == null || email == null) {
             pageVariables.put("signUpStatus", "Input error");
+        } if (name.length() < 4 || email.length() < 4) {
+            pageVariables.put("signUpStatus", "Короткое имя или емэйл");
+        } else if (!Pattern.matches("[A-Za-z0-9]*", name) || !Pattern.matches("[A-Za-z0-9]*", email)) {
+            pageVariables.put("signUpStatus", "Я криворукий и не сделал хранение в бд русских букв");
         } else if (accountService.addUser(email, new UserProfile(name, password, email))) {
             pageVariables.put("signUpStatus", "New user created");
         } else {

@@ -1,8 +1,10 @@
 package game;
 
+import base.AccountService;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import database.dataset.Score;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -89,6 +91,24 @@ public class GameMessager {
             JsonObject guser = new JsonObject();
             guser.addProperty("name", player.getName());
             guser.addProperty("score", player.getScore());
+            arr.add(guser);
+        }
+        result.add("players", arr);
+
+        //noinspection ConstantConditions
+        return result.toString();
+    }
+
+    @NotNull
+    public static String createMessageListScores(@NotNull AccountService accountService, int amount) {
+        JsonObject result = new JsonObject();
+        result.addProperty("status", 200);
+
+        JsonArray arr = new JsonArray();
+        for (Score score : accountService.getListScore(amount)) {
+            JsonObject guser = new JsonObject();
+            guser.addProperty("name", score.getName());
+            guser.addProperty("score", score.getScore());
             arr.add(guser);
         }
         result.add("players", arr);
