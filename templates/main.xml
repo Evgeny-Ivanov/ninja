@@ -1,0 +1,31 @@
+
+<fest:template xmlns:fest="http://fest.mail.ru" context_name="json">
+
+
+
+        <div class="col">
+             <div class="menu">
+                <div class="menu__title menu__link_center"> Main menu </div>
+
+                <a  href="#game" class="js-start-game menu__link_none">
+                	<div class="menu__link menu__link_center"> Play </div> 
+                </a> 	
+
+                <a href="#scoreboard" class="js-scoreboard menu__link_none"> 
+                	<div class="menu__link menu__link_center"> Score Board </div> 
+                </a>
+
+                <a href="#login" class="js-login menu__link_none"> 
+                	<div class="menu__link menu__link_center"> Login </div> 
+                </a> 
+
+                <a href="#registration" class="js-registration menu__link_none"> 
+                	<div class="menu__link menu__link_center"> Registration </div> 
+                </a> 
+
+            </div>
+        </div>
+
+
+
+</fest:template>

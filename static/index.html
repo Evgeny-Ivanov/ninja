@@ -1,46 +1,15 @@
-<!DOCTYPE  html>
+<!DOCTYPE html>
 <html><head>
     <meta charset="utf-8" />
     <title><!-- TODO --></title>
-    <link rel="stylesheet" href="/css/main.css" />
-    <script src="/js/lib/jquery.js"></script>
-    <script src="/js/tmpl/main.js"></script>
-    <script src="/js/tmpl/scoreboard.js"></script>
-    <script src="/js/tmpl/game.js"></script>
-    <script src="/js/tmpl/login.js"></script>
+    <link href="bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="css/head.css" media="all"/>
 </head><body>
     <div id="page"></div>
-    <script>
-        var $page = $('#page');
+    <!-- из data-main RequireJS получает информацию о главном файле с инструкциями по загрузке -->
+    <script data-main="js/main" src="js/lib/require.js"></script>
+    <!-- Livereload -->
+    <script src="//localhost:35729/livereload.js"></script>
 
-        function showScoreboardScreen() {
-            // TODO
-        }
-        function hideScoreboardScreen() {
-            // TODO
-        }
 
-        function showGameScreen() {
-            // TODO
-        }
-        function hideGameScreen() {
-            // TODO
-        }
-
-        function showLoginScreen() {
-            // TODO
-        }
-        function hideLoginScreen() {
-            // TODO
-        }
-
-        function showMainScreen() {
-            // TODO
-        }
-        function hideMainScreen() {
-            // TODO
-        }
-
-        showMainScreen();
-    </script>
 </body></html>

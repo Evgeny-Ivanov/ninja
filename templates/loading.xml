@@ -1,0 +1,9 @@
+<fest:template xmlns:fest="http://fest.mail.ru" context_name="json">
+
+        <div class="col">
+             <div class="menu">
+                <div class="menu__title menu__link_center"> Пожалуйста подождите </div>
+            </div>
+        </div>
+
+</fest:template>

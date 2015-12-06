@@ -1,0 +1,12 @@
+$game-background-image: "/1.jpg";
+
+.game{
+
+	background-image: url($game-background-image);
+    /* Set rules to fill background */
+    height: 600px;
+    width: 80%;
+    position: fixed;
+    top: 10%;
+    left: 10%;
+}

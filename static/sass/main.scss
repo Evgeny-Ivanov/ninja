@@ -1,0 +1,59 @@
+.example-extend{
+	margin: {
+		left: 35%;
+		right: 35%;
+		top: 9%;
+	}
+}
+
+.col{
+	@extend .example-extend;
+}
+
+.menu{
+
+	&__link{
+		line-height: 2em;
+		background-color: $grey;
+		color: $text-on-gray-color;
+		margin-top: 0.8em;
+		height: 2em;
+		font-size: 1.9rem;
+		font-style: italic;
+		/*border: 3px #CCCCCC solid;
+		border-radius: 10px;*/
+
+		&:hover{
+			transform: scale(1.03);
+			background-color: $dark-grey;
+			color: $text-on-gray-color;
+		}
+
+		&_center{
+			text-align: center;
+		}
+
+		&_none{
+			text-decoration: none!important;
+		}
+	}
+
+	&__title{
+		color: $dark-grey;
+		font-size: 4em;
+	}
+
+}
+
+.ajax-signin__error-panel{
+    display: none;
+}
+.ajax-signin__status-logo-email{
+	display: none;
+}
+.ajax-signin__status-logo-login{
+	display: none;
+}
+.ajax-signin__status-logo-password{
+	display: none;
+}

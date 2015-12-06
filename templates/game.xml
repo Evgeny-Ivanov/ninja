@@ -1,0 +1,53 @@
+<fest:template xmlns:fest="http://fest.mail.ru" context_name="json">
+
+
+<div id="body">
+
+        <div id="hello">
+            <p>Hello, ${name}!</p>
+        </div>
+
+            <div id="wait">
+                <p>Prepare yourself. Wait for enemy!</p>
+            </div>
+
+            <div id="gameplay" style="display: none">
+                <p>Time of game: <span id="time_of_game"></span></p>
+
+                <div id="score">
+                </div>
+
+                <form name="gamePlay" action="">
+                    <input type="button" class="js-button-game" name="submit" value="Press to win!" />
+                </form>
+            </div>
+
+            <div id="gameOver" style="display: none">
+                <p>Game over! Winner - <span id="win"></span></p>
+
+			    <div class="col">
+			        <div class="menu">
+
+			            <a href="#" class="menu__link_none"> 
+			            	<div class="menu__link menu__link_center"> Назад </div> 
+			            </a>
+			        </div>
+			    </div>
+			    
+            </div>
+
+</div>
+
+
+<div style="display: none" id="mychat">
+    <p><b>Чат:</b></p>
+   <p><textarea id="textarea" disabled="disabled" rows="10" cols="45" name="text" ></textarea></p>
+  <form action="javascript:void(0)" method="post" style="">
+    <p><input id="chat" name="text" > </input></p>
+    <p><input  type="submit" class="js-button-chat" value="Отправить"> </input></p>
+  </form>
+</div>
+
+
+
+</fest:template>

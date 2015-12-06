@@ -1,0 +1,54 @@
+@mixin styleTips(){
+	color: $grey; 
+	opacity: 0.7;
+}
+
+.input-panel{
+	padding: {
+		top: 0.3em;
+		bottom: 0.3em;
+	}
+	background-color: $grey;
+	border-radius: 3px;
+
+	&_input{
+		position: relative;
+		margin: {
+			top: 0.4em;
+			bottom: 0.4em;
+		}
+		left: 3%;
+		right: 3%;
+		line-height: 2em;
+		height: 2.2em;
+		width: 94%;
+		border-radius: 3px;
+		color: $grey;
+		text-indent: 4%;
+
+		&:-moz-placeholder {
+			@include styleTips();
+		}
+
+		&::-webkit-input-placeholder { 
+			@include styleTips();
+		}
+	}
+
+}
+
+.data-submit{
+	border:0px;
+	width:100%;
+}
+
+ input{
+ 	
+ 	&:invalid{ 
+ 		color: #FF6672;
+	}
+
+ 	&:valid {
+ 		color: #69b241;
+ 	}
+ } 

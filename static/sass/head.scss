@@ -1,0 +1,13 @@
+$main-background-color: #FF6672;//#69b241
+$dark-grey: #405261;
+$grey: #4c6575;
+$text-on-gray-color: #FFFFFF;
+
+body {
+   background-color: $main-background-color;
+}
+
+@import "main";
+@import "game";
+@import "registration";
+@import "scoreboard";
