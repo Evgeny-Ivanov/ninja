@@ -42,7 +42,7 @@ public class SignUpServlet extends HttpServlet {
             pageVariables.put("signUpStatus", "Input error");
         } if (name.length() < 4 || email.length() < 4) {
             pageVariables.put("signUpStatus", "Короткое имя или емэйл");
-        } else if (!Pattern.matches("[A-Za-z0-9]*", name) || !Pattern.matches("[A-Za-z0-9]*", email)) {
+        } else if (Pattern.matches(".*[А-Яа-я]+.*", name) || Pattern.matches(".*[А-Яа-я]+.*", email)) {
             pageVariables.put("signUpStatus", "Я криворукий и не сделал хранение в бд русских букв");
         } else if (accountService.addUser(email, new UserProfile(name, password, email))) {
             pageVariables.put("signUpStatus", "New user created");

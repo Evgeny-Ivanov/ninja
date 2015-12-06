@@ -49,13 +49,13 @@ public class Main {
         WebSocketService webSocketService = new WebSocketServiceImpl();
         gameСontext.add(WebSocketService.class, webSocketService);
 
-        ResourcesContext resourcesContext = new ResourcesContext(conf.getResourcesDirectory());
+        ResourcesContext resourcesContext = new ResourcesContext(conf.getValueOfProperty("resourcesDirectory"));
         gameСontext.add(ResourcesContext.class, resourcesContext);
 
         GameMechanics gameMechanics = new GameMechanics();
         gameСontext.add(GameMechanics.class, gameMechanics);
 
-        Server server = new Server(conf.getPort());
+        Server server = new Server(new Integer(conf.getValueOfProperty("port")));
 
         Servlet mainPage = new MainPageServlet();
         Servlet signIn = new SignInServlet(accountService);
@@ -68,13 +68,13 @@ public class Main {
         ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
         //context.setVirtualHosts(new String[]{configuration.getHost()});
 
-        context.addServlet(new ServletHolder(scores), conf.getScoresPageUrl());
-        context.addServlet(new ServletHolder(signIn), conf.getSigninPageUrl());
-        context.addServlet(new ServletHolder(signUp), conf.getSignupPageUrl());
-        context.addServlet(new ServletHolder(admin), conf.getAdminPageUrl());
-        context.addServlet(new ServletHolder(logout), conf.getLogoutPageUrl());
-        context.addServlet(new ServletHolder(mainPage), conf.getMainPageUrl());
-        context.addServlet(new ServletHolder(game), conf.getGameSocketUrl());
+        context.addServlet(new ServletHolder(scores), conf.getValueOfProperty("scoresPageUrl"));
+        context.addServlet(new ServletHolder(signIn), conf.getValueOfProperty("signinPageUrl"));
+        context.addServlet(new ServletHolder(signUp), conf.getValueOfProperty("signupPageUrl"));
+        context.addServlet(new ServletHolder(admin), conf.getValueOfProperty("adminPageUrl"));
+        context.addServlet(new ServletHolder(logout), conf.getValueOfProperty("logoutPageUrl"));
+        context.addServlet(new ServletHolder(mainPage), conf.getValueOfProperty("mainPageUrl"));
+        context.addServlet(new ServletHolder(game), conf.getValueOfProperty("gameSocketUrl"));
 
         ResourceHandler resource_handler = new ResourceHandler();
         resource_handler.setDirectoriesListed(true);

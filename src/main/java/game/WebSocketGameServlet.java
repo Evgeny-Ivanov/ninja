@@ -61,9 +61,9 @@ public class WebSocketGameServlet extends WebSocketServlet {
 
         Map<String, Object> pageVariables = new HashMap<>();
         pageVariables.put("name", name);
-        pageVariables.put("host_game", conf.getGameSocketHost());
-        pageVariables.put("port_game", conf.getGameSocketPort());
-        pageVariables.put("url_game", conf.getGameSocketUrl());
+        pageVariables.put("host_game", conf.getValueOfProperty("gameSocketHost"));
+        pageVariables.put("port_game", conf.getValueOfProperty("gameSocketPort"));
+        pageVariables.put("url_game", conf.getValueOfProperty("gameSocketUrl"));
 
         try (PrintWriter pw = response.getWriter()) {
             if (pw != null) {
