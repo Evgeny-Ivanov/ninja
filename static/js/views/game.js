@@ -44,7 +44,6 @@ define([
 
             var canvas = this.$el.find(".js-canvas")[0];
             var scene = new Scene(canvas);
-            scene.clear();
 
             scene.run();
         }
