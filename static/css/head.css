@@ -1,6 +1,7 @@
 @charset "UTF-8";
 body {
-  background-color: #FF6672; }
+  background-color: #FF6672;
+  font-family: 'Indie Flower', cursive; }
 
 .example-extend, .col {
   margin-left: 35%;
@@ -50,6 +51,20 @@ body {
   position: fixed;
   top: 10%;
   left: 10%; }
+
+.canvas {
+  padding-top: 1%;
+  padding-left: 2%; }
+
+.chat {
+  padding-right: 4%;
+  color: "red"; }
+
+.chat_textarea {
+  resize: vertical; }
+
+.basket {
+  position: fixed; }
 
 .input-panel {
   padding-top: 0.3em;

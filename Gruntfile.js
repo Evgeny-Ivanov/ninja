@@ -67,7 +67,7 @@ module.exports = function (grunt) {
                     ext:  '.css'
                 }]*/
                 files: {
-                    'static/css/head.css': 'public_html/sass/head.scss'
+                    'static/css/head.css': 'static/sass/head.scss'
                 }
             }
         },

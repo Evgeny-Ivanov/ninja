@@ -1,53 +1,31 @@
 <fest:template xmlns:fest="http://fest.mail.ru" context_name="json">
+<div class="row">
 
+    <div class="col-md-9 canvas"> 
+        <image src="/basket.png" class="basket"></image>
+        <canvas class="js-canvas" ondragstart="return false;"></canvas>
+    </div>
 
-<div id="body">
+    <div class="chat col-md-3"> 
+            <div class="menu">
+            <div class="menu__title menu__link_center"> Chat </div>
+                <form class="ajax-signup" role="form" action="javascript:void(0)" method="post">
 
-        <div id="hello">
-            <p>Hello, ${name}!</p>
-        </div>
+                    <div class="input-panel">
+                        <div>
+                        <textarea id="textarea" class="input-panel_input chat_textarea" disabled="disabled" rows="10" cols="45" name="text" ></textarea>
+                        </div>
 
-            <div id="wait">
-                <p>Prepare yourself. Wait for enemy!</p>
+                        <div>
+                        <input type="email" class="input-panel_input" required="" name="email" placeholder="Email"/> 
+                        <span class="js-ajax-signin__status-logo-email"/>
+                        </div>
+                    </div>
+                    
+                    <button type="submit" class="data-submit menu__link">Отправить</button>     
+                </form>  
             </div>
-
-            <div id="gameplay" style="display: none">
-                <p>Time of game: <span id="time_of_game"></span></p>
-
-                <div id="score">
-                </div>
-
-                <form name="gamePlay" action="">
-                    <input type="button" class="js-button-game" name="submit" value="Press to win!" />
-                </form>
-            </div>
-
-            <div id="gameOver" style="display: none">
-                <p>Game over! Winner - <span id="win"></span></p>
-
-			    <div class="col">
-			        <div class="menu">
-
-			            <a href="#" class="menu__link_none"> 
-			            	<div class="menu__link menu__link_center"> Назад </div> 
-			            </a>
-			        </div>
-			    </div>
-			    
-            </div>
+    </div>
 
 </div>
-
-
-<div style="display: none" id="mychat">
-    <p><b>Чат:</b></p>
-   <p><textarea id="textarea" disabled="disabled" rows="10" cols="45" name="text" ></textarea></p>
-  <form action="javascript:void(0)" method="post" style="">
-    <p><input id="chat" name="text" > </input></p>
-    <p><input  type="submit" class="js-button-chat" value="Отправить"> </input></p>
-  </form>
-</div>
-
-
-
 </fest:template>
