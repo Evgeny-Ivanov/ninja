@@ -33,6 +33,13 @@ define([
             _.each(self.gameMechanics.fruits,function(fruit){
                 fruit.show(self.context);
             });
+            _.each(self.gameMechanics.slicedFruits,function(f){
+                f.fruit.cut(self.context);
+                f.fruit.time++;
+                if(f.fruit.time == 49){
+                    self.gameMechanics.slicedFruits =  _.without(self.gameMechanics.slicedFruits,f);
+                }
+            });
             self.gameMechanics.sword.draw(self.context);
         }
         animateThis();

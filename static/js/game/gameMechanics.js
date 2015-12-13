@@ -12,12 +12,13 @@ define([
         this.context = canvas.getContext("2d");
 
         //временно. Фрукты будут приходить из messageSystem
-        var f1  = new Fruit(100,100,40);
-        var f2  = new Fruit(100,300,40);
-        var f3  = new Fruit(320,456,40);
-        var f4  = new Fruit(700,10,40);
+        var f1  = new Fruit(100,canvas.height,80);
+        var f2  = new Fruit(100,300,80);
+        var f3  = new Fruit(320,456,80);
+        var f4  = new Fruit(700,10,80);
 
         this.fruits = [f1,f2,f3,f4];
+        this.slicedFruits = [];
         this.p1 = null;
         this.p2 = null;
         this.sword = new Sword();
@@ -76,6 +77,11 @@ define([
     GameMechanics.prototype.cutFruit = function(fruit){
         console.log(this.fruits);
         this.fruits =  _.without(this.fruits, fruit);
+        this.slicedFruits.push({
+            fruit: fruit,
+            time:0
+        });
+        //fruit.setRandomColor();
         console.log(this.fruits);
     }
 
