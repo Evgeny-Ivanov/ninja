@@ -6,7 +6,7 @@ define([
         //
         this.time = 0;
         this.radius = radius;
-        this.initialAcceleration = 120;
+        this.initialAcceleration = 140;
         this.g = 98
         //
         this.color = "#F08080";
@@ -34,12 +34,12 @@ define([
     }
 
     Fruit.prototype.law = function(){
-        console.log(this.position);
+        //console.log(this.position);
         this.time++;
         this.initialAcceleration--;
         return {
-            x: this.position.x++,//this.position.x+this.time/2,
-            y: this.position.y++//(this.g-this.initialAcceleration)*this.time*this.time/4000+this.position.y
+            x: this.position.x, //this.position.x+this.time/4,
+            y: this.position.y //(this.g-this.initialAcceleration)*this.time*this.time/1500+this.position.y
         }
     }
 
@@ -163,7 +163,6 @@ define([
         };
         context.drawImage(this.img, this.position.x, this.position.y, this.radius*2,  this.radius*2); 
         this.debug(context);
-
     }
 
     return Smeshariki;

@@ -7,17 +7,21 @@ define([
     Fruit,
     Sword
 ){
-    function GameMechanics(canvas){
+    function GameMechanics(canvas,model){
+        this.model = model;
         this.canvas = canvas;
         this.context = canvas.getContext("2d");
 
         //временно. Фрукты будут приходить из messageSystem
-        var f1  = new Fruit(100,canvas.height,80);
-        var f2  = new Fruit(100,300,80);
-        var f3  = new Fruit(320,456,80);
-        var f4  = new Fruit(700,10,80);
+        var f = [];
+        for(i=0;i<3;i++){
+            var width = canvas.width/(i+2);
+            var height = canvas.height/(i+2);
+            var radius = canvas.height/10;
+            f[i] = new Fruit(width,height,radius);
+        }
 
-        this.fruits = [f1,f2,f3,f4];
+        this.fruits = f;
         this.slicedFruits = [];
         this.p1 = null;
         this.p2 = null;
@@ -30,7 +34,10 @@ define([
 
     GameMechanics.prototype.checkСontactSwordAndFruit = function(){
         var self = this;
-        var callback = function(evt) {
+        var callback = function(event) {
+            if(event.touches) evt = event.touches[0]
+            else evt = event;
+        
             mouseX = evt.pageX - self.canvas.offsetLeft;
             mouseY = evt.pageY - self.canvas.offsetTop;
 
@@ -68,6 +75,7 @@ define([
 
         }
         this.canvas.addEventListener("mousemove",callback);
+        this.canvas.addEventListener("touchmove",callback);
     }
 
     GameMechanics.prototype.addFruit = function(fruit){
@@ -85,6 +93,12 @@ define([
         console.log(this.fruits);
     }
 
+    GameMechanics.prototype.finishGame = function(){
+        var score = Math.round(Math.random()*100);//наш гемплей
+        this.model.set('score',score);
+        if(this.fruits.length == 0 && this.slicedFruits.length == 0) return true;
+        return false;
+    }
 
     return GameMechanics;
 

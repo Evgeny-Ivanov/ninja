@@ -7,7 +7,8 @@ require.config({//Настроить опции RequireJS можно через 
     paths: {// пути для модулей, которые находятся не в baseUrl
         jquery: "lib/jquery",
         underscore: "lib/underscore",
-        backbone: "lib/backbone"
+        backbone: "lib/backbone",
+        deviceApiNormaliser: "lib/deviceapi-normaliser"
     },
     shim: {//Параметр shim позволяет добавить сторонние модули
     	   //(которые определены не в AMD стиле, или проще говоря: без метода define)
@@ -20,6 +21,9 @@ require.config({//Настроить опции RequireJS можно через 
         },
         'underscore': {
             exports: '_'
+        },
+        'deviceapi-normaliser': {
+            exports: 'deviceOrientation'
         }
     }
 });

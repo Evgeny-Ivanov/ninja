@@ -22,9 +22,6 @@ define([
     loadingView,
     errorScoreboardView
 ){
-
-	// в canvas requestAnimationFrame нужно вызывать не для каждого шарика а для всего массива 
-	// почему ?
 	
     viewManager.addArray([
         mainView,
@@ -38,7 +35,6 @@ define([
     ]);
 
     //ДЗ - написать свой Backbone.sync по RESTful
-    //с помощью ajax 
 
 
     var Router = Backbone.Router.extend({

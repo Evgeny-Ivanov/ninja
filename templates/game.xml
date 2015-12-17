@@ -1,11 +1,10 @@
 <fest:template xmlns:fest="http://fest.mail.ru" context_name="json">
-<div class="row">
 
-    <div class="col-md-9 canvas"> 
-        <image src="/basket.png" class="basket"></image>
-        <canvas class="js-canvas" ondragstart="return false;"></canvas>
-    </div>
 
+       <!-- <image src="/basket.png" class="basket"></image> -->
+    <canvas class="js-canvas" ondragstart="return false;" ></canvas>
+
+<!--
     <div class="chat col-md-3"> 
             <div class="menu">
             <div class="menu__title menu__link_center"> Chat </div>
@@ -26,6 +25,6 @@
                 </form>  
             </div>
     </div>
+-->
 
-</div>
 </fest:template>

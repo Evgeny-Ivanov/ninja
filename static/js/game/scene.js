@@ -1,22 +1,27 @@
 define([
     'backbone',
-    'game/gameMechanics'
+    'game/gameMechanics',
+    'views/gameover'
 ], function(
     Backbone,
-    GameMechanics
+    GameMechanics,
+    gameOverView
 ){
 
-    function Scene(canvas,height,width){  
+    function Scene(canvas,model){  
         this.canvas = canvas;
+        this.model = model;
 
         var height = document.documentElement.clientHeight;//546
         var width = document.documentElement.clientWidth;//1082
 
-        canvas.height = height-20;//546
-        canvas.width = width*3/4;//1082
+        //canvas.height = height-20;//546
+        //canvas.width = width*3/4;//1082
+        canvas.height = height;//546
+        canvas.width = width;//1082
 
         this.context = canvas.getContext('2d');
-        this.gameMechanics = new GameMechanics(canvas);
+        this.gameMechanics = new GameMechanics(canvas,model);
     } 
     
     Scene.prototype.clear = function(){
@@ -28,7 +33,7 @@ define([
         var self = this;
         self.gameMechanics.run();
         var animateThis = function(){
-            requestAnimationFrame(animateThis);
+            self.r = requestAnimationFrame(animateThis);
             self.clear();
             _.each(self.gameMechanics.fruits,function(fruit){
                 fruit.show(self.context);
@@ -41,12 +46,20 @@ define([
                 }
             });
             self.gameMechanics.sword.draw(self.context);
+            if(self.gameMechanics.finishGame()){
+                self.showGameOver();
+            }
         }
         animateThis();
     }
 
     Scene.prototype.stop = function(){
+        cancelAnimationFrame(this.r);
+    }
 
+    Scene.prototype.showGameOver = function(){
+        this.stop();
+        gameOverView.show(this.model);
     }
 
     return Scene;
