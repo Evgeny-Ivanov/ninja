@@ -10,24 +10,41 @@
 
         var myName = "${name}";
         var enemyName = "";
-
+        
+        var time = null;
+        var timeout = null;
+        
+        function timer(){
+            console.log("timer : ",time);
+            if(time == 0){
+                console.log("clearTimeout");
+                clearTimeout(timeout);
+            }
+            document.getElementById("time_of_game").innerHTML = time--;
+        }
+        
         init = function () {
             ws = new WebSocket("ws://${host_game}:${port_game}${url_game}");
 
             ws.onopen = function (event) {
-
+                console.log("open");
             }
 
             ws.onmessage = function (event) {
                 var data = JSON.parse(event.data);
                 if(data.status == "start"){
-                    alert( "Старт игры" );
+                    document.getElementById("time_of_game").innerHTML = data.time_of_game;
+                    time = +data.time_of_game;
+                    
+                    //document.getElementById("enemyName").innerHTML = data.enemyName;
+                    
+                    timeout = setInterval(timer, 1000);
+                    console.log( "Старт игры" );
                     document.getElementById("wait").style.display = "none";
                     document.getElementById("gameplay").style.display = "block";
                     document.getElementById("mychat").style.display = "block";
 
-                    document.getElementById("time_of_game").innerHTML = data.time_of_game;
-                    //document.getElementById("enemyName").innerHTML = data.enemyName;
+
 
                     console.log("Start: Пришло количество игроков: "+data.players.length);
                     console.log("Их список: ");
@@ -44,6 +61,12 @@
 
 
                    document.getElementById("win").innerHTML = data.win;
+                }
+                
+                if(data.status == "newfruit"){
+                    document.getElementById("debug1").innerHTML = data.koef;
+                    document.getElementById("debug2").innerHTML = data.id;
+
                 }
 
                 if(data.status == "scores"){
@@ -114,6 +137,14 @@
                 <form name="gamePlay" action="">
                     <input type="button" name="submit" value="Press to win!" onclick="sendMessage();"/>
                 </form>
+                
+                <div id="debug1">
+
+                </div>
+
+                <div id="debug2">
+
+                </div>
             </div>
 
             <div id="gameOver" style="display: none">

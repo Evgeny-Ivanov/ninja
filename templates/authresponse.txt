@@ -1,7 +1,4 @@
 {
-    status: 200,
-    body: {
-        email: "${email}",
-        score: "${password}"
-    }
+    "status": ${status},
+    "info": "${info}"
 }
