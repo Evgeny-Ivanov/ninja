@@ -1,31 +1,18 @@
 define([
     'backbone',
     'game/gameMechanics',
-    'views/gameover'
+    'views/gameover',
+    'game/messageSystem'
 ], function(
     Backbone,
     GameMechanics,
-    gameOverView
+    gameOverView,
+    MessageSystem
 ){
 
-    function Scene(canvas,model){  
+    function Scene(canvas,gameMechanics){  
         this.canvas = canvas;
-        this.model = model;
         var self = this;
-        addEventListener('orientationchange',function(){
-
-            self.canvas.height = window.innerHeight;
-            self.canvas.width =  window.innerWidth;
-            alert(self.canvas.height + " : " + self.canvas.width);
-
-            if(window.orientation%180 === 0){
-                //portrait
-                alert("Советуем повернуть экран");
-            } else {
-                //landscape
-            }
-
-        });
 
         window.addEventListener("resize", function() {
             self.resize();
@@ -43,7 +30,7 @@ define([
 
         document.body.style.overflow = "hidden";
 
-        this.gameMechanics = new GameMechanics(canvas,model);
+        this.gameMechanics = gameMechanics;
     } 
     
     Scene.prototype.clear = function(){
@@ -90,6 +77,24 @@ define([
         document.body.style.overflow = "auto";
         this.stop();
         gameOverView.show(this.model);
+    }
+
+    Scene.prototype.setMobileEvents = function(){
+        var self = this;
+        addEventListener('orientationchange',function(){
+
+            self.canvas.height = window.innerHeight;
+            self.canvas.width =  window.innerWidth;
+            alert(self.canvas.height + " : " + self.canvas.width);
+
+            if(window.orientation%180 === 0){
+                //portrait
+                alert("Советуем повернуть экран");
+            } else {
+                //landscape
+            }
+
+        });
     }
 
     return Scene;

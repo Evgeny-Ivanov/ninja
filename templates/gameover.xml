@@ -5,13 +5,16 @@
 
 	        <div class="menu__title menu__link_center"> Game Over </div>
 
+	        <div class="menu__title menu__link_center"><fest:value>json.name</fest:value> </div>
+
 			<form class="js-ajax-send-score" role="form" metod = "POST">
 
 				<div class="input-panel">
 
-					<div>
+					<!--<div>
 					<input class="input-panel_input js-ajax-send-score-input" required="" placeholder="Ваше имя"/> 
-					</div>
+					</div>-->
+
 
 					<div class='menu__players'>
 			                <div  class="menu__players__player">

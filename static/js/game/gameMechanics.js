@@ -1,27 +1,21 @@
 define([
     'backbone',
     'game/fruit',
-    'game/sword'
+    'game/sword',
+    'game/messageSystem'
 ], function(
     Backbone,
     Fruit,
-    Sword
+    Sword,
+    MessageSystem
 ){
     function GameMechanics(canvas,model){
+
         this.model = model;
         this.canvas = canvas;
         this.context = canvas.getContext("2d");
 
-        //временно. Фрукты будут приходить из messageSystem
-        var f = [];
-        for(i=0;i<3;i++){
-            var width = canvas.width/(i+2);
-            var height = canvas.height/(i+2);
-            var radius = canvas.height/10;
-            f[i] = new Fruit(width,height,radius);
-        }
-
-        this.fruits = f;
+        this.fruits = [];
         this.slicedFruits = [];
         this.p1 = null;
         this.p2 = null;
@@ -65,7 +59,6 @@ define([
 
                  _.each(self.fruits,function(fruit){
                     if(fruit.isBelongs(line)){
-                        console.log("OK");
                         self.cutFruit(fruit);
                     }
                 });
@@ -77,28 +70,35 @@ define([
         }
         this.canvas.addEventListener("mousemove",callback);
         this.canvas.addEventListener("touchmove",callback);
+
+        this.canvas.addEventListener("mouseout",function(){
+            self.p1 = null;
+        });
+        this.canvas.addEventListener("touchend",function(){
+            self.p1 = null;
+        });
     }
 
-    GameMechanics.prototype.addFruit = function(fruit){
-
+    GameMechanics.prototype.addFruit = function(data){
+        var koef = data.koef;
+        var fruit = new Fruit(100,100,this.canvas.height/12);
+        fruit.setLaw(koef);
+        fruit.id = data.id;
+        this.fruits.push(fruit);
     }
 
     GameMechanics.prototype.cutFruit = function(fruit){
-        console.log(this.fruits);
+        this.messageSystem.sendMessage(fruit.id);
         this.fruits =  _.without(this.fruits, fruit);
         this.slicedFruits.push({
             fruit: fruit,
             time:0
         });
-        //fruit.setRandomColor();
-        console.log(this.fruits);
     }
 
     GameMechanics.prototype.finishGame = function(){
         var score = Math.round(Math.random()*100);//наш гемплей
         this.model.set('score',score);
-        if(this.fruits.length == 0 && this.slicedFruits.length == 0) return true;
-        return false;
     }
 
     GameMechanics.prototype.f = function(){
@@ -108,6 +108,10 @@ define([
                 fruit.angle  = degreesToRadians(event.alpha);
             });
         })
+    }
+
+    GameMechanics.prototype.setMessageSystem = function(messageSystem){
+        this.messageSystem = messageSystem;
     }
 
     function degreesToRadians(degrees){

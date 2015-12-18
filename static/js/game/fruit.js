@@ -19,6 +19,10 @@ define([
 
     } 
 
+    Fruit.prototype.setLaw = function(fun){
+        this.fun = fun;
+    }
+
     Fruit.prototype.show = function(context){
 
         this.position = this.law();
@@ -38,8 +42,8 @@ define([
         this.time++;
         this.initialAcceleration--;
         return {
-            x: this.position.x, //this.position.x+this.time/4,
-            y: this.position.y //(this.g-this.initialAcceleration)*this.time*this.time/1500+this.position.y
+            x: this.position.x+1,
+            y: this.fun.a/1000*(this.position.x+1)*(this.position.x+1) + this.fun.b/50*(this.position.x+1) + this.fun.c/2
         }
     }
 
@@ -140,7 +144,10 @@ define([
         Fruit.apply(this, arguments);
         this.img = new Image();
         this.img.src = "/sovunya.png";
-        this.anchor = null;
+        this.anchor = {
+            x: this.position.x + this.radius,
+            y: this.position.y + this.radius
+        };
 
 
         this.spriteExplosion = new Image();

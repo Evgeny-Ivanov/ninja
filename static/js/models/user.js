@@ -78,7 +78,7 @@ define([
 			return true;
         },
         checkPassword: function(){
-			if(this.get("password").length<4) {
+			if(this.get("password").length<2) {
 				this.set("passwordMessage","Пароль слишком короткий");
 				return false;
 			}
