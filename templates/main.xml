@@ -7,20 +7,20 @@
              <div class="menu">
                 <div class="menu__title menu__link_center"> Main menu </div>
 
-                <a  href="#game" class="js-start-game menu__link_none">
-                	<div class="menu__link menu__link_center"> Play </div> 
+                <a  href="#game" class="js-start-game menu__link menu__link_center  menu__link_none">
+                	 Play 
                 </a> 	
 
-                <a href="#scoreboard" class="js-scoreboard menu__link_none"> 
-                	<div class="menu__link menu__link_center"> Score Board </div> 
+                <a href="#scoreboard" class="js-scoreboard menu__link menu__link_center menu__link_none"> 
+                	Score Board 
                 </a>
 
-                <a href="#login" class="js-login menu__link_none"> 
-                	<div class="menu__link menu__link_center"> Login </div> 
+                <a href="#login" class="js-login menu__link menu__link_center  menu__link_none"> 
+                	 Login 
                 </a> 
 
-                <a href="#registration" class="js-registration menu__link_none"> 
-                	<div class="menu__link menu__link_center"> Registration </div> 
+                <a href="#registration" class="js-registration menu__link menu__link_center menu__link_none">
+                	Registration 
                 </a> 
 
             </div>

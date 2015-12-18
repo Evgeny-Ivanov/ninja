@@ -3,8 +3,12 @@ $dark-grey: #405261;
 $grey: #4c6575;
 $text-on-gray-color: #FFFFFF;
 
+@font-face {
+   font-family: 'Indie Flower';
+   src: url("/ttf/IndieFlower.ttf");
+}
+
 body {
-   //overflow: hidden;
    background-color: $main-background-color;
    font-family: 'Indie Flower', cursive;
 }

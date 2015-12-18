@@ -29,14 +29,8 @@ define([
             this.showCanvas();
         },
         showCanvas: function(){
-            //var basket = this.$el.find(".basket")[0];
-            //basket.ondragstart = function() {
-            //  return false;
-            //};
-
             var canvas = this.$el.find(".js-canvas")[0];
             var scene = new Scene(canvas,this.model);
-
             scene.run();
         }
     });

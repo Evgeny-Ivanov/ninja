@@ -30,12 +30,13 @@ define([
 
     GameMechanics.prototype.run = function(){
         this.checkСontactSwordAndFruit();
+        this.f();
     }
 
     GameMechanics.prototype.checkСontactSwordAndFruit = function(){
         var self = this;
         var callback = function(event) {
-            if(event.touches) evt = event.touches[0]
+            if(event.touches) evt = event.touches[0];
             else evt = event;
         
             mouseX = evt.pageX - self.canvas.offsetLeft;
@@ -98,6 +99,23 @@ define([
         this.model.set('score',score);
         if(this.fruits.length == 0 && this.slicedFruits.length == 0) return true;
         return false;
+    }
+
+    GameMechanics.prototype.f = function(){
+        var self  = this;
+        addEventListener('deviceorientation',function(event){
+            _.each(self.fruits,function(fruit){
+                fruit.angle  = degreesToRadians(event.alpha);
+            });
+        })
+    }
+
+    function degreesToRadians(degrees){
+        return degrees*(Math.PI/180);
+    }
+
+    function radiansToDegrees(radians){
+        return radians/(Math.PI/180);
     }
 
     return GameMechanics;

@@ -25,7 +25,11 @@ define([
     }
 
     Sword.prototype.draw = function(context){
+        var self = this;
+        var i = 100;
         _.each(this.lines,function(line){
+            context.beginPath();
+            //context.globalAlpha = i--/100;
             context.lineWidth = line.width;
             context.lineCap = 'butt'; // butt round square
             context.lineJoin = 'miter'; // miter round bevel

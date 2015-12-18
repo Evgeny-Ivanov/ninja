@@ -36,7 +36,6 @@ define([
 
     //ДЗ - написать свой Backbone.sync по RESTful
 
-
     var Router = Backbone.Router.extend({
         routes: {
             'scoreboard': 'scoreboardAction',

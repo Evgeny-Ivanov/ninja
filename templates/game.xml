@@ -1,30 +1,3 @@
 <fest:template xmlns:fest="http://fest.mail.ru" context_name="json">
-
-
-       <!-- <image src="/basket.png" class="basket"></image> -->
-    <canvas class="js-canvas" ondragstart="return false;" ></canvas>
-
-<!--
-    <div class="chat col-md-3"> 
-            <div class="menu">
-            <div class="menu__title menu__link_center"> Chat </div>
-                <form class="ajax-signup" role="form" action="javascript:void(0)" method="post">
-
-                    <div class="input-panel">
-                        <div>
-                        <textarea id="textarea" class="input-panel_input chat_textarea" disabled="disabled" rows="10" cols="45" name="text" ></textarea>
-                        </div>
-
-                        <div>
-                        <input type="email" class="input-panel_input" required="" name="email" placeholder="Email"/> 
-                        <span class="js-ajax-signin__status-logo-email"/>
-                        </div>
-                    </div>
-                    
-                    <button type="submit" class="data-submit menu__link">Отправить</button>     
-                </form>  
-            </div>
-    </div>
--->
-
+    <canvas class="js-canvas" ></canvas>
 </fest:template>

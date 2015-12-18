@@ -1,31 +1,16 @@
-$game-background-image: "/1.jpg";
+$game-background-image: "http://www.rudebox.org.ua/demo/animated-background-headers/img/demo-2-bg.jpg";
 
 .game{
-
-	background-image: url($game-background-image);
-    /* Set rules to fill background */
-    height: 600px;
-    width: 80%;
-    position: fixed;
-    top: 10%;
-    left: 10%;
+	overflow:  hidden;
 }
 
-.canvas {
-	//padding-top: 1%;
-	//padding-left: 2%;
+
+@media screen and (orientation:portrait) {
+	/* Стили для портретной */
+	display: block;
 }
 
-.chat{
-	padding-right: 4%;
-	color:"red";
-}
-
-.chat_textarea{
-	resize: vertical;
-}
-
-.basket{
-	position: fixed;
-	
+@media screen and (orientation:landscape) {
+	/* стили для горизонтальной */
+	display: none;
 }

@@ -11,16 +11,38 @@ define([
     function Scene(canvas,model){  
         this.canvas = canvas;
         this.model = model;
+        var self = this;
+        addEventListener('orientationchange',function(){
 
-        var height = document.documentElement.clientHeight;//546
-        var width = document.documentElement.clientWidth;//1082
+            self.canvas.height = window.innerHeight;
+            self.canvas.width =  window.innerWidth;
+            alert(self.canvas.height + " : " + self.canvas.width);
 
-        //canvas.height = height-20;//546
-        //canvas.width = width*3/4;//1082
-        canvas.height = height;//546
-        canvas.width = width;//1082
+            if(window.orientation%180 === 0){
+                //portrait
+                alert("Советуем повернуть экран");
+            } else {
+                //landscape
+            }
 
-        this.context = canvas.getContext('2d');
+        });
+
+        window.addEventListener("resize", function() {
+            self.resize();
+        }, false);
+
+        var height = window.innerHeight;//546
+        var width = window.innerWidth;//1082
+        this.canvas.height = height;
+        this.canvas.width = width;
+
+        this.context = canvas.getContext('2d'); 
+        this.img = new Image();
+        this.img.src = "/background.jpg";
+        this.context.drawImage(this.img,0,0,canvas.width,canvas.height);
+
+        document.body.style.overflow = "hidden";
+
         this.gameMechanics = new GameMechanics(canvas,model);
     } 
     
@@ -35,8 +57,9 @@ define([
         var animateThis = function(){
             self.r = requestAnimationFrame(animateThis);
             self.clear();
+            self.context.drawImage(self.img,0,0,self.canvas.width,self.canvas.height);
             _.each(self.gameMechanics.fruits,function(fruit){
-                fruit.show(self.context);
+                fruit.show(self.canvas);
             });
             _.each(self.gameMechanics.slicedFruits,function(f){
                 f.fruit.cut(self.context);
@@ -57,7 +80,14 @@ define([
         cancelAnimationFrame(this.r);
     }
 
+    Scene.prototype.resize = function(){
+        this.canvas.height = window.innerHeight;
+        this.canvas.width =  window.innerWidth;
+        //нужно перерисовать фрукты
+    }
+
     Scene.prototype.showGameOver = function(){
+        document.body.style.overflow = "auto";
         this.stop();
         gameOverView.show(this.model);
     }

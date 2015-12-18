@@ -1,4 +1,8 @@
 @charset "UTF-8";
+@font-face {
+  font-family: 'Indie Flower';
+  src: url("/ttf/IndieFlower.ttf"); }
+
 body {
   background-color: #FF6672;
   font-family: 'Indie Flower', cursive; }
@@ -25,7 +29,8 @@ body {
   .menu__link_center {
     text-align: center; }
   .menu__link_none {
-    text-decoration: none !important; }
+    text-decoration: none !important;
+    display: block; }
 
 .menu__title {
   color: #405261;
@@ -44,23 +49,15 @@ body {
   display: none; }
 
 .game {
-  background-image: url("/1.jpg");
-  /* Set rules to fill background */
-  height: 600px;
-  width: 80%;
-  position: fixed;
-  top: 10%;
-  left: 10%; }
+  overflow: hidden; }
 
-.chat {
-  padding-right: 4%;
-  color: "red"; }
+@media screen and (orientation: portrait) {
+  /* Стили для портретной */
+  display: block; }
 
-.chat_textarea {
-  resize: vertical; }
-
-.basket {
-  position: fixed; }
+@media screen and (orientation: landscape) {
+  /* стили для горизонтальной */
+  display: none; }
 
 .input-panel {
   padding-top: 0.3em;

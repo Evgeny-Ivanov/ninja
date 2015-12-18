@@ -8,6 +8,7 @@ define([
         this.radius = radius;
         this.initialAcceleration = 140;
         this.g = 98
+        this.angle = 0;
         //
         this.color = "#F08080";
         this.position = {
@@ -34,7 +35,6 @@ define([
     }
 
     Fruit.prototype.law = function(){
-        //console.log(this.position);
         this.time++;
         this.initialAcceleration--;
         return {
@@ -69,9 +69,6 @@ define([
         var step = 1;
         if( (xMin-this.radius+step<=this.anchor.x && xMax+this.radius-step>=this.anchor.x) && 
             (yMin-this.radius+step<=this.anchor.y && yMax+this.radius-step>=this.anchor.y) ){
-            //console.log("x: ",xMin,xMax);
-            //console.log("y: ",yMin,yMax);
-            //console.log(this.position)
             return true;
         }
 
@@ -103,7 +100,7 @@ define([
         var x = frame * this.tickX; 
         var y = frame * this.tickY;
         context.drawImage( 
-          this.spriteExplosion,// изображение спрайт-листа
+          this.spriteExplosion,
           x,y,128,128,  // исходные координаты (x,y,w,h)
           this.position.x,this.position.y,128,128 // конечные координаты (x,y,w,h)
         ); 
@@ -145,6 +142,7 @@ define([
         this.img.src = "/sovunya.png";
         this.anchor = null;
 
+
         this.spriteExplosion = new Image();
         this.spriteExplosion.src = "/animated.png";
 
@@ -155,13 +153,20 @@ define([
     Smeshariki.prototype = Object.create(Fruit.prototype);
     Smeshariki.prototype.constructor = Smeshariki;
 
-    Smeshariki.prototype.show = function(context){
+    Smeshariki.prototype.show = function(canvas){
         this.position = this.law();
         this.anchor = {
             x: this.position.x + this.radius,
             y: this.position.y + this.radius
         };
-        context.drawImage(this.img, this.position.x, this.position.y, this.radius*2,  this.radius*2); 
+        var context = canvas.getContext('2d');
+
+        context.save();
+        context.translate(this.position.x +  this.radius,this.position.y + this.radius);
+        context.rotate(this.angle);
+        context.drawImage(this.img, -this.radius,-this.radius, this.radius*2,  this.radius*2);
+        context.restore();
+
         this.debug(context);
     }
 

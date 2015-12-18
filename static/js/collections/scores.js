@@ -18,6 +18,12 @@ define([
             return -model.get('score');
         },
         fetch: function(limit){
+            var options = {
+                success: function () {},
+                error: function () {}
+            }
+
+            Backbone.Collection.prototype.fetch.call(this, options);
             //GET /scores
             var method = "read";
             if(!limit) limit = "";
