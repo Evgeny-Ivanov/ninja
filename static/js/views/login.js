@@ -15,7 +15,7 @@ define([
     var View = superAuthorizationView.extend({
         id: "loginView",
         template: tmpl,
-        model: new modelUser(),
+        model: modelUser,
         events: {
             'submit .ajax-signup': 'authorization',
             'input .ajax-signup': 'check',

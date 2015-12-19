@@ -81,14 +81,26 @@ define([
 
     GameMechanics.prototype.addFruit = function(data){
         var koef = data.koef;
-        var fruit = new Fruit(100,100,this.canvas.height/12);
+        var fruit = new Fruit(0,0,this.canvas.height/12,this.canvas,data.id);
         fruit.setLaw(koef);
-        fruit.id = data.id;
         this.fruits.push(fruit);
     }
 
     GameMechanics.prototype.cutFruit = function(fruit){
         this.messageSystem.sendMessage(fruit.id);
+        this.fruits =  _.without(this.fruits, fruit);
+        this.slicedFruits.push({
+            fruit: fruit,
+            time:0
+        });
+    }
+
+    GameMechanics.prototype.deleteFruit = function(id){
+        var fruit = null;
+        _.each(this.fruits,function(f){
+            if(f.id == id) fruit = f;
+        });
+        if(!fruit) return;
         this.fruits =  _.without(this.fruits, fruit);
         this.slicedFruits.push({
             fruit: fruit,

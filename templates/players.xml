@@ -1,0 +1,15 @@
+<fest:template xmlns:fest="http://fest.mail.ru" context_name="scores">
+
+<div class='menu__players'>
+<fest:each iterate="scores" index="i" value="player">
+
+    <div  class="menu__players__player">
+        <fest:value>player.name</fest:value>
+        <fest:space/>:<fest:space/>   
+        <fest:value>player.score</fest:value> 
+    </div>
+
+</fest:each>
+</div>
+
+</fest:template>

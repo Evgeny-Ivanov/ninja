@@ -51,6 +51,9 @@ body {
 .game {
   overflow: hidden; }
 
+.players {
+  position: absolute; }
+
 @media screen and (orientation: portrait) {
   /* Стили для портретной */
   display: block; }

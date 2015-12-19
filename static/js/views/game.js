@@ -8,7 +8,8 @@ define([
     'game/messageSystem',
     'game/gameMechanics',
     'views/loading',
-    'views/gameover'
+    'views/gameover',
+    'views/players'
 ], function(
     Backbone,
     tmpl,
@@ -19,7 +20,8 @@ define([
     MessageSystem,
     GameMechanics,
     LoadingView,
-    GameOverView
+    GameOverView,
+    playersView
 ){
 
     var View = superView.extend({
@@ -30,6 +32,7 @@ define([
             "click .js-button-game": "sendMessage",
             "click .js-button-chat": "sendMessageChat"
         },
+        players: new playersView(),
         show: function(){
             this.render();
             this.trigger("show");
@@ -42,7 +45,7 @@ define([
             var scene = new Scene(canvas,gameMechanics);
             scene.run();
             var url = "ws://localhost:8080/gameplay";
-            var messageSystem = new MessageSystem(url,gameMechanics,Scene);
+            var messageSystem = new MessageSystem(url,gameMechanics,scene);
             _.extend(messageSystem, Backbone.Events);
             gameMechanics.setMessageSystem(messageSystem);
 
@@ -55,6 +58,8 @@ define([
             this.model.set("name",data.your_name);
             this.trigger("show");
             this.$el.show();
+            this.players.show(); 
+
         },
         showGameOver: function(data){
             var name = this.model.get("name");
@@ -66,6 +71,7 @@ define([
                 }
             }
             this.model.set("score",score);
+            this.players.hide();
             GameOverView.show(this.model);
         }
     });

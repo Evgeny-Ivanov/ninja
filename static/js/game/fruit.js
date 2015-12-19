@@ -2,12 +2,11 @@ define([
 ], function(
 ){
 
-    function Fruit(px,py,radius){   
+    function Fruit(px,py,radius,canvas,id){   
         //
+        this.id = id;
         this.time = 0;
         this.radius = radius;
-        this.initialAcceleration = 140;
-        this.g = 98
         this.angle = 0;
         //
         this.color = "#F08080";
@@ -15,17 +14,57 @@ define([
             x: px,
             y: py
         };
+        if(id%2==0){
+            this.position.x = canvas.width;
+            this.step = -(canvas.width / 100);
+        } else {
+            this.position.x = 0;
+            this.step = (canvas.width / 100);
+        }
+
+
+        this.velocity = {
+            x: 6,
+            y: 1
+        }
         this.anchor = this.position;
 
     } 
 
     Fruit.prototype.setLaw = function(fun){
-        this.fun = fun;
+        var wc = this.canvas.width;
+        var hc = this.canvas.height;
+
+        var ka = 1/1000;
+        var kb = 1/50;
+        var kc = 1/2;
+        var ws = 100;
+        var hs = 100;
+        var kx = wc/ws;
+        var ky = hc/hs;
+        var dx = wc/2;
+        var dy = hc/2;
+
+        //var a = fun.a * ka * kx * kx / ky;
+        //var b = 2 * fun.a * ka * kx * dx / ky + kb * fun.b * kx / ky;
+        //var c = fun.a * ka * dx * dx / ky + kb * fun.b * dx / ky + kc * fun.c / ky - dy / ky;
+
+        //var a = fun.a * ka * kx * kx / ky;
+        //var b = fun.a * ka * kx * kx * ws / ky + fun.b * kb * kx / ky;
+        //var c = fun.a * ka * kx * kx * ws * ws / 4 / ky + fun.b * kb * kx * ws / 2 / ky + fun.c * kc / ky - hs / 2;
+        var a = ky*(ka*fun.a/(kx*kx));
+        var b = ky*(fun.b*kb/kx - ka*fun.a*ws/(kx*kx));
+        var c = ky*(ka*fun.a*ws*ws/(4*kx*kx) + fun.b*kb*ws/(kx*2) + fun.c*kc) + hs/2;
+        this.fun = {
+            a: a,
+            b: b,
+            c: c
+        }
     }
 
     Fruit.prototype.show = function(context){
 
-        this.position = this.law();
+        this.law();
         context.beginPath();
         context.fillStyle = this.color;
         context.arc( 
@@ -39,12 +78,10 @@ define([
     }
 
     Fruit.prototype.law = function(){
-        this.time++;
-        this.initialAcceleration--;
-        return {
-            x: this.position.x+1,
-            y: this.fun.a/1000*(this.position.x+1)*(this.position.x+1) + this.fun.b/50*(this.position.x+1) + this.fun.c/2
-        }
+        this.position.x += this.step;
+        this.position.y = (this.fun.a * this.position.x * this.position.x +this.fun.b*this.position.x + this.fun.c);
+        //console.log("координаты: ",this.position.x+" : "+this.position.y);
+        //console.log(this.fun.a, this.fun.b,this.fun.c);
     }
 
     Fruit.prototype.isBelongs = function(line){
@@ -140,7 +177,8 @@ define([
     }
 
 
-    function Smeshariki(px,py,radius){
+    function Smeshariki(px,py,radius,canvas){
+        this.canvas = canvas;
         Fruit.apply(this, arguments);
         this.img = new Image();
         this.img.src = "/sovunya.png";
@@ -151,7 +189,7 @@ define([
 
 
         this.spriteExplosion = new Image();
-        this.spriteExplosion.src = "/animated.png";
+        this.spriteExplosion.src = "/animated2.png";
 
         this.tickX = 0;
         this.tickY = 0;
@@ -161,7 +199,7 @@ define([
     Smeshariki.prototype.constructor = Smeshariki;
 
     Smeshariki.prototype.show = function(canvas){
-        this.position = this.law();
+        this.law();
         this.anchor = {
             x: this.position.x + this.radius,
             y: this.position.y + this.radius

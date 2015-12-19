@@ -4,9 +4,10 @@ define([
     scoreModel
 ){
 
-    function MessageSystem(url,gameMechanics,Scene){
+    function MessageSystem(url,gameMechanics,scene){
         this.url = url;
         this.gameMechanics = gameMechanics;
+        this.scene = scene;
         this.ws = null;
     } 
 
@@ -47,6 +48,10 @@ define([
                 self.leave(data);
             }
 
+            if(data.status=="enemyshot"){
+                self.gameMechanics.deleteFruit(data.id);
+            }
+
         }
 
         ws.onclose = function (event) {
@@ -79,6 +84,7 @@ define([
         };
         response.id = data.id;
 
+        //console.log(response.koef.a, response.koef.b,response.koef.c);
         this.gameMechanics.addFruit(response);
     }
 
@@ -88,6 +94,7 @@ define([
         for(i=0;i<data.players.length;i++){
             console.log(data.players[i].name);
         }
+        this.scene.stop();
         this.trigger("gameOver",data);
     }
 

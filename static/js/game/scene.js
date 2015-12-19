@@ -46,9 +46,13 @@ define([
             self.clear();
             self.context.drawImage(self.img,0,0,self.canvas.width,self.canvas.height);
             _.each(self.gameMechanics.fruits,function(fruit){
+                if(fruit.position.x > self.canvas.width || fruit.position.x < 0 ||  fruit.position.y > self.canvas.height){
+                    self.gameMechanics.fruits =  _.without(self.gameMechanics.fruits,fruit);
+                }
                 fruit.show(self.canvas);
             });
             _.each(self.gameMechanics.slicedFruits,function(f){
+                //console.log(f.fruit);
                 f.fruit.cut(self.context);
                 f.fruit.time++;
                 if(f.fruit.time == 49){

@@ -4,6 +4,10 @@ $game-background-image: "http://www.rudebox.org.ua/demo/animated-background-head
 	overflow:  hidden;
 }
 
+.players{
+	position: absolute;
+
+}
 
 @media screen and (orientation:portrait) {
 	/* Стили для портретной */
