@@ -137,20 +137,30 @@ define([
     }
 
     Fruit.prototype.cut = function(context,line){
-        var frame = 128; 
+        var frame = this.frame; 
         var x = frame * this.tickX; 
         var y = frame * this.tickY;
+
         context.drawImage( 
           this.spriteExplosion,
-          x,y,128,128,  // исходные координаты (x,y,w,h)
+          x,y,frame,frame,  // исходные координаты (x,y,w,h)
           this.position.x,this.position.y,128,128 // конечные координаты (x,y,w,h)
         ); 
+
         this.tickX++;
-        if(this.tickX == 6){
+
+        if(frame == 128 && this.tickX == 6){
             this.tickX = 0;
             this.tickY++;
         }
+
+        if(frame == 68 && this.tickX == 4){
+            this.tickX = 0;
+            this.tickY++;
+        }
+
     }
+
 
     Fruit.prototype.showCut = function(context,line){
 
@@ -181,15 +191,13 @@ define([
         this.canvas = canvas;
         Fruit.apply(this, arguments);
         this.img = new Image();
-        this.img.src = "/sovunya.png";
+        var id = this.id%5+1;
+        var urlImg = "/img/"+id+".png";
+        this.img.src = urlImg;
         this.anchor = {
             x: this.position.x + this.radius,
             y: this.position.y + this.radius
         };
-
-
-        this.spriteExplosion = new Image();
-        this.spriteExplosion.src = "/animated2.png";
 
         this.tickX = 0;
         this.tickY = 0;
@@ -212,7 +220,7 @@ define([
         context.drawImage(this.img, -this.radius,-this.radius, this.radius*2,  this.radius*2);
         context.restore();
 
-        this.debug(context);
+        //this.debug(context);
     }
 
     return Smeshariki;

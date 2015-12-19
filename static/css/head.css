@@ -53,6 +53,7 @@ body {
 
 .players {
   position: absolute;
+  right: 0px;
   width: 100px; }
 
 @media screen and (orientation: portrait) {
