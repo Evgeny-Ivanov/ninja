@@ -82,8 +82,8 @@ define([
 				this.set("passwordMessage","Пароль слишком короткий");
 				return false;
 			}
-            if(this.get("password")=="1234") {
-            	this.set("passwordMessage","Пароль 1234 небезопасен");
+            if(this.get("password")=="12345") {
+            	this.set("passwordMessage","Пароль 12345 небезопасен");
             	return false;
 			}
 

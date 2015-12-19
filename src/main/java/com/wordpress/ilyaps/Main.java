@@ -1,21 +1,20 @@
 package com.wordpress.ilyaps;
 
-import com.wordpress.ilyaps.accountService.AccountService;
-import com.wordpress.ilyaps.accountService.AccountServiceDAO;
-import com.wordpress.ilyaps.accountService.AccountServiceDAOImpl;
-import com.wordpress.ilyaps.accountService.AccountServiceImpl;
-import com.wordpress.ilyaps.frontendService.FrontendService;
-import com.wordpress.ilyaps.frontendService.FrontendServiceImpl;
 import com.wordpress.ilyaps.frontendServlets.*;
-import com.wordpress.ilyaps.frontendSockets.WebSocketService;
-import com.wordpress.ilyaps.frontendSockets.WebSocketServiceImpl;
-import com.wordpress.ilyaps.gamemechService.GamemechService;
-import com.wordpress.ilyaps.gamemechService.GamemechServiceImpl;
 import com.wordpress.ilyaps.messageSystem.MessageSystem;
 import com.wordpress.ilyaps.multiNunjaGamemech.MultiNunjaGamemech;
 import com.wordpress.ilyaps.resourceSystem.ResourcesContext;
 import com.wordpress.ilyaps.serverHelpers.Configuration;
 import com.wordpress.ilyaps.serverHelpers.GameContext;
+import com.wordpress.ilyaps.services.accountService.AccountService;
+import com.wordpress.ilyaps.services.accountService.AccountServiceDAO;
+import com.wordpress.ilyaps.services.accountService.AccountServiceDAOImpl;
+import com.wordpress.ilyaps.services.accountService.AccountServiceImpl;
+import com.wordpress.ilyaps.services.gamemechService.GamemechService;
+import com.wordpress.ilyaps.services.servletsService.ServletsService;
+import com.wordpress.ilyaps.services.servletsService.ServletsServiceImpl;
+import com.wordpress.ilyaps.services.socketsService.SocketsService;
+import com.wordpress.ilyaps.services.socketsService.SocketsServiceImpl;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.eclipse.jetty.server.Handler;
@@ -40,15 +39,12 @@ public class Main {
     private static final String PROPERTIES_FILE = "cfg/server.properties";
 
     public static void main(@NotNull String[] args) {
-        LOGGER.info("старт сервера");
+        LOGGER.info("start of activation of server");
 
         final GameContext gameСontext = GameContext.getInstance();
 
         final Configuration conf = new Configuration(PROPERTIES_FILE);
         gameСontext.add(Configuration.class, conf);
-
-        final WebSocketService webSocketService = new WebSocketServiceImpl();
-        gameСontext.add(WebSocketService.class, webSocketService);
 
         final ResourcesContext resourcesContext = new ResourcesContext(conf.getValueOfProperty("resourcesDirectory"));
         gameСontext.add(ResourcesContext.class, resourcesContext);
@@ -56,12 +52,17 @@ public class Main {
         final MessageSystem messageSystem = new MessageSystem();
         gameСontext.add(MessageSystem.class, messageSystem);
 
-        final FrontendService frontendService = new FrontendServiceImpl();
-        final Thread frontendServiceThread = new Thread(frontendService);
-        frontendServiceThread.setDaemon(true);
-        frontendServiceThread.setName("frontendService");
-        gameСontext.add(FrontendService.class, frontendService);
+        final SocketsService socketsService = new SocketsServiceImpl();
+        final Thread socketsServiceThread = new Thread(socketsService);
+        socketsServiceThread.setDaemon(true);
+        socketsServiceThread.setName("socketsService");
+        gameСontext.add(SocketsService.class, socketsService);
 
+        final ServletsService servletsService = new ServletsServiceImpl();
+        final Thread servletsServiceThread = new Thread(servletsService);
+        servletsServiceThread.setDaemon(true);
+        servletsServiceThread.setName("servletsService");
+        gameСontext.add(ServletsService.class, servletsService);
 
         final AccountServiceDAO accountServiceDAO = new AccountServiceDAOImpl();
         final AccountService accountService = new AccountServiceImpl(accountServiceDAO);
@@ -76,15 +77,14 @@ public class Main {
         gamemechServiceThread.setName("Gamemech Service");
         gameСontext.add(GamemechService.class, gamemechService);
 
-        final Server server = new Server(new Integer(conf.getValueOfProperty("port")));
 
         Servlet mainPage = new MainpageServlet();
-        Servlet signUp = new RegisterServlet(frontendService);
-        Servlet signIn = new AuthorizationServlet(frontendService);
-        Servlet logout = new LeavingServlet(frontendService);
-        Servlet admin = new AdminpageServlet(frontendService, server);
-        WebSocketServlet game = new GameWebSocketServlet(frontendService);
-        Servlet scores = new ScoresServlet(frontendService);
+        Servlet signUp = new RegisterServlet(servletsService);
+        Servlet signIn = new AuthorizationServlet(servletsService);
+        Servlet logout = new LeavingServlet(servletsService);
+        Servlet admin = new AdminpageServlet(accountService);
+        Servlet scores = new ScoresServlet(accountService);
+        WebSocketServlet game = new GameServlet();
 
         final ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
 
@@ -101,11 +101,13 @@ public class Main {
         resourceHandler.setDirectoriesListed(true);
         resourceHandler.setResourceBase("static");
 
+        final Server server = new Server(new Integer(conf.getValueOfProperty("port")));
         final HandlerList handlers = new HandlerList();
         handlers.setHandlers(new Handler[]{resourceHandler, context});
         server.setHandler(handlers);
 
-        frontendServiceThread.start();
+        socketsServiceThread.start();
+        servletsServiceThread.start();
         accountServiceThread.start();
         gamemechServiceThread.start();
 
@@ -115,7 +117,5 @@ public class Main {
             LOGGER.error("Server isn't started");
             LOGGER.error(e);
         }
-
-       LOGGER.info("выходим из мейна");
     }
 }

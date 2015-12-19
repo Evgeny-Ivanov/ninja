@@ -2,9 +2,9 @@ package com.wordpress.ilyaps.multiNunjaGamemech;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.wordpress.ilyaps.gamemechService.GameSession;
-import com.wordpress.ilyaps.gamemechService.GameUser;
-import com.wordpress.ilyaps.gamemechService.GamemechServiceImpl;
+import com.wordpress.ilyaps.services.gamemechService.GameSession;
+import com.wordpress.ilyaps.services.gamemechService.GameUser;
+import com.wordpress.ilyaps.services.gamemechService.GamemechServiceImpl;
 import com.wordpress.ilyaps.resourceSystem.ResourcesContext;
 import com.wordpress.ilyaps.serverHelpers.GameContext;
 import org.apache.logging.log4j.LogManager;
@@ -103,7 +103,7 @@ public class MultiNunjaGamemech extends GamemechServiceImpl {
 
         gameUser.incrementScore();
 
-        String message = MultiNunjaMessageCreator.enemyShot(name, fruitId);
+        String message = MultiNunjaMessageCreator.enemyShot(name, fruitId, gameSession);
         for (GameUser user : gameSession.getGameUsers()) {
             sendData(user.getName(), message);
         }

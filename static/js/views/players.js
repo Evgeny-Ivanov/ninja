@@ -8,17 +8,17 @@ define([
 
     var View = Backbone.View.extend({
         className: "players",
-        collection: [{name:"sdfsdf",score:"10"}],
+        collection: [],
         template: tmpl,
         initialize: function () {
             this.hide();
         },
-        render: function () {
-            this.$el.html(this.template(this.collection));
+        render: function (players) {
+            this.$el.html(this.template(players));
             return this;
         },
-        show: function () {
-            this.render();
+        show: function (players) {
+            this.render(players);
             $("#gameView").prepend(this.$el);
             this.$el.show();
         },

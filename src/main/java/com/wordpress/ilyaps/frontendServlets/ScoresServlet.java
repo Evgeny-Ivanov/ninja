@@ -1,6 +1,6 @@
 package com.wordpress.ilyaps.frontendServlets;
 
-import com.wordpress.ilyaps.frontendService.FrontendService;
+import com.wordpress.ilyaps.services.accountService.AccountService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
@@ -9,7 +9,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.io.PrintWriter;
 
@@ -17,15 +16,16 @@ import java.io.PrintWriter;
  * Created by ilya on 26.09.15.
  */
 public class ScoresServlet extends HttpServlet {
-    private static final int DEFAULT_AMOUNT = 100;
+    private static final int DEFAULT_AMOUNT = 10;
+    private static final int DEFAULT_START = 1;
 
     @NotNull
     static final Logger LOGGER = LogManager.getLogger(RegisterServlet.class);
     @NotNull
-    private FrontendService feService;
+    private AccountService accService;
 
-    public ScoresServlet(@NotNull FrontendService feService) {
-        this.feService = feService;
+    public ScoresServlet(@NotNull AccountService accService) {
+        this.accService = accService;
     }
 
     @Override
@@ -34,18 +34,10 @@ public class ScoresServlet extends HttpServlet {
         response.setCharacterEncoding("utf-8");
         response.setContentType("text/html;charset=utf-8");
 
-        Integer amount = DEFAULT_AMOUNT;
-        String amountstr = request.getParameter("limit");
-        if (amountstr != null) {
-            amount = new Integer(amountstr);
-        }
-        if (amount < 1) {
-            amount = DEFAULT_AMOUNT;
-        }
-
+        String listScore = accService.getAccountServiceDAO().getScore(DEFAULT_START, DEFAULT_AMOUNT);
         try (PrintWriter pw = response.getWriter()) {
-//            pw.println(GameMessager.createMessageListScores(accountService, amount));
-            pw.println("table empty");
+            pw.println(listScore);
         }
     }
+
 }

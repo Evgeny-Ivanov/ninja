@@ -45,7 +45,7 @@ define([
             var scene = new Scene(canvas,gameMechanics);
             scene.run();
             var url = "ws://localhost:8080/gameplay";
-            var messageSystem = new MessageSystem(url,gameMechanics,scene);
+            var messageSystem = new MessageSystem(url,gameMechanics,scene,this.players);
             _.extend(messageSystem, Backbone.Events);
             gameMechanics.setMessageSystem(messageSystem);
 
@@ -58,7 +58,7 @@ define([
             this.model.set("name",data.your_name);
             this.trigger("show");
             this.$el.show();
-            this.players.show(); 
+            this.players.show([]); 
 
         },
         showGameOver: function(data){

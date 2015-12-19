@@ -4,7 +4,8 @@ define([
     scoreModel
 ){
 
-    function MessageSystem(url,gameMechanics,scene){
+    function MessageSystem(url,gameMechanics,scene,players){
+        this.players = players;
         this.url = url;
         this.gameMechanics = gameMechanics;
         this.scene = scene;
@@ -49,6 +50,7 @@ define([
             }
 
             if(data.status=="enemyshot"){
+                self.players.show(data.players);
                 self.gameMechanics.deleteFruit(data.id);
             }
 
