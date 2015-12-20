@@ -16,10 +16,10 @@ define([
         };
         if(id%2==0){
             this.position.x = canvas.width;
-            this.step = -(canvas.width / 100);
+            this.step = -(canvas.width / 200);
         } else {
             this.position.x = 0;
-            this.step = (canvas.width / 100);
+            this.step = (canvas.width / 200);
         }
 
 
