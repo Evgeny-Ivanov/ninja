@@ -4,10 +4,10 @@
 <fest:each iterate="scores" index="i" value="player">
 
     <div  class="menu__players__player">
-        <fest:value>player.name</fest:value>
+    	<fest:value>player.name</fest:value>
         <fest:space/>:<fest:space/>   
-        <fest:value>player.score</fest:value> 
-    </div>
+        <fest:value>player.score</fest:value>
+    </div> 	
 
 </fest:each>
 </div>

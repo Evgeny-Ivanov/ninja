@@ -7,14 +7,25 @@ define([
 	var Model = Backbone.Model.extend({
 		urlRegistration: "/api/v1/auth/signup",
 		urlLogin: "/api/v1/auth/signin",
+		urlLogout: "/api/v1/auth/logout?",
 		defaults: {
 			name: "",
 			email: "",
 			password: "",
-			isSuccess: false,
+			isRegistation: false,
+			isAutorization: false,
 			loginMessage: "",
 			passwordMessage: "",
-			emailMessage: ""
+			emailMessage: "",
+			errorMessage: ""
+		},
+        initialize: function(){
+            _.bindAll(this,"successRegistation","successAutorization","successLogout");
+        },
+		self: this,
+		setting: {
+            type: "POST",
+            dataType: 'json'
 		},
 		validateRegistration: function(){
 			var answerEmail = this.checkEmail();
@@ -28,48 +39,56 @@ define([
 			if(!answerEmail || !answerPassword) validationError = "error";
 		},
 		registration: function(){
-			var self = this;
-			var setting = {
-	            type: "POST",
-	            url: self.urlRegistration,
-	            dataType: 'json',
-	            data: self.toJSON(),
-	            error : self.errorSend,
-	            success : self.successSend
-		    };
-	        $.ajax(setting);
+			this.setting.error = this.errorSend;
+            this.setting.success = this.successRegistation;
+			this.setting.url = this.urlRegistration;
+			this.setting.data = this.toJSON();
+	        $.ajax(this.setting);
 		},
 		login: function(){
-			var self = this;
-			var setting = {
-	            type: "POST",
-	            url: self.urlLogin,
-	            dataType: 'json',
-	            data: self.toJSON(),
-	            error : self.errorSend,
-	            success : self.successSend
-		    };
-	        $.ajax(setting);
+			this.setting.error = this.errorSend;
+            this.setting.success = this.successAutorization;
+            this.setting.url = this.urlLogin;
+			this.setting.data = this.toJSON();
+	        $.ajax(this.setting);
 		},
 		errorSend: function(xhr, status, error) {
 	        alert(xhr.responseText + '|\n' + status + '|\n' +error);
 	        console.log(xhr.responseText + '|\n' + status + '|\n' +error);
 	        console.log("ajax error");
 	    },
-        successSend: function(answer){ 	
-            if(answer == "OK"){
-                console.log("ajax success");
-                this.isSuccess = true;
+        successAutorization: function(answer){ 	
+        	console.log(answer);
+        	if(answer.status == 304){
+        		var self = this;
+                setTimeout(function(){
+                    $.ajax(self.setting);
+                },500);
+        	} else if(answer.status == 200){
+                this.set("isAutorization",true);
+                this.set("name",answer.info);
+                console.log(this);
+            } else{
+            	//console.log("С сервера что-то пришло:");
+            	//console.log(answer);
             }
-            else{
-            	console.log("С сервера что-то пришло:");
-            	console.log(answer);
-            	this.isSuccess = false;
+        },
+        successRegistation: function(answer){ 	
+        	console.log(answer);
+            if(answer.status == 304){
+                var self = this;
+                setTimeout(function(){
+                    $.ajax(self.setting);
+                },500);
+            } else if(answer.status == 200){
+                console.log(answer);
+                this.set("isRegistation",true);
+            } else{
+
             }
         },
         checkEmail: function(){
         	if(this.get("email").length<4){
-        		console.log("error email");
         		this.set("emailMessage","Email слишком короткий");
         		return false;
         	}
@@ -95,12 +114,50 @@ define([
             	this.set("loginMessage","Логин слишком короткий");
             	return false;
 			}
-
         	this.set("loginMessage","");
         	return true
+        },
+        successLogout: function(answer){
+            console.log(answer);
+            if(answer.status == 304){
+                var self = this;
+
+                    $.ajax({
+                        type: "GET",
+                        url: self.urlLogout,
+                        success: self.successLogout,
+                        error: self.errorLogout,
+                        dataType: 'json'
+                    });
+
+            } else if(answer.status == 200){
+                this.set("isAutorization",false);
+            } else{
+
+            }
+        },
+        errorLogout: function(answer){
+            console.log(answer);
+        },
+        logout: function(){
+            console.log("logout");
+        	var self = this;
+        	$.ajax({
+        		type: "GET",
+        		url: self.urlLogout,
+                success: self.successLogout,
+                error: self.errorLogout,
+                dataType: 'json'
+        	});
+        },
+        fetch: function(){
+
         }
 
 	});
 
-	return new Model();
+	//в случае если пользователь залогинен нужно обновить модель
+	var user = new Model();
+	//user.fetch();
+	return user;
 });

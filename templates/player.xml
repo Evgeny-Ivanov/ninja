@@ -1,0 +1,14 @@
+<fest:template xmlns:fest="http://fest.mail.ru" context_name="player">
+
+	<fest:if test="player.isAutorization">
+		<div class='menu__players'>
+		    <div  class="menu__players__player">
+		    	Привет
+		    	<fest:space/>
+		        <fest:value>player.name</fest:value>
+		    </div>
+		    <button type="submit" class="data-submit js-logout menu__link">Выйти</button>
+		</div>
+	</fest:if>
+
+</fest:template>

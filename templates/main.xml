@@ -1,19 +1,16 @@
 
 <fest:template xmlns:fest="http://fest.mail.ru" context_name="json">
 
-<div class="panel">
-    <fest:if test="json.name">
-       <fest:value>json.name</fest:value>
-    </fest:if>
-</div>
-
         <div class="col">
              <div class="menu">
                 <div class="menu__title menu__link_center"> Main menu </div>
 
-                <a  href="#game" class="js-start-game menu__link menu__link_center  menu__link_none">
-                	 Play 
-                </a> 	
+
+                <fest:if test="json.isAutorization">
+                    <a  href="#game" class="js-start-game menu__link menu__link_center  menu__link_none">
+                         Play 
+                    </a>    
+                </fest:if>
 
                 <a href="#scoreboard" class="js-scoreboard menu__link menu__link_center menu__link_none"> 
                 	Score Board 

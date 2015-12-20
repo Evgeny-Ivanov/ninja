@@ -147,10 +147,5 @@ define([
 
     });
 
-    var buf = new Model({
-            name: "evgen",
-            score: 10
-        });
-    //buf.save();
     return Model;
 });

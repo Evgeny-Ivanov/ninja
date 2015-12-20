@@ -14,11 +14,15 @@ define([
         id: "mainView",
         template: tmpl,
         render: function () {
-            this.$el.html(this.template(this.model));
+            this.$el.html(this.template(this.model.toJSON()));
             return this;
         },
-        model: modelUser  
-
+        model: modelUser,  
+        initialize: function () {
+            superView.prototype.initialize.apply(this, arguments);
+            _.bindAll(this,"render");
+            this.model.on("change:isAutorization",this.render);
+        }
     });
 
     return new View();

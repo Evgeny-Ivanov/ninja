@@ -4,12 +4,14 @@ define([
     'router',
     'models/user',
     'views/superAuthorizationView',
+    'views/player'
 ], function(
     Backbone,
     tmpl,
     router,
     modelUser,
-    superAuthorizationView
+    superAuthorizationView,
+    PlayerView
 ){
 
     var View = superAuthorizationView.extend({

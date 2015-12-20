@@ -3,9 +3,14 @@
     <div class="col">
         <div class="menu">
 
+    	<fest:if test="json.isAutorization">
+    		<div class="menu__title menu__link_center"> Вы уже вошли </div>
+    	</fest:if>
+
+        <fest:if test="!json.isAutorization">
         <div class="menu__title menu__link_center"> Registration </div>
 
-			<form class="ajax-signin" role="form" metod = "POST">
+			<form class="ajax-signin" role="form" method = "POST">
 
 				<div class="input-panel">
 
@@ -31,6 +36,7 @@
 				<button type="submit" class="data-submit menu__link">Войти</button> 	
 
 			</form>  
+			</fest:if>
 
             <a href="#" class="menu__link_none"> 
             	<div class="menu__link menu__link_center"> Назад </div> 

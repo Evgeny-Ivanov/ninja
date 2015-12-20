@@ -1,10 +1,17 @@
-<fest:template xmlns:fest="http://fest.mail.ru">
+<fest:template xmlns:fest="http://fest.mail.ru" context_name="json">
 
     <div class="col">
         <div class="menu">
 
-        <div class="menu__title menu__link_center"> Login </div>
-
+        <div class="menu__title menu__link_center"> 
+        	<fest:if test="!json.isAutorization">
+        		Login 
+        	</fest:if>
+        	<fest:if test="json.isAutorization">
+        		Вы уже вошли
+        	</fest:if>
+        </div>
+        	<fest:if test="!json.isAutorization">
 			<form class="ajax-signup" role="form" metod = "POST">
 
 				<div class="input-panel">
@@ -26,13 +33,15 @@
 				<button type="submit" class="data-submit menu__link">Войти</button> 	
 
 			</form>  
+			</fest:if>
+
 
             <a href="#" class="menu__link_none"> 
             	<div class="menu__link menu__link_center"> Назад </div> 
             </a>
 
-
         </div>
     </div>
+
 
 </fest:template>

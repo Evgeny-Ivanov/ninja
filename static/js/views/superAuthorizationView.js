@@ -11,8 +11,15 @@ define([
 ){
 	var View = superView.extend({
         render: function () {
-            this.$el.html(this.template());
+            this.$el.html(this.template(this.model.toJSON()));
             return this;
+        },
+        initialize: function () {
+            _.bindAll(this,"render");
+            this.model.on("change:isAutorization",this.render);
+            this.render();
+            $(document.body).append(this.$el);
+            this.hide();
         },
         check: function(event) {
             var nameField = this.$el.find(event.target).attr("name");//узнаем что за поле 
