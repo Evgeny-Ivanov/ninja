@@ -36,17 +36,23 @@ body {
   color: #405261;
   font-size: 4em; }
 
-.ajax-signin__error-panel {
-  display: none; }
-
-.ajax-signin__status-logo-email {
-  display: none; }
-
-.ajax-signin__status-logo-login {
-  display: none; }
-
-.ajax-signin__status-logo-password {
-  display: none; }
+.status-bar {
+  position: fixed;
+  left: 90%;
+  top: 3%; }
+  .status-bar__player-name {
+    color: #405261;
+    font-size: 1.3em;
+    text-align: center; }
+  .status-bar__logout {
+    border-radius: 10000em;
+    background-color: white;
+    color: #405261;
+    outline: none; }
+    .status-bar__logout:hover {
+      transform: scale(1.03);
+      background-color: #405261;
+      color: #FFFFFF; }
 
 .game {
   overflow: hidden; }
@@ -90,13 +96,21 @@ body {
 
 .data-submit {
   border: 0px;
-  width: 100%; }
+  width: 100%;
+  outline: none; }
 
 input:invalid {
   color: #FF6672; }
 
 input:valid {
   color: #69b241; }
+
+.error-panel {
+  padding-top: 0.1em;
+  bottom: 0.3em;
+  width: 100%;
+  color: white;
+  text-align: center; }
 
 .menu__players {
   padding: 0.1%;

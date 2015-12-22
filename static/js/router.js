@@ -8,7 +8,8 @@ define([
     'views/viewManager',
     'views/gameover',
     'views/loading',
-    'views/errorScoreboard'
+    'views/errorScoreboard',
+    'views/player'
 
 ], function(
     Backbone,
@@ -20,7 +21,8 @@ define([
     viewManager,
     gameOverView,
     loadingView,
-    errorScoreboardView
+    errorScoreboardView,
+    playerView
 ){
 	
     viewManager.addArray([
@@ -31,7 +33,8 @@ define([
         registrationView,
         gameOverView,
         loadingView,
-        errorScoreboardView
+        errorScoreboardView,
+        playerView
     ]);
 
     //ДЗ - написать свой Backbone.sync по RESTful
@@ -46,6 +49,7 @@ define([
         },
         defaultActions: function () {
             mainView.show();
+            playerView.show();
         },
         scoreboardAction: function () {
             scoreboardView.show();

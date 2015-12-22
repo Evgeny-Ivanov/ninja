@@ -40,6 +40,7 @@
 .data-submit{
 	border:0px;
 	width:100%;
+	outline:none;
 }
 
  input{
@@ -52,3 +53,13 @@
  		color: #69b241;
  	}
  } 
+
+.error-panel{
+	padding: {
+		top: 0.1em;
+	}
+	bottom: 0.3em;
+	width: 100%;
+	color: white;
+	text-align: center;
+} 

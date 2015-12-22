@@ -9,16 +9,16 @@ define([
 ){
 
     var View = Backbone.View.extend({
-        className: "players",
+        className: "status-bar",
         template: tmpl,
         model: userModel,
         events: {
             "click .js-logout": "logout"
         },
         initialize: function () {
-            _.bindAll(this,'show');
-            this.render();
-            this.model.on("change:isAutorization",this.show);
+            _.bindAll(this,'render');
+            $(document.body).prepend(this.$el);
+            this.model.on("change:isAutorization",this.render);
             this.hide();
         },
         render: function () {
@@ -26,14 +26,14 @@ define([
             return this;
         },
         logout: function() {
+            console.log("logout");
             this.model.logout();
         },
         show: function () {
-            $("#mainView").prepend(this.$el);
             this.render();
             this.$el.show();
         },
-        hide: function () {
+        hide: function(){
             this.$el.hide();
         }
     });

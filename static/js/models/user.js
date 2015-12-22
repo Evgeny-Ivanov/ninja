@@ -8,19 +8,24 @@ define([
 		urlRegistration: "/api/v1/auth/signup",
 		urlLogin: "/api/v1/auth/signin",
 		urlLogout: "/api/v1/auth/logout?",
+        urlFetch: "/checkauth",
 		defaults: {
 			name: "",
 			email: "",
 			password: "",
-			isRegistation: false,
+			isRegistration: false,
 			isAutorization: false,
 			loginMessage: "",
 			passwordMessage: "",
 			emailMessage: "",
-			errorMessage: ""
+			errorRegistrationMessage: "",
+            errorAutorizationMessage: ""
 		},
         initialize: function(){
-            _.bindAll(this,"successRegistation","successAutorization","successLogout");
+            _.bindAll(this,"successRegistation",
+                           "successAutorization",
+                           "successLogout",
+                           "successFetch");
         },
 		self: this,
 		setting: {
@@ -69,8 +74,7 @@ define([
                 this.set("name",answer.info);
                 console.log(this);
             } else{
-            	//console.log("С сервера что-то пришло:");
-            	//console.log(answer);
+            	this.set("errorAutorizationMessage",answer.info);
             }
         },
         successRegistation: function(answer){ 	
@@ -82,9 +86,11 @@ define([
                 },500);
             } else if(answer.status == 200){
                 console.log(answer);
-                this.set("isRegistation",true);
+                this.set("isRegistration",true);
+                this.set("errorRegistrationMessage","Вы успешно зарегистрировались");
             } else{
-
+                console.log("error registration")
+                this.set("errorRegistrationMessage",answer.info);
             }
         },
         checkEmail: function(){
@@ -92,7 +98,6 @@ define([
         		this.set("emailMessage","Email слишком короткий");
         		return false;
         	}
-
 			this.set("emailMessage","");
 			return true;
         },
@@ -151,13 +156,30 @@ define([
         	});
         },
         fetch: function(){
-
+            var self = this;
+            $.ajax({
+                type: "GET",
+                url: self.urlFetch,
+                success: self.successFetch,
+                dataType: 'json'
+            });
+        },
+        successFetch: function(answer){
+            console.log(answer);
+            if(answer.status == 200){
+                var name = answer.info;
+                this.set("name",name);
+                this.set({"isAutorization":true});
+            }
+            if(answer.status == 401){
+                this.set("isAutorization",false);
+            }
         }
 
 	});
 
 	//в случае если пользователь залогинен нужно обновить модель
 	var user = new Model();
-	//user.fetch();
+    user.fetch();
 	return user;
 });

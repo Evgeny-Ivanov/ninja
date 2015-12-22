@@ -29,13 +29,6 @@ define([
         },
         sendServer: function(){
             this.model.registration();
-        },
-        initialize: function () {
-            _.bindAll(this,"render");
-            this.model.on("change:isAutorization",this.render);
-            this.render();
-            $(document.body).append(this.$el);
-            this.hide();
         }
     });
 

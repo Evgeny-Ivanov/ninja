@@ -17,6 +17,8 @@ define([
         initialize: function () {
             _.bindAll(this,"render");
             this.model.on("change:isAutorization",this.render);
+            this.model.on("change:errorAutorizationMessage",this.render);
+            this.model.on("change:errorRegistrationMessage",this.render);
             this.render();
             $(document.body).append(this.$el);
             this.hide();
@@ -57,6 +59,15 @@ define([
             event.target.setCustomValidity(message);//если передать сюда пустую строку
                                                     //браузер воспримет что ошибки нет
             //устанавливаем тут ошибку - в main.css - псевдокласс который поменяет стили
+        },
+        show: function () {
+            this.render();
+            superView.prototype.show.apply(this,arguments);
+        },
+        hide: function(){
+            superView.prototype.hide.apply(this,arguments);
+            this.model.set("errorRegistrationMessage","");
+            this.model.set("errorAutorizationMessage","");
         }
 	});
 

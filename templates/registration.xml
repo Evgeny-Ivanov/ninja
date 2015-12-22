@@ -4,7 +4,7 @@
         <div class="menu">
 
     	<fest:if test="json.isAutorization">
-    		<div class="menu__title menu__link_center"> Вы уже вошли </div>
+    		<div class="menu__title menu__link_center"> You have already entered </div>
     	</fest:if>
 
         <fest:if test="!json.isAutorization">
@@ -16,22 +16,23 @@
 
 					<div>
 					<input type="email" class="input-panel_input" required="" name="email" placeholder="Email"/> 
-					<span class="js-ajax-signin__status-logo-email"/>
 					</div>
 
 					<div>
 					<input type="login" class="input-panel_input" required="" name="name" placeholder="Login"/>
-					<span class="js-ajax-signin__status-logo-login"/>
 					</div>
 
 					<div>
 					<input type="password" class="input-panel_input" required="" name="password" placeholder="Password" />
-					<span class="js-ajax-signin__status-logo-password"/>
 					</div>
 
 				</div>
-
-				<div class="alert alert-danger ajax-signin__error-panel"></div>
+			
+                <fest:if test="json.errorRegistrationMessage">
+                    <div class="error-panel">
+                        <fest:value>json.errorRegistrationMessage</fest:value>
+                    </div>
+                </fest:if>
 
 				<button type="submit" class="data-submit menu__link">Войти</button> 	
 
