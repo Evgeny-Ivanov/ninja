@@ -73,7 +73,7 @@ define([
     Scene.prototype.resize = function(){
         this.canvas.height = window.innerHeight;
         this.canvas.width =  window.innerWidth;
-        //нужно перерисовать фрукты
+        this.gameMechanics.changeSizeFruits();
     }
 
     Scene.prototype.showGameOver = function(){
@@ -103,8 +103,3 @@ define([
 
 });
 
-
-
-//var basket =  new Image();
-//basket.src = "/basket.png";
-//self.context.drawImage(basket, 40, 40);

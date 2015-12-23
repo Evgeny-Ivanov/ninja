@@ -144,7 +144,7 @@ define([
         context.drawImage( 
           this.spriteExplosion,
           x,y,frame,frame,  // исходные координаты (x,y,w,h)
-          this.position.x,this.position.y,128,128 // конечные координаты (x,y,w,h)
+          this.position.x,this.position.y,this.radius*2,this.radius*2 // конечные координаты (x,y,w,h)
         ); 
 
         this.tickX++;
@@ -221,6 +221,10 @@ define([
         context.restore();
 
         //this.debug(context);
+    }
+
+    Smeshariki.prototype.changeSize = function(){
+        this.radius = this.canvas.height/12;
     }
 
     return Smeshariki;

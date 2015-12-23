@@ -134,6 +134,12 @@ define([
         this.messageSystem = messageSystem;
     }
 
+    GameMechanics.prototype.changeSizeFruits = function(){
+        _.each(this.fruits,function(fruit){
+            fruit.changeSize();
+        });
+    }
+
     function degreesToRadians(degrees){
         return degrees*(Math.PI/180);
     }
