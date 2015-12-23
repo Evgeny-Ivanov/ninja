@@ -2,6 +2,7 @@ define([
 ], function(
 ){
 
+
     function Fruit(px,py,radius,canvas,id){   
         //
         this.id = id;
@@ -22,16 +23,11 @@ define([
             this.step = (canvas.width / 200);
         }
 
-
-        this.velocity = {
-            x: 6,
-            y: 1
-        }
         this.anchor = this.position;
-
     } 
 
     Fruit.prototype.setLaw = function(fun){
+        this.serverFun = fun;
         var wc = this.canvas.width;
         var hc = this.canvas.height;
 
@@ -45,13 +41,6 @@ define([
         var dx = wc/2;
         var dy = hc/2;
 
-        //var a = fun.a * ka * kx * kx / ky;
-        //var b = 2 * fun.a * ka * kx * dx / ky + kb * fun.b * kx / ky;
-        //var c = fun.a * ka * dx * dx / ky + kb * fun.b * dx / ky + kc * fun.c / ky - dy / ky;
-
-        //var a = fun.a * ka * kx * kx / ky;
-        //var b = fun.a * ka * kx * kx * ws / ky + fun.b * kb * kx / ky;
-        //var c = fun.a * ka * kx * kx * ws * ws / 4 / ky + fun.b * kb * kx * ws / 2 / ky + fun.c * kc / ky - hs / 2;
         var a = ky*(ka*fun.a/(kx*kx));
         var b = ky*(fun.b*kb/kx - ka*fun.a*ws/(kx*kx));
         var c = ky*(ka*fun.a*ws*ws/(4*kx*kx) + fun.b*kb*ws/(kx*2) + fun.c*kc) + hs/2;
@@ -80,8 +69,6 @@ define([
     Fruit.prototype.law = function(){
         this.position.x += this.step;
         this.position.y = (this.fun.a * this.position.x * this.position.x +this.fun.b*this.position.x + this.fun.c);
-        //console.log("координаты: ",this.position.x+" : "+this.position.y);
-        //console.log(this.fun.a, this.fun.b,this.fun.c);
     }
 
     Fruit.prototype.isBelongs = function(line){
@@ -190,10 +177,8 @@ define([
     function Smeshariki(px,py,radius,canvas){
         this.canvas = canvas;
         Fruit.apply(this, arguments);
-        this.img = new Image();
         var id = this.id%5+1;
-        var urlImg = "/img/"+id+".png";
-        this.img.src = urlImg;
+        this.img = window.imgСache["img"+id];
         this.anchor = {
             x: this.position.x + this.radius,
             y: this.position.y + this.radius

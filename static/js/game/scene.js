@@ -10,7 +10,31 @@ define([
     MessageSystem
 ){
 
+    function loadResources(){
+        var animated3 = new Image();
+        var animated2 = new Image();
+        animated2.src = "/animated2.png";
+        animated3.src = "/animated3.png";
+
+        window.imgСache = {
+            img1: new Image(),
+            img2: new Image(),
+            img3: new Image(),
+            img4: new Image(),
+            img5: new Image(),
+        }
+        var i = 1;
+        _.each(window.imgСache,function(img){
+            img.src = "/img/" + i + ".png";
+            i++;
+        });
+
+        window.imgСache.animated2 = animated2;
+        window.imgСache.animated3 = animated3;
+    }
+
     function Scene(canvas,gameMechanics){  
+        loadResources();
         this.canvas = canvas;
         var self = this;
 
@@ -32,17 +56,12 @@ define([
         this.gameMechanics = gameMechanics;
     } 
     
-    Scene.prototype.clear = function(){
-        this.context.fillStyle = "white"; 
-        this.context.fillRect(0,0,this.canvas.width,this.canvas.height); 
-    }
 
     Scene.prototype.run = function(){
         var self = this;
         self.gameMechanics.run();
         var animateThis = function(){
             self.r = requestAnimationFrame(animateThis);
-            self.clear();
             self.context.drawImage(self.img,0,0,self.canvas.width,self.canvas.height);
             _.each(self.gameMechanics.fruits,function(fruit){
                 if(fruit.position.x > self.canvas.width || fruit.position.x < 0 ||  fruit.position.y > self.canvas.height){
@@ -51,7 +70,6 @@ define([
                 fruit.show(self.canvas);
             });
             _.each(self.gameMechanics.slicedFruits,function(f){
-                //console.log(f.fruit);
                 f.fruit.cut(self.context);
                 f.fruit.time++;
                 if(f.fruit.time == 49){

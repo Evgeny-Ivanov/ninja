@@ -89,8 +89,7 @@ define([
     GameMechanics.prototype.cutFruit = function(fruit){
         this.messageSystem.sendMessage(fruit.id);
         fruit.frame = 128;
-        fruit.spriteExplosion = new Image();
-        fruit.spriteExplosion.src = "/animated2.png";
+        fruit.spriteExplosion = window.imgСache.animated2;
         this.fruits =  _.without(this.fruits, fruit);
         this.slicedFruits.push({
             fruit: fruit,
@@ -106,8 +105,7 @@ define([
         if(!fruit) return;
 
         fruit.frame = 68;
-        fruit.spriteExplosion = new Image();
-        fruit.spriteExplosion.src = "/animated3.png";
+        fruit.spriteExplosion = window.imgСache.animated3;
 
         this.fruits =  _.without(this.fruits, fruit);
         this.slicedFruits.push({
