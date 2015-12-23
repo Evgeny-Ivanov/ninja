@@ -29,7 +29,6 @@ define([
         this.context.drawImage(this.img,0,0,canvas.width,canvas.height);
 
         document.body.style.overflow = "hidden";
-
         this.gameMechanics = gameMechanics;
     } 
     
@@ -78,7 +77,6 @@ define([
     }
 
     Scene.prototype.showGameOver = function(){
-        document.body.style.overflow = "auto";
         this.stop();
         gameOverView.show(this.model);
     }

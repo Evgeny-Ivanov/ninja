@@ -13,10 +13,12 @@ define(['backbone'],function(Backbone){
 				self.listenTo(view,'show',self.hide);
 			});
 		},
-		hide : function(){
+		hide : function(v){
 			var self = this;
 			_.each(this.views,function(view){
-				view.hide();
+				if(view != v){
+					view.hide();
+				}
 			});
 		},
 		initialize : function(){

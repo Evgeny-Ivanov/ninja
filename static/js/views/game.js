@@ -38,7 +38,7 @@ define([
         players: new playersView(),
         show: function(){
             this.render();
-            this.trigger("show");
+            this.trigger("show",this);
             LoadingView.show();
             this.showCanvas();
         },
@@ -59,7 +59,7 @@ define([
         },
         showGame: function(data){
             this.model.set("name",data.your_name);
-            this.trigger("show");
+            this.trigger("show",this);
             this.$el.show();
             this.players.show(data.players); 
 
@@ -77,6 +77,11 @@ define([
             });
             this.players.hide();
             GameOverView.show(playerCollection);
+        },
+        hide: function(){
+            console.log("hide");
+            document.body.style.overflow = "auto";
+            superView.prototype.hide.apply(this,arguments);
         }
     });
 

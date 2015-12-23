@@ -12,6 +12,10 @@
 
 .menu{
 
+	&_bottom{
+		margin-bottom: 15%;
+	}
+
 	&__link{
 		line-height: 2em;
 		background-color: $grey;

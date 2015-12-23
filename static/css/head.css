@@ -12,6 +12,9 @@ body {
   margin-right: 35%;
   margin-top: 9%; }
 
+.menu_bottom {
+  margin-bottom: 15%; }
+
 .menu__link {
   line-height: 2em;
   background-color: #4c6575;

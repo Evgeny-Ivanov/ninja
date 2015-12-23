@@ -2,7 +2,7 @@
 <fest:template xmlns:fest="http://fest.mail.ru" context_name="scores">
 <!-- возможны ли блок блока и элемент элемента ? -->
     <div class="col">
-        <div class="menu">
+        <div class="menu menu_bottom">
 
         <div class="menu__title menu__link_center"> Scoreboard </div>
 
