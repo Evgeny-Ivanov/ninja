@@ -1,41 +1,31 @@
-<fest:template xmlns:fest="http://fest.mail.ru" context_name="json">
+<fest:template xmlns:fest="http://fest.mail.ru" context_name="scores">
 
     <div class="col">
         <div class="menu">
-
 	        <div class="menu__title menu__link_center"> Game Over </div>
 
-	        <div class="menu__title menu__link_center"><fest:value>json.name</fest:value> </div>
-
-			<form class="js-ajax-send-score" role="form" metod = "POST">
-
-				<div class="input-panel">
-
-					<!--<div>
-					<input class="input-panel_input js-ajax-send-score-input" required="" placeholder="Ваше имя"/> 
-					</div>-->
-
-
 					<div class='menu__players'>
-			                <div  class="menu__players__player">
-			                    Ваш счет 
-			                    <fest:space/>:<fest:space/>   
-			                    <fest:value>json.score</fest:value> 
-			                </div>
-		            </div>
+					    <fest:each iterate="scores" index="i" value="player">
 
-				</div>
+					        <div  class="menu__players__player">
+				            	<fest:if test="player.isI"> Ваш счет </fest:if>
+			                    <fest:if test="!player.isI"> Счет противника </fest:if>
+					            <fest:space/>:<fest:space/>   
+					            <fest:value>player.score</fest:value> 
+					        </div>
 
-				<button type="submit" class="data-submit menu__link">Сохранить</button> 	
+					    </fest:each>
+					</div>
+		</div>
+
+        <a href="#game" class="menu__link_none js-game-refresh"> 
+        	<div class="menu__link menu__link_center"> Сыграть снова  </div> 
+        </a>
+        <a href="#" class="menu__link_none"> 
+        	<div class="menu__link menu__link_center"> Выйти в меню  </div> 
+        </a>
 
 
-
-			</form>  
-
-	        <a href="#" class="menu__link_none"> 
-	        	<div class="menu__link menu__link_center"> Отложить отправку  </div> 
-	        </a>
-        </div>
     </div>
 
 </fest:template>

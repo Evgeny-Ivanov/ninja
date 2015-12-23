@@ -17,8 +17,7 @@ define([
             "click .js-try-again-send": "send"
         },
         send: function(){
-            Backbone.history.navigate("#main", {trigger: true, replace: true});//божественный костыль
-            Backbone.history.navigate("#scoreboard", {trigger: true, replace: true});
+             Backbone.history.loadUrl(Backbone.history.fragment); 
         }
     });
 

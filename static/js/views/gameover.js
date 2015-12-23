@@ -14,7 +14,8 @@ define([
 		id: "gameoverView",
 		template: tmpl,
 		events: {
-			"submit .js-ajax-send-score": "sendScore"
+			"submit .js-ajax-send-score": "sendScore",
+            "click .js-game-refresh": "refresh"
 		},
 		initialize: function () {
         },
@@ -27,11 +28,11 @@ define([
 			this.model.save();
 		},
 		render: function () {
-            this.$el.html(this.template(this.model.toJSON()));
+            this.$el.html(this.template(this.collection.toJSON()));
             return this;
         },
-        show: function (model) {
-        	this.model = model;
+        show: function (collection) {
+        	this.collection = collection;
             this.trigger("show");
             this.render();
             $(document.body).append(this.$el); 
@@ -61,6 +62,9 @@ define([
         blockUnlockForm: function(target,value){
 			var children = target.getElementsByTagName('*');
 			$(children).prop("disabled", value); // true = блокируем форму
+        },
+        refresh: function(){
+            Backbone.history.loadUrl(Backbone.history.fragment);
         }
 	})
 	return new View;

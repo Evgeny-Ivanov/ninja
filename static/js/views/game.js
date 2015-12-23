@@ -2,31 +2,34 @@ define([
     'backbone',
     'tmpl/game',
     'views/superView',
-    'models/score',
+    'models/user',
     'game/scene',
     'game/fruit',
     'game/messageSystem',
     'game/gameMechanics',
     'views/loading',
     'views/gameover',
-    'views/players'
+    'views/players',
+    'collections/scores'
 ], function(
     Backbone,
     tmpl,
     superView,
-    scoreModel,
+    userModel,
     Scene,
     Fruit,
     MessageSystem,
     GameMechanics,
     LoadingView,
     GameOverView,
-    playersView
+    playersView,
+    ScoresCollection
+
 ){
 
     var View = superView.extend({
         id: "gameView",
-        model: new scoreModel(),
+        model: userModel,
         template: tmpl,
         events: {
             "click .js-button-game": "sendMessage",
@@ -58,21 +61,22 @@ define([
             this.model.set("name",data.your_name);
             this.trigger("show");
             this.$el.show();
-            this.players.show([]); 
+            this.players.show(data.players); 
 
         },
         showGameOver: function(data){
-            var name = this.model.get("name");
             console.log(data);
-            var score;
-            for(i=0;i<data.players.length;i++){
-                if(data.players[i].name == name){
-                    score = data.players[i].score;
+            var self = this;
+            var playerCollection = new ScoresCollection(data.players);
+            var score = null;
+            playerCollection.forEach(function(player){
+                if(player.get("name") == self.model.get("name")){
+                    player.set("isI",true);
                 }
-            }
-            this.model.set("score",score);
+                
+            });
             this.players.hide();
-            GameOverView.show(this.model);
+            GameOverView.show(playerCollection);
         }
     });
 

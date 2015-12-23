@@ -59,9 +59,7 @@ define([
         }
     });
 
-    var collections = new Collection();
-
-    return collections;
+    return Collection;
 
 
 });

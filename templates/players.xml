@@ -1,15 +1,23 @@
-<fest:template xmlns:fest="http://fest.mail.ru" context_name="scores">
+<fest:template xmlns:fest="http://fest.mail.ru" context_name="players">
 
-<div class='menu__players'>
-<fest:each iterate="scores" index="i" value="player">
+<fest:each iterate="players" index="i" value="player">
 
-    <div  class="menu__players__player">
-    	<fest:value>player.name</fest:value>
-        <fest:space/>:<fest:space/>   
-        <fest:value>player.score</fest:value>
-    </div> 	
+    <fest:if test="player.isI">
+        <div class="game-player game-player_right">
+            <fest:value>player.name</fest:value>
+            <fest:space/>:<fest:space/>   
+            <fest:value>player.score</fest:value>
+        </div> 
+    </fest:if>
+
+    <fest:if test="!player.isI">
+        <div class="game-player game-player_left">
+            <fest:value>player.name</fest:value>
+            <fest:space/>:<fest:space/>   
+            <fest:value>player.score</fest:value>
+        </div>  
+    </fest:if>
 
 </fest:each>
-</div>
 
 </fest:template>

@@ -11,7 +11,7 @@ define([
     Backbone,
     tmpl,
     scoreModel,
-    scores,
+    ScoreCollection,
     superView,
     storage,
     loadingView,
@@ -20,7 +20,7 @@ define([
 
     var View = superView.extend({
         id: "CollectionView",
-        collection: scores,
+        collection: new ScoreCollection(),
         template: tmpl,
         events: {
             'click .back-in-main-menu': 'hide'
@@ -39,7 +39,6 @@ define([
             if(storage.isEmpty()){
                 storage.send();
             }
-
             this.showLoading();
 
             this.collection.fetch(5);

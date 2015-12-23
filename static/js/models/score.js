@@ -16,7 +16,8 @@ define([
         idAttribute: 'id_event',
     	defaults: {
     		name: 'An unnamed cell',
-    		score: 0
+    		score: 0,
+            isI: false
     	},
         fetch: function() {
           //GET /scores/:id
