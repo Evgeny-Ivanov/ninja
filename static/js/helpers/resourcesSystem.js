@@ -5,11 +5,11 @@ define([
     var loadResources = function(){
         var animated3 = new Image();
         var animated2 = new Image();
-        animated2.src = "/animated2.png";
-        animated3.src = "/animated3.png";
+        animated2.src = "/burst.gif";
+        animated3.src = "/blood.gif";
 
         var background = new Image();
-        background.src = "/background.jpg";
+        background.src = "/background.gif";
 
         window.imgСache = {
             img1: new Image(),
@@ -20,7 +20,7 @@ define([
         }
         var i = 1;
         _.each(window.imgСache,function(img){
-            img.src = "/img/" + i + ".png";
+            img.src = "/img/" + i + ".gif";
             i++;
         });
 

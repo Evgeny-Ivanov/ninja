@@ -75,8 +75,8 @@ body {
 
 .game-player {
   position: fixed;
-  color: white;
-  font-size: 1.5em;
+  color: #405261;
+  font-size: 1.8em;
   top: 1%; }
   .game-player_right {
     right: 1%; }
@@ -84,7 +84,8 @@ body {
     left: 1%; }
   .game-player_center {
     text-align: center;
-    left: 48%; }
+    left: 48%;
+    font-size: 2.8em; }
 
 .input-panel {
   padding-top: 0.3em;

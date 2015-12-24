@@ -56,6 +56,8 @@ define([
             if(self.gameMechanics.finishGame()){
                 self.showGameOver();
             }
+
+
         }
         animateThis();
     }
