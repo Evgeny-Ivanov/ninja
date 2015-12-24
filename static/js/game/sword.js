@@ -29,9 +29,8 @@ define([
         var i = 100;
         _.each(this.lines,function(line){
             context.beginPath();
-            //context.globalAlpha = i--/100;
             context.lineWidth = line.width;
-            context.lineCap = 'butt'; // butt round square
+            context.lineCap = 'round'; // butt round square
             context.lineJoin = 'miter'; // miter round bevel
             context.strokeStyle = "#4c6575";
             context.beginPath();
@@ -51,19 +50,3 @@ define([
     return Sword;
 
 });
-
-
-
-//Line = {
-//    p1:{
-//        x,
-//        y
-//    }
-///    p2:{
-//        x,
-//        y
-//    }
-//    time:,
-//    width
-//
-//}

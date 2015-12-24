@@ -11,7 +11,8 @@ define([
     'views/gameover',
     'views/players',
     'collections/scores',
-    'views/timer'
+    'views/timer',
+    'helpers/resourcesSystem'
 ], function(
     Backbone,
     tmpl,
@@ -25,8 +26,8 @@ define([
     GameOverView,
     playersView,
     ScoresCollection,
-    TimerView
-
+    TimerView,
+    loadResources
 ){
 
     var View = superView.extend({
@@ -92,29 +93,6 @@ define([
             superView.prototype.hide.apply(this,arguments);
         }
     });
-
-    function loadResources(){
-        var animated3 = new Image();
-        var animated2 = new Image();
-        animated2.src = "/animated2.png";
-        animated3.src = "/animated3.png";
-
-        window.imgСache = {
-            img1: new Image(),
-            img2: new Image(),
-            img3: new Image(),
-            img4: new Image(),
-            img5: new Image(),
-        }
-        var i = 1;
-        _.each(window.imgСache,function(img){
-            img.src = "/img/" + i + ".png";
-            i++;
-        });
-
-        window.imgСache.animated2 = animated2;
-        window.imgСache.animated3 = animated3;
-    }
 
     return new View();
 });

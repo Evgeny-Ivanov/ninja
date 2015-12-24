@@ -6,7 +6,6 @@ define([
     function Fruit(px,py,radius,canvas,id){   
         //
         this.id = id;
-        this.time = 0;
         this.radius = radius;
         this.angle = 0;
         //
@@ -16,10 +15,10 @@ define([
             y: py
         };
         if(id%2==0){
-            this.position.x = canvas.width;
+            this.position.x = canvas.width + canvas.width/11;
             this.step = -(canvas.width / 200);
         } else {
-            this.position.x = 0;
+            this.position.x = -canvas.width/11;
             this.step = (canvas.width / 200);
         }
 
@@ -41,9 +40,9 @@ define([
         var dx = wc/2;
         var dy = hc/2;
 
-        var a = ky*(ka*fun.a/(kx*kx));
-        var b = ky*(fun.b*kb/kx - ka*fun.a*ws/(kx*kx));
-        var c = ky*(ka*fun.a*ws*ws/(4*kx*kx) + fun.b*kb*ws/(kx*2) + fun.c*kc) + hs/2;
+        var a = ka * fun.a * ky / kx / kx;
+        var b = ky / kx * (kb * fun.b - 2 * dx * ka * fun.a / kx);
+        var c = ka * fun.a * ky * dx * dx / kx / kx - kb * b * ky * dx / kx + kc * fun.c * ky + dy;
         this.fun = {
             a: a,
             b: b,

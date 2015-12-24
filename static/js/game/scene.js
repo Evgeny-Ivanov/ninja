@@ -25,8 +25,7 @@ define([
         this.canvas.width = width;
 
         this.context = canvas.getContext('2d'); 
-        this.img = new Image();
-        this.img.src = "/background.jpg";
+        this.img = window.imgСache.background;
         this.context.drawImage(this.img,0,0,canvas.width,canvas.height);
 
         document.body.style.overflow = "hidden";
@@ -41,7 +40,7 @@ define([
             self.r = requestAnimationFrame(animateThis);
             self.context.drawImage(self.img,0,0,self.canvas.width,self.canvas.height);
             _.each(self.gameMechanics.fruits,function(fruit){
-                if(fruit.position.x > self.canvas.width || fruit.position.x < 0 ||  fruit.position.y > self.canvas.height){
+                if(fruit.position.x > self.canvas.width + self.canvas.width/11 || fruit.position.x < -self.canvas.width/11){
                     self.gameMechanics.fruits =  _.without(self.gameMechanics.fruits,fruit);
                 }
                 fruit.show(self.canvas);
