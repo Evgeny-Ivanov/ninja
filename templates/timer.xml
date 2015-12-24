@@ -1,0 +1,7 @@
+<fest:template xmlns:fest="http://fest.mail.ru" context_name="timer">
+
+	    <div  class="game-player game-player_center">
+	        <fest:value>timer.time</fest:value>
+	    </div>  
+
+</fest:template>

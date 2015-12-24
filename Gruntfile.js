@@ -10,6 +10,19 @@ module.exports = function (grunt) {
                 command: 'java -jar server.jar 8080'
             }
         },
+		requirejs: {
+            compile: {
+                options: {
+                    baseUrl: "static/js",// папка где находятся все js файлы
+                    removeCombined: true,
+                    mainConfigFile: "static/js/main.js",// главный файл с описанием конфигурации и билда require.js
+                    findNestedDependencies: true,
+                    out: "static/js/main.min.js",// выходящий минифицированный и конкатенированный файл готовые для продакшена
+                    name: 'main',
+                    keepBuildDir: true
+                }
+            }
+        },
         fest: {
             templates: {
                 files: [{
@@ -85,7 +98,7 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-shell');
     grunt.loadNpmTasks('grunt-fest');
     grunt.loadNpmTasks('grunt-sass');
-
+    grunt.loadNpmTasks('grunt-contrib-requirejs');
 
     grunt.registerTask('default', ['concurrent']);
 

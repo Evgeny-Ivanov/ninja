@@ -22,6 +22,7 @@ define([
             superView.prototype.initialize.apply(this, arguments);
             _.bindAll(this,"render");
             this.model.on("change:isAutorization",this.render);
+            
         }
     });
 
