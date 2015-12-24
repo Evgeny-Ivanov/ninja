@@ -30,7 +30,7 @@ define([
         _.each(this.lines,function(line){
             context.beginPath();
             context.lineWidth = line.width;
-            context.lineCap = 'round'; // butt round square
+            context.lineCap = 'butt'; // butt round square
             context.lineJoin = 'miter'; // miter round bevel
             context.strokeStyle = "#4c6575";
             context.beginPath();

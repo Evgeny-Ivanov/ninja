@@ -11,6 +11,11 @@ body {
   margin-left: 35%;
   margin-right: 35%;
   margin-top: 9%; }
+  @media (max-width: 700px) {
+    .example-extend, .col {
+      margin-left: 10%;
+      margin-right: 10%;
+      margin-top: 9%; } }
 
 .menu_bottom {
   margin-bottom: 15%; }
@@ -22,9 +27,7 @@ body {
   margin-top: 0.8em;
   height: 2em;
   font-size: 1.9rem;
-  font-style: italic;
-  /*border: 3px #CCCCCC solid;
-		border-radius: 10px;*/ }
+  font-style: italic; }
   .menu__link:hover {
     transform: scale(1.03);
     background-color: #405261;
@@ -41,8 +44,10 @@ body {
 
 .status-bar {
   position: fixed;
-  left: 90%;
-  top: 3%; }
+  right: 1.5%;
+  top: 3%;
+  width: 7%;
+  min-width: 60px; }
   .status-bar__player-name {
     color: #405261;
     font-size: 1.3em;

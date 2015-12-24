@@ -30,6 +30,7 @@ define([
     GameMechanics.prototype.checkСontactSwordAndFruit = function(){
         var self = this;
         var callback = function(event) {
+            event.preventDefault();
             if(event.touches) evt = event.touches[0];
             else evt = event;
         

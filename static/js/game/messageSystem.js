@@ -57,7 +57,17 @@ define([
         }
 
         ws.onclose = function (event) {
-            console.log("соеднинение закрыто");
+            if (event.wasClean) {
+                console.log('Соединение закрыто чисто');
+            } else {
+                console.log('Обрыв соединения');
+            }
+            console.log('Код: ' + event.code + ' причина: ' + event.reason);
+            
+        }
+
+        ws.onerror = function(error) {
+            console.log("Ошибка " + error.message);
         }
     }
 
