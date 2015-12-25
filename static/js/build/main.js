@@ -14269,7 +14269,7 @@ define('views/game',[
             var gameMechanics = new GameMechanics(canvas,this.model);
             var scene = new Scene(canvas,gameMechanics);
             scene.run();
-            var url = "ws://localhost:8080/gameplay";
+            var url = "ws://g10.javaprojects.tp-dev.ru/gameplay";
             var messageSystem = new MessageSystem(url,gameMechanics,scene,this.players);
             _.extend(messageSystem, Backbone.Events);
             gameMechanics.setMessageSystem(messageSystem);
