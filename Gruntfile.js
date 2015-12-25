@@ -31,12 +31,18 @@ module.exports = function (grunt) {
                 ],
                 dest: 'static/js/build.js'
             }
-        }, 
+        },
+        removelogging: { 
+            dist: {
+                src: "static/js/build.js",
+                dest: "static/js/build-clean.js",
+            }
+        },
         uglify: { 
             build: { /* Подзадача */
                 files: {
                     'static/js/build.min.js': 
-                          ['static/js/build.js']
+                          ['static/js/build-clean.js']
                 }
             }            
         },
@@ -102,6 +108,7 @@ module.exports = function (grunt) {
             }
         }
 
+
     });
 
     grunt.loadNpmTasks('grunt-contrib-watch');
@@ -112,12 +119,13 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-contrib-requirejs');
     grunt.loadNpmTasks('grunt-contrib-uglify');
     grunt.loadNpmTasks('grunt-contrib-concat');
+    grunt.loadNpmTasks("grunt-remove-logging");
 
     grunt.registerTask(
     'build',
     [
         'fest', 'requirejs:build',
-        'concat:build', 'uglify:build'
+        'concat:build','removelogging:dist','uglify:build'
     ]
     );
 
