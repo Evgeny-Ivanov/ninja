@@ -6,13 +6,20 @@
     <title>Ninja</title>
     <link href="bootstrap/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="css/head.css" media="all"/>
-    <!-- <link href='https://fonts.googleapis.com/css?family=Indie+Flower' rel='stylesheet' type='text/css'> -->
 </head><body>
     <div id="page"></div>
-    <!-- из data-main RequireJS получает информацию о главном файле с инструкциями по загрузке -->
-    <script data-main="js/main.js" src="js/lib/require.js"></script>
-    <!-- Livereload -->
+    <!-- из data-main RequireJS получает информацию о главном файле с инструкциями по загрузке 
+    <script data-main="js/main.min.js" src="js/lib/require.js"></script>
+    -->
+    <!-- Livereload 
     <script src="//localhost:35729/livereload.js"></script>
+    -->
+    <script src="js/build.min.js"></script>
+    <script>
+        require(['main'], function(){
+                console.log('hello');
+        });
+    </script>
 
 
 </body></html>

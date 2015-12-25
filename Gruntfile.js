@@ -11,17 +11,34 @@ module.exports = function (grunt) {
             }
         },
 		requirejs: {
-            compile: {
+            build: {
                 options: {
-                    baseUrl: "static/js",// папка где находятся все js файлы
-                    removeCombined: true,
-                    mainConfigFile: "static/js/main.js",// главный файл с описанием конфигурации и билда require.js
-                    findNestedDependencies: true,
-                    out: "static/js/main.min.js",// выходящий минифицированный и конкатенированный файл готовые для продакшена
-                    name: 'main',
-                    keepBuildDir: true
+                    almond: true,
+                    baseUrl: "static/js",
+                    mainConfigFile: "static/js/main.js",
+                    name: "main",
+                    optimize: "none",
+                    out: "static/js/build/main.js"
                 }
             }
+        },
+        concat: {
+            build: { /* Подзадача */
+                separator: ';\n',
+                src: [
+                      'static/js/lib/almond.js',
+                      'static/js/build/main.js'
+                ],
+                dest: 'static/js/build.js'
+            }
+        }, 
+        uglify: { 
+            build: { /* Подзадача */
+                files: {
+                    'static/js/build.min.js': 
+                          ['static/js/build.js']
+                }
+            }            
         },
         fest: {
             templates: {
@@ -71,14 +88,8 @@ module.exports = function (grunt) {
             }
         },
         sass: {
+            style: "compressed",
             dist: {
-                /*files: [{
-                    expand: true,
-                    cwd: 'public_html/sass', // исходная директория 
-                    src: ['*.scss'], // имена шаблонов 
-                    dest: 'public_html/css', // результирующая директория 
-                    ext:  '.css'
-                }]*/
                 files: {
                     'static/css/head.css': 'static/sass/head.scss'
                 }
@@ -99,6 +110,16 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-fest');
     grunt.loadNpmTasks('grunt-sass');
     grunt.loadNpmTasks('grunt-contrib-requirejs');
+    grunt.loadNpmTasks('grunt-contrib-uglify');
+    grunt.loadNpmTasks('grunt-contrib-concat');
+
+    grunt.registerTask(
+    'build',
+    [
+        'fest', 'requirejs:build',
+        'concat:build', 'uglify:build'
+    ]
+    );
 
     grunt.registerTask('default', ['concurrent']);
 
