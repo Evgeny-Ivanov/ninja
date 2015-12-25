@@ -176,7 +176,12 @@ define([
     function Smeshariki(px,py,radius,canvas){
         this.canvas = canvas;
         Fruit.apply(this, arguments);
-        var id = this.id%5+1;
+        var id = null;
+        if(this.id%15 == 0){
+            id = 5;
+        } else {
+            id = this.id%4+1;
+        }
         this.img = window.imgСache["img"+id];
         this.anchor = {
             x: this.position.x + this.radius,

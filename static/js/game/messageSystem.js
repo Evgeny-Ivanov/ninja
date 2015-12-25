@@ -120,6 +120,11 @@ define([
         console.log("leave");
     }
 
+    MessageSystem.prototype.close = function(){
+    	console.log("close");
+    	this.ws.close();
+    }
+
     MessageSystem.prototype.sendMessage = function(id){
         var message = { 
             status : "myshot",

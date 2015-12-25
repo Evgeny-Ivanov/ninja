@@ -60,6 +60,10 @@ define([
                 self.showGameOver();
             }
 
+            if(self.gameMechanics.isRed){
+                self.gameMechanics.fillRed();
+            }
+
 
         }
         animateThis();

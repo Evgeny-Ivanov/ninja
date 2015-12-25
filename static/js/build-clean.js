@@ -13499,7 +13499,12 @@ define('game/fruit',[
     function Smeshariki(px,py,radius,canvas){
         this.canvas = canvas;
         Fruit.apply(this, arguments);
-        var id = this.id%5+1;
+        var id = null;
+        if(this.id%15 == 0){
+            id = 5;
+        } else {
+            id = this.id%4+1;
+        }
         this.img = window.imgСache["img"+id];
         this.anchor = {
             x: this.position.x + this.radius,
@@ -13993,6 +13998,11 @@ define('game/messageSystem',[
         
     }
 
+    MessageSystem.prototype.close = function(){
+    	
+    	this.ws.close();
+    }
+
     MessageSystem.prototype.sendMessage = function(id){
         var message = { 
             status : "myshot",
@@ -14174,6 +14184,9 @@ define('game/gameMechanics',[
             fruit: fruit,
             time:0
         });
+        if(fruit.id % 15 == 0){
+            this.isRed = 8;
+        }
     }
 
     GameMechanics.prototype.deleteFruit = function(id){
@@ -14215,6 +14228,15 @@ define('game/gameMechanics',[
         _.each(this.fruits,function(fruit){
             fruit.changeSize();
         });
+    }
+
+    GameMechanics.prototype.fillRed = function(){
+        this.isRed-=1;
+        this.context.beginPath();
+        this.context.rect(0,0,this.canvas.width,this.canvas.height);
+        this.context.closePath();
+        this.context.fillStyle = "rgba(255,0,0,0." + this.isRed;
+        this.context.fill();
     }
 
     function degreesToRadians(degrees){
@@ -14361,6 +14383,10 @@ define('game/scene',[
             self.gameMechanics.sword.draw(self.context);
             if(self.gameMechanics.finishGame()){
                 self.showGameOver();
+            }
+
+            if(self.gameMechanics.isRed){
+                self.gameMechanics.fillRed();
             }
 
 
@@ -14668,6 +14694,7 @@ define('views/game',[
         id: "gameView",
         model: userModel,
         template: tmpl,
+        messageSystem: null,
         events: {
             "click .js-button-game": "sendMessage",
             "click .js-button-chat": "sendMessageChat"
@@ -14688,6 +14715,7 @@ define('views/game',[
             var gameMechanics = new GameMechanics(canvas,this.model);
             var scene = new Scene(canvas,gameMechanics);
             scene.run();
+            //g10.javaprojects.tp-dev.ru
             var url = "ws://g10.javaprojects.tp-dev.ru/gameplay";
             var messageSystem = new MessageSystem(url,gameMechanics,scene,this.players);
             _.extend(messageSystem, Backbone.Events);
@@ -14698,6 +14726,7 @@ define('views/game',[
             this.listenTo(messageSystem,"startGame",this.showGame);
             this.listenTo(messageSystem,"gameOver",this.showGameOver);
 
+            this.messageSystem = messageSystem;
             messageSystem.connect();
         },
         showGame: function(data){
@@ -14722,6 +14751,9 @@ define('views/game',[
             GameOverView.show(playerCollection);
         },
         hide: function(){
+            if(this.messageSystem){
+                this.messageSystem.close();
+            }
             document.body.style.overflow = "auto";
             superView.prototype.hide.apply(this,arguments);
         }

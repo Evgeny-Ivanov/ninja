@@ -34,6 +34,7 @@ define([
         id: "gameView",
         model: userModel,
         template: tmpl,
+        messageSystem: null,
         events: {
             "click .js-button-game": "sendMessage",
             "click .js-button-chat": "sendMessageChat"
@@ -54,6 +55,7 @@ define([
             var gameMechanics = new GameMechanics(canvas,this.model);
             var scene = new Scene(canvas,gameMechanics);
             scene.run();
+            //g10.javaprojects.tp-dev.ru
             var url = "ws://g10.javaprojects.tp-dev.ru/gameplay";
             var messageSystem = new MessageSystem(url,gameMechanics,scene,this.players);
             _.extend(messageSystem, Backbone.Events);
@@ -64,6 +66,7 @@ define([
             this.listenTo(messageSystem,"startGame",this.showGame);
             this.listenTo(messageSystem,"gameOver",this.showGameOver);
 
+            this.messageSystem = messageSystem;
             messageSystem.connect();
         },
         showGame: function(data){
@@ -88,6 +91,9 @@ define([
             GameOverView.show(playerCollection);
         },
         hide: function(){
+            if(this.messageSystem){
+                this.messageSystem.close();
+            }
             document.body.style.overflow = "auto";
             superView.prototype.hide.apply(this,arguments);
         }

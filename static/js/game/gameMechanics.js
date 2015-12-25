@@ -99,6 +99,9 @@ define([
             fruit: fruit,
             time:0
         });
+        if(fruit.id % 15 == 0){
+            this.isRed = 8;
+        }
     }
 
     GameMechanics.prototype.deleteFruit = function(id){
@@ -140,6 +143,15 @@ define([
         _.each(this.fruits,function(fruit){
             fruit.changeSize();
         });
+    }
+
+    GameMechanics.prototype.fillRed = function(){
+        this.isRed-=1;
+        this.context.beginPath();
+        this.context.rect(0,0,this.canvas.width,this.canvas.height);
+        this.context.closePath();
+        this.context.fillStyle = "rgba(255,0,0,0." + this.isRed;
+        this.context.fill();
     }
 
     function degreesToRadians(degrees){
