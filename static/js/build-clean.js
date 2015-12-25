@@ -13936,7 +13936,6 @@ define('game/messageSystem',[
                 
             } else {
                 
-                Backbone.history.loadUrl(Backbone.history.fragment);
             }
             
             

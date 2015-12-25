@@ -13516,7 +13516,6 @@ define('game/messageSystem',[
                 console.log('Соединение закрыто чисто');
             } else {
                 console.log('Обрыв соединения');
-                Backbone.history.loadUrl(Backbone.history.fragment);
             }
             console.log('Код: ' + event.code + ' причина: ' + event.reason);
             
