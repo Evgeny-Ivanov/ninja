@@ -2,12 +2,12 @@
 
         <div class="col">
              <div class="menu">
-                <div class="menu__title menu__link_center"> Ошибка загрузки  </div>
+                <div class="menu__title menu__link_center"> Loading error  </div>
 
-				<button type="submit" class="js-try-again-send data-submit menu__link"> Попробывать снова </button> 
+				<button type="submit" class="js-try-again-send data-submit menu__link"> Try again </button> 
 
 				<a href="#" class="menu__link_none"> 
-					<div class="menu__link menu__link_center"> Назад </div> 
+					<div class="menu__link menu__link_center"> Back </div> 
 				</a>
             </div>
         </div>

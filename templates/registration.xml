@@ -34,13 +34,13 @@
                     </div>
                 </fest:if>
 
-				<button type="submit" class="data-submit menu__link">Войти</button> 	
+				<button type="submit" class="data-submit menu__link"> Sign up </button> 	
 
 			</form>  
 			</fest:if>
 
             <a href="#" class="menu__link_none"> 
-            	<div class="menu__link menu__link_center"> Назад </div> 
+            	<div class="menu__link menu__link_center"> Back </div> 
             </a>
 
 

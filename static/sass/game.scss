@@ -12,12 +12,12 @@ $game-background-image: "http://www.rudebox.org.ua/demo/animated-background-head
 
 @media screen and (orientation:portrait) {
 	/* Стили для портретной */
-	display: block;
+	//display: block;
 }
 
 @media screen and (orientation:landscape) {
 	/* стили для горизонтальной */
-	display: none;
+	//display: none;
 }
 
 
@@ -27,17 +27,13 @@ $game-background-image: "http://www.rudebox.org.ua/demo/animated-background-head
 	color: $dark-grey;
 	font-size: 1.8em;
 	top: 1%;
-	//width: 100px;
-	//background-color: $dark-grey;
 
 	&_right{
 		right: 1%;
-		//text-align: right;
 	}
 
 	&_left{
 		left: 1%;
-		//text-align: left; 
 	}
 
 	&_center{

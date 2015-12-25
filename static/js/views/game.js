@@ -88,7 +88,6 @@ define([
             GameOverView.show(playerCollection);
         },
         hide: function(){
-            console.log("hide");
             document.body.style.overflow = "auto";
             superView.prototype.hide.apply(this,arguments);
         }

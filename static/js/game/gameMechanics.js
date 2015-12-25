@@ -2,12 +2,14 @@ define([
     'backbone',
     'game/fruit',
     'game/sword',
-    'game/messageSystem'
+    'game/messageSystem',
+    'game/webAudio'
 ], function(
     Backbone,
     Fruit,
     Sword,
-    MessageSystem
+    MessageSystem,
+    webAudio
 ){
     function GameMechanics(canvas,model){
 
@@ -88,6 +90,7 @@ define([
     }
 
     GameMechanics.prototype.cutFruit = function(fruit){
+        webAudio.play("bang");
         this.messageSystem.sendMessage(fruit.id);
         fruit.frame = 128;
         fruit.spriteExplosion = window.imgСache.animated2;

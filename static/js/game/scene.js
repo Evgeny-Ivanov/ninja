@@ -2,12 +2,14 @@ define([
     'backbone',
     'game/gameMechanics',
     'views/gameover',
-    'game/messageSystem'
+    'game/messageSystem',
+    'game/webAudio'
 ], function(
     Backbone,
     GameMechanics,
     gameOverView,
-    MessageSystem
+    MessageSystem,
+    webAudio
 ){
 
 
@@ -30,6 +32,7 @@ define([
 
         document.body.style.overflow = "hidden";
         this.gameMechanics = gameMechanics;
+
     } 
     
 

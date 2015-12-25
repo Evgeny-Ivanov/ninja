@@ -165,7 +165,7 @@ define([
             });
         },
         successFetch: function(answer){
-            console.log(answer);
+            //console.log(answer);
             if(answer.status == 200){
                 var name = answer.info;
                 this.set("name",name);

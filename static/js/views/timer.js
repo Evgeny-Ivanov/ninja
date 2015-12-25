@@ -26,16 +26,17 @@ define([
             this.render();
             this.$el.show();
             var self = this;
-            var interval = setInterval(function(){
+            this.interval = setInterval(function(){
                 var time = self.model.get("time") - 1;
                 self.model.set("time",time);
                 self.render();
-                if(time == 0) {
-                    clearInterval(interval);
+                if(time <= 0) {
+                    clearInterval(self.interval);
                 }
             },1000);
         },
         hide: function () {
+            clearInterval(this.interval);
             this.$el.hide();
         }
 	});

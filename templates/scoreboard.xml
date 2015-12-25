@@ -19,7 +19,7 @@
             </div>
 
             <a href="#" class="menu__link_none"> 
-                <div class="menu__link menu__link_center"> Назад </div> 
+                <div class="menu__link menu__link_center"> Back </div> 
             </a>
 
         </div>

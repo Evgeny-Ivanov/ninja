@@ -70,14 +70,6 @@ body {
   right: 0px;
   width: 100px; }
 
-@media screen and (orientation: portrait) {
-  /* Стили для портретной */
-  display: block; }
-
-@media screen and (orientation: landscape) {
-  /* стили для горизонтальной */
-  display: none; }
-
 .game-player {
   position: fixed;
   color: #405261;
